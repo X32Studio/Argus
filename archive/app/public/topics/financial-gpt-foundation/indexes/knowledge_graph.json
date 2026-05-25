@@ -1,0 +1,76 @@
+{
+  "nodes": [
+    {"id": "work:bloomberggpt", "type": "work", "label": "BloombergGPT"},
+    {"id": "work:fingpt", "type": "work", "label": "FinGPT"},
+    {"id": "work:financebench", "type": "work", "label": "FinanceBench"},
+
+    {"id": "data:finpile", "type": "data_recipe", "label": "FinPile (proprietary, ~363B finance tokens)"},
+    {"id": "data:public-filings-corpus", "type": "data_recipe", "label": "Public-source FinPile-analogue (EDGAR + transcripts + news + regulatory)", "status": "proposed"},
+    {"id": "data:finance-news-instruct", "type": "data_recipe", "label": "Finance news instruction datasets (FPB, FiQA, headline)"},
+
+    {"id": "objective:causal_lm_from_scratch", "type": "objective", "label": "From-scratch causal LM on finance-mixed corpus"},
+    {"id": "objective:lora_sft", "type": "objective", "label": "LoRA SFT on finance instructions"},
+    {"id": "objective:rag_open_book_eval", "type": "objective", "label": "RAG open-book QA with refusal rubric"},
+
+    {"id": "backbone:dense_50b", "type": "backbone", "label": "Dense Transformer, 50B"},
+    {"id": "backbone:lora_on_open_base", "type": "backbone", "label": "LoRA-adapted open base (7-13B)"},
+
+    {"id": "route:domain_adaptive_pretraining", "type": "route", "label": "Domain-Adaptive Pretraining for Finance"},
+    {"id": "route:open_finance_llms", "type": "route", "label": "Open Financial LLMs"},
+    {"id": "route:instruction_tuning_finance", "type": "route", "label": "Instruction Tuning on Finance Tasks"},
+    {"id": "route:finance_benchmarks_and_eval", "type": "route", "label": "Financial Benchmarks & Evaluation"},
+    {"id": "route:finance_data_curation", "type": "route", "label": "Finance Corpus Construction & Quality"},
+    {"id": "route:long_context_and_retrieval_finance", "type": "route", "label": "Long-Context & Retrieval for Filings"},
+
+    {"id": "benchmark:financebench", "type": "benchmark", "label": "FinanceBench"},
+    {"id": "benchmark:fpb", "type": "benchmark", "label": "Financial PhraseBank"},
+    {"id": "benchmark:fiqa", "type": "benchmark", "label": "FiQA SA"},
+    {"id": "benchmark:convfinqa", "type": "benchmark", "label": "ConvFinQA"},
+
+    {"id": "pitfall:eval_contamination", "type": "pitfall", "label": "Eval contamination (public benchmarks in pretraining)"},
+    {"id": "pitfall:base_attribution_confound", "type": "pitfall", "label": "Base-model attribution confound (newer base credited to finance tuning)"},
+    {"id": "pitfall:missing_stronger_general_baseline", "type": "pitfall", "label": "Missing-stronger-general-baseline (domain LLM beats older general LLM but not newer larger one)"},
+
+    {"id": "experiment:H_bloom1", "type": "experiment", "label": "Continued-pretrain strong base matches from-scratch 50B"},
+    {"id": "experiment:H_bloom2", "type": "experiment", "label": "1:9 finance/general mix dominates 1:1 at strong-base scale"},
+    {"id": "experiment:H_bloom3", "type": "experiment", "label": "Most BloombergGPT gain is from entity/jargon coverage in filings+news"},
+    {"id": "experiment:H_fg1", "type": "experiment", "label": "Strong general Instruct matches FinGPT on shallow finance NLP"},
+    {"id": "experiment:H_fg2", "type": "experiment", "label": "FinGPT-LoRA does not close gap on long-context filings QA"},
+    {"id": "experiment:H_fb1", "type": "experiment", "label": "RAG over strong general Instruct beats finetuned 7B finance on FinanceBench >=10pp"},
+    {"id": "experiment:H_fb2", "type": "experiment", "label": "Continued pretraining helps FinanceBench only with retrieval"}
+  ],
+  "edges": [
+    {"src": "work:bloomberggpt", "dst": "route:domain_adaptive_pretraining", "type": "belongs_to_route"},
+    {"src": "work:bloomberggpt", "dst": "route:finance_data_curation", "type": "belongs_to_route"},
+    {"src": "work:bloomberggpt", "dst": "data:finpile", "type": "uses_data_recipe"},
+    {"src": "work:bloomberggpt", "dst": "objective:causal_lm_from_scratch", "type": "uses_objective"},
+    {"src": "work:bloomberggpt", "dst": "backbone:dense_50b", "type": "uses_backbone"},
+    {"src": "work:bloomberggpt", "dst": "data:public-filings-corpus", "type": "transferable_to_inhouse", "note": "FinPile design pattern transfers; specific data does not"},
+    {"src": "work:bloomberggpt", "dst": "pitfall:missing_stronger_general_baseline", "type": "risky_for_inhouse"},
+    {"src": "work:bloomberggpt", "dst": "experiment:H_bloom1", "type": "suggests_experiment"},
+    {"src": "work:bloomberggpt", "dst": "experiment:H_bloom2", "type": "suggests_experiment"},
+    {"src": "work:bloomberggpt", "dst": "experiment:H_bloom3", "type": "suggests_experiment"},
+
+    {"src": "work:fingpt", "dst": "route:open_finance_llms", "type": "belongs_to_route"},
+    {"src": "work:fingpt", "dst": "route:instruction_tuning_finance", "type": "belongs_to_route"},
+    {"src": "work:fingpt", "dst": "objective:lora_sft", "type": "uses_objective"},
+    {"src": "work:fingpt", "dst": "backbone:lora_on_open_base", "type": "uses_backbone"},
+    {"src": "work:fingpt", "dst": "data:finance-news-instruct", "type": "uses_data_recipe"},
+    {"src": "work:fingpt", "dst": "work:bloomberggpt", "type": "compares_against"},
+    {"src": "work:fingpt", "dst": "data:finance-news-instruct", "type": "transferable_to_inhouse"},
+    {"src": "work:fingpt", "dst": "pitfall:base_attribution_confound", "type": "risky_for_inhouse"},
+    {"src": "work:fingpt", "dst": "pitfall:eval_contamination", "type": "risky_for_inhouse"},
+    {"src": "work:fingpt", "dst": "experiment:H_fg1", "type": "suggests_experiment"},
+    {"src": "work:fingpt", "dst": "experiment:H_fg2", "type": "suggests_experiment"},
+
+    {"src": "work:financebench", "dst": "route:finance_benchmarks_and_eval", "type": "belongs_to_route"},
+    {"src": "work:financebench", "dst": "route:long_context_and_retrieval_finance", "type": "belongs_to_route"},
+    {"src": "work:financebench", "dst": "objective:rag_open_book_eval", "type": "uses_objective"},
+    {"src": "work:financebench", "dst": "benchmark:financebench", "type": "uses_data_recipe"},
+    {"src": "work:financebench", "dst": "experiment:H_fb1", "type": "suggests_experiment"},
+    {"src": "work:financebench", "dst": "experiment:H_fb2", "type": "suggests_experiment"},
+
+    {"src": "experiment:H_fb1", "dst": "work:bloomberggpt", "type": "contradicts", "note": "if true, from-scratch finance pretraining loses to RAG over strong base"},
+    {"src": "experiment:H_fg2", "dst": "work:fingpt", "type": "contradicts", "note": "if true, FinGPT's 'competitive with BloombergGPT' claim does not extend to filings QA"}
+  ]
+}
