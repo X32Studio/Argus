@@ -1,9 +1,9 @@
-- Completion time: 2026-05-26 15:31 UTC+8
-- Core work summary: Removed a missing README image reference before publishing the fixed docs.
-- Key changes made: Replaced the absent X32 image asset with text-only studio attribution in both READMEs.
 - Completion time: 2026-05-26 15:33 UTC+8
 - Core work summary: Published the canonical Argus Claude Code skill updates.
 - Key changes made: Included skill orchestration, command/loop template updates, frontend contract docs, and validator script.
 - Completion time: 2026-05-26 15:42 UTC+8
 - Core work summary: Added the three showcase screenshots to the bilingual READMEs.
 - Key changes made: Inserted start flow, dashboard graph, and report preview sections using asserts/showcase assets.
+- Completion time: 2026-05-26 15:44 UTC+8
+- Core work summary: Published the dashboard report-link fix in the Argus app template.
+- Key changes made: Updated Hero's Open Report action to preserve the current topic slug.

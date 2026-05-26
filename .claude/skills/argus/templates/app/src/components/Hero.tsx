@@ -1,3 +1,5 @@
+import { useTopic } from "../state/TopicContext";
+
 type HeroProps = {
   totalWorks: number;
   totalRoutes: number;
@@ -9,6 +11,7 @@ type HeroProps = {
 };
 
 export function Hero(props: HeroProps) {
+  const { slug } = useTopic();
   const stamp = formatTimestamp(props.updatedAt);
   const statusLabel = props.isError ? "offline" : props.isLoading ? "syncing" : "live";
 
@@ -58,7 +61,7 @@ export function Hero(props: HeroProps) {
         <button
           type="button"
           className="open-report-button"
-          onClick={() => window.open("/?view=report", "_blank")}
+          onClick={() => window.open(`/t/${slug}/report`, "_blank")}
         >
           Open Report ↗
         </button>
