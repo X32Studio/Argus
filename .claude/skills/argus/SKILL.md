@@ -46,7 +46,94 @@ Options:
 
 If the user picks the second option, **stop using this skill**. Answer their question normally.
 
-If confirmed, proceed to Step 2.
+If confirmed, proceed to Step 1.5.
+
+## Step 1.5 — Start the dashboard NOW (front-loaded)
+
+The dashboard URL is the user's only window into what Argus is doing — and is also the activity rail that surfaces "I need you back in Claude Code" signals. So start it BEFORE collecting the one-line topic description, so by the time the user has answered init's clarifying questions they can already see the rail filling up.
+
+Run these Bash steps in order:
+
+a. Check whether port 5173 is already in use:
+   ```bash
+   lsof -iTCP:5173 -sTCP:LISTEN -t 2>/dev/null | head -1
+   ```
+   If non-empty, a dev server is already running. Skip to step (e) below. Do NOT kill it.
+
+b. If port 5173 is free, ensure `app/node_modules` exists. If not:
+   - Tell the user once: "Installing dashboard dependencies (one-time, ~30s)..."
+   - Run `cd app && npm install` synchronously. If it fails, print the manual command (`cd app && npm install && npm run dev`) and skip to Step 2 anyway — the rest of the skill still works without the dashboard.
+
+c. Launch the dev server in the background using `Bash` with `run_in_background: true`:
+   ```bash
+   cd app && npm run dev
+   ```
+   It persists for the lifetime of this Claude Code session.
+
+d. Wait ~3 seconds then verify:
+   ```bash
+   curl -sf -o /dev/null -w '%{http_code}' http://localhost:5173/topics/_index.json
+   ```
+   If not `200`, fall back to printing the manual command.
+
+e. **Print the URL to the user, prominently:**
+   > Dashboard: http://localhost:5173/
+   > (URL will become /t/<slug> once the topic is set up. Open it now — you'll see Argus's progress streaming in the left rail.)
+
+f. **Append the first bootstrap notice** so the rail isn't empty when the user opens it:
+   ```bash
+   mkdir -p .claude/loops
+   TS=$(date -u +%FT%TZ)
+   printf '{"ts":"%s","level":"info","source":"orchestrator","cycle":null,"text":"%s"}\n' \
+     "$TS" "Argus is starting. Gathering your topic details next." \
+     >> .claude/loops/_bootstrap_notices.jsonl
+   ```
+
+Then proceed to Step 2.
+
+## Notice emission — how the skill talks to the dashboard
+
+Throughout the rest of this skill, you (the orchestrator) append JSON lines to one of two files so the user can watch progress and "come back to CC" signals in the activity rail:
+
+- **Before any topic slug exists** → write to `.claude/loops/_bootstrap_notices.jsonl`
+- **After `/argus init` produces a slug** → write to `topics/<slug>/logs/notices.jsonl`
+
+Schema (one per line):
+```json
+{"ts":"<ISO-8601 Z>","level":"info|attention|blocked","source":"orchestrator","cycle":<N|null>,"text":"<one line ≤140 chars>"}
+```
+
+Levels:
+- `info` — passive progress ("starting cycle 3").
+- `attention` — user should glance ("topic ready", "saturated").
+- `blocked` — orchestrator is paused waiting on user response in CC. **Always emit a `blocked` line BEFORE every `AskUserQuestion` call** so the rail can flash the page title.
+
+Bash helper to keep emits short:
+```bash
+notice() {
+  local file="$1" level="$2" cycle="$3" text="$4"
+  local ts=$(date -u +%FT%TZ)
+  mkdir -p "$(dirname "$file")"
+  if [ "$cycle" = "null" ]; then cycle_field=null; else cycle_field=$cycle; fi
+  printf '{"ts":"%s","level":"%s","source":"orchestrator","cycle":%s,"text":"%s"}\n' \
+    "$ts" "$level" "$cycle_field" "$text" >> "$file"
+}
+```
+
+**Required emit points** (the rest of the skill assumes these fire):
+
+| When | File | Level | Text template |
+|---|---|---|---|
+| Right before `AskUserQuestion` in init flow | bootstrap | `blocked` | "Waiting on you in CC: <question gist>" |
+| Right after that AskUserQuestion answered | bootstrap | `info` | "Got it. Continuing." |
+| Immediately after `/argus init` succeeds | per-topic | `attention` | "Topic <slug> ready. Loop options waiting in CC." |
+| Right before "how to run the loop" AskUserQuestion | per-topic | `blocked` | "Waiting on you in CC: pick a loop mode" |
+| At each cycle start (Flow A step 8a) | per-topic | `info` | "Cycle <N> starting (mode=<RESEARCH\|SYNTHESIS>)" |
+| After parsing runner return (step 8d/e) | per-topic | `info` | "Cycle <N> done: +<new_works> works, +<depth_upgrades> upgrades" |
+| Runner unnotified after watchdog (step 8d) | per-topic | `attention` | "Cycle <N> runner: no response after 7m. Continuing." |
+| STOP_SATURATED / STOP_CONTEXT / STOP_BLOCKER | per-topic | `blocked` | "Stopped: <reason>. Action needed in CC." |
+
+Runner subagents emit their own `source:"runner"` lines directly (per `.claude/loop.md` "Notice Emission" section). You do not need to forward those.
 
 ## Step 2 — Route
 
@@ -58,35 +145,16 @@ User signals fresh start ("track X", "set up research on Y", "build a dossier on
 
 2. **Run `/argus init`.** Read `.claude/commands/argus.md` (the live, just-bootstrapped copy) and execute its `init` subcommand with the user's description as the argument. That command handles clarifying questions, file generation, validation, auto-accept, and empty stubs.
 
-3. **Auto-start the dashboard** for the user (you, the skill, do this — not the user). Run these Bash steps in order:
+   Before EACH `AskUserQuestion` that `/argus init` triggers, emit a `blocked` bootstrap notice (see "Notice emission" above). After it's answered, emit an `info` notice ("Got it. Continuing.").
 
-   a. Check whether port 5173 is already in use:
-      ```bash
-      lsof -iTCP:5173 -sTCP:LISTEN -t 2>/dev/null | head -1
-      ```
-      If the output is non-empty, a dev server is already running. Skip ahead to step 4; just tell the user "dashboard is already up at http://localhost:5173/t/<slug>". Do **not** kill the existing process — it may be unrelated.
+3. **Dashboard is already up** from Step 1.5. As soon as `/argus init` produces the slug, switch your future notices to `topics/<slug>/logs/notices.jsonl` and emit:
+   - `attention`: "Topic <slug> ready. Loop options waiting in CC."
 
-   b. If port 5173 is free, ensure `app/node_modules` exists. If not:
-      - Tell the user once: "Installing dashboard dependencies (one-time, ~30s)..."
-      - Run `cd app && npm install` synchronously (foreground). If it fails (node not installed, network issue, etc.), fall back to printing the manual command and stop trying to auto-start.
-
-   c. Launch the dev server in the background:
-      ```bash
-      cd app && npm run dev
-      ```
-      Use `Bash` with `run_in_background: true`. The server persists for the lifetime of this Claude Code session (i.e., as long as the user keeps Claude Code open — which is the expected mode).
-
-   d. Wait ~3 seconds, then verify:
-      ```bash
-      curl -sf -o /dev/null -w '%{http_code}' http://localhost:5173/topics/_index.json
-      ```
-      If it returns `200`, the dashboard is up. If timeout / non-200, the auto-start failed — fall back to printing the manual command (`cd app && npm install && npm run dev`).
-
-4. **Tell the user the URL** to open in their browser:
+4. **Print the per-topic URL:**
    - `http://localhost:5173/t/<slug>`
-   - The dashboard auto-refreshes every 2 minutes once the loop starts producing records.
+   - The dashboard auto-refreshes every 2 minutes once the loop starts producing records; the activity rail polls every 3 seconds.
 
-5. **Ask the user once how to run the loop.** Single `AskUserQuestion`:
+5. **Ask the user once how to run the loop.** Emit a `blocked` notice first ("Waiting on you in CC: pick a loop mode"), then call `AskUserQuestion`:
 
    > "Topic ready. How should I run the research loop?"
 
@@ -103,7 +171,7 @@ User signals fresh start ("track X", "set up research on Y", "build a dossier on
 
    **Loop body — repeat until a stop condition (step 9) fires:**
 
-   a. Read `topics/<slug>/logs/cycle.txt` (single integer N). Compute `next_cycle = N + 1`. Read `topic.yaml.iteration_mix.synthesis_every_n_cycles` (default 7). Decide `mode = (next_cycle % synthesis_every_n_cycles == 0 && next_cycle > 0) ? "SYNTHESIS" : "RESEARCH"`.
+   a. Read `topics/<slug>/logs/cycle.txt` (single integer N). Compute `next_cycle = N + 1`. Read `topic.yaml.iteration_mix.synthesis_every_n_cycles` (default 7). Decide `mode = (next_cycle % synthesis_every_n_cycles == 0 && next_cycle > 0) ? "SYNTHESIS" : "RESEARCH"`. **Emit notice:** `info`, "Cycle <next_cycle> starting (mode=<mode>)".
 
    b. **Dispatch ONE iteration runner subagent.** Use the `Agent` tool — `subagent_type: "general-purpose"`, `run_in_background: true`, `description: "Argus iteration #<next_cycle> (<mode>) for <slug>"`. The `prompt` field MUST be self-contained — runner cannot see this skill's context. Include:
       - Literal `TOPIC_SLUG` and `TOPIC_DIR` values
@@ -126,7 +194,7 @@ User signals fresh start ("track X", "set up research on Y", "build a dossier on
 
    c. **Watchdog:** call `Bash` with `command: "sleep 420"`, `run_in_background: false`, `timeout: 450000`. Foreground 7-min block. While the parent is blocked, the runner's completion notification (if any) queues into parent context.
 
-   d. After `sleep` returns, parse the runner's return value. If notification arrived, you have the summary; if not, append a line under `## iteration_runner_unnotified` heading in `${TOPIC_DIR}/logs/research_state.md` (with timestamp + task_id + presumed_hung).
+   d. After `sleep` returns, parse the runner's return value. If notification arrived, you have the summary; if not, append a line under `## iteration_runner_unnotified` heading in `${TOPIC_DIR}/logs/research_state.md` (with timestamp + task_id + presumed_hung), and emit notice: `attention`, "Cycle <N> runner: no response after 7m. Continuing." Otherwise emit `info`, "Cycle <N> done: +<new_works_added> works, +<depth_upgrades> upgrades".
 
    e. **Parent updates `cycle.txt`** (the ONE shared file the orchestrator writes directly): overwrite with `next_cycle` + newline. Runner is forbidden from this file.
 
@@ -147,7 +215,7 @@ User signals fresh start ("track X", "set up research on Y", "build a dossier on
 
    j. Loop back to step (a) for the next iteration.
 
-9. **Stop conditions:**
+9. **Stop conditions:** for each, emit `blocked` notice "Stopped: <reason>. Action needed in CC." before printing the message in CC.
    - **STOP_USER**: user explicitly says "stop" / interrupts / closes the session → loop dies naturally; state on disk is current.
    - **STOP_SATURATED**: three consecutive SYNTHESIS iterations report `saturation_signal: true`. Print: "Topic appears saturated after N iterations. State preserved at `${TOPIC_DIR}/`. Re-trigger this skill any time to resume; new sources will reset the counter."
    - **STOP_CONTEXT**: parent's own context budget is near limit. Write a resume hint to `${TOPIC_DIR}/logs/research_state.md` under `## orchestrator_pause` (timestamp + last cycle + saturation_count). Print: "I've run N iterations. My context is filling up. Close and reopen Claude Code, then say 'resume `<slug>`' or trigger this skill again — I'll pick up from cycle `<N+1>`. (Or use `/argus loop <slug>` to switch to cron, which survives Claude Code restart.)"
@@ -159,9 +227,10 @@ User signals continuation ("show me my X research", "open the dashboard for Y", 
 
 1. Execute `/argus list` (read `.claude/commands/argus.md` and follow the `list` subcommand).
 2. If the user's intended topic is in the list:
-   - **Auto-start the dashboard** following Flow A step 3 (check port 5173, npm install if needed, npm run dev in background, curl-verify).
+   - **Auto-start the dashboard** following Step 1.5 (check port 5173, npm install if needed, npm run dev in background, curl-verify). Note: bootstrap notices file is unnecessary in Flow B — slug is known, so emit directly to `topics/<slug>/logs/notices.jsonl`.
+   - Emit notice: `attention`, "Resuming <slug>. Dashboard ready."
    - Print: `View dashboard: http://localhost:5173/t/<slug>` (or note already running).
-   - Ask via `AskUserQuestion`: "Resume the loop in this session, or hand off to cron?" (same options as Flow A step 5). Then follow Flow A step 6-9 accordingly.
+   - Emit `blocked` notice, then ask via `AskUserQuestion`: "Resume the loop in this session, or hand off to cron?" (same options as Flow A step 5). Then follow Flow A step 6-9 accordingly.
 3. If not in the list, fall back to Flow A.
 
 ### Flow C — user wants to understand the engine or install it elsewhere

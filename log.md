@@ -1,9 +1,9 @@
-- Completion time: 2026-05-26 16:05 UTC+8
-- Core work summary: Polished the Chinese README for more natural wording.
-- Key changes made: Replaced awkward translated phrases with clearer Chinese around use cases, dashboard, setup, and workflow.
-- Completion time: 2026-05-26 16:07 UTC+8
-- Core work summary: Reframed the README around iterative deep research in complex domains.
-- Key changes made: Removed mascot fluff and introduced the research-tree mental model across both READMEs.
-- Completion time: 2026-05-26 16:12 UTC+8
-- Core work summary: Rewrote repository commit identity to k-r33.
-- Key changes made: Updated commit author/committer and v0.1 tagger metadata before force-updating GitHub.
+- Completion time: 2026-05-26 16:22 UTC+8
+- Core work summary: Audited README command instructions for copy-pasteable usage.
+- Key changes made: Made `/argus init` the primary startup command and added explicit SSH forwarding commands to the app README.
+- Completion time: 2026-05-26 17:07 UTC+8
+- Core work summary: Removed embedded demo videos from the bilingual READMEs.
+- Key changes made: Deleted the top README video blocks while keeping image-based showcase sections intact.
+- Completion time: 2026-05-26 17:08 UTC+8
+- Core work summary: Removed the demo video asset from the repository.
+- Key changes made: Deleted asserts/demo.mp4 after confirming README files no longer reference it.

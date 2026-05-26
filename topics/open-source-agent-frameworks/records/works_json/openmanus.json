@@ -1,0 +1,25 @@
+{
+  "slug": "openmanus",
+  "framework_name": "OpenManus",
+  "repo_url": "https://github.com/FoundationAgents/OpenManus",
+  "alt_repo_url": "https://github.com/mannaandpoem/OpenManus",
+  "maintainer_org": "FoundationAgents (MetaGPT team — core authors Xinbin Liang @mannaandpoem, Jinyu Xiang @XiangJinyu, Zhaoyang Yu, Jiayi Zhang, Sirui Hong; all from MetaGPT)",
+  "stars_at_capture": 56400,
+  "last_commit_at": "2025-04-10 (v0.3.0 release; ~526 commits, 3 releases, 353 open issues, 199 PRs at capture)",
+  "license": "MIT",
+  "primary_language": "Python (97.8%)",
+  "execution_kernel_pattern": "Layered ReAct -> ToolCall -> Manus inheritance. app/agent/ contains base.py, react.py (ReActAgent base loop), toolcall.py (ToolCallAgent — OpenAI-style function-calling on top of ReAct), and manus.py (the general agent composing tools). A separate planning flow exists via run_flow.py (planner-executor, marked 'unstable multi-agent version'). Effectively a code-act + ReAct hybrid: model emits tool calls, executes, observes, loops — with optional outer planner.",
+  "multi_agent_support": {
+    "style": "lightweight role-composition + planner-executor flow",
+    "notes": "Not a full multi-agent debate framework like MetaGPT. Provides specialized agents (Manus general, DataAnalysis, SWE, Browser) selectable via config.toml. run_flow.py composes them under a Planning flow. Multi-agent path explicitly tagged 'unstable' in README."
+  },
+  "tool_protocol": "Native OpenAI function-calling (ToolCallAgent) + MCP support via run_mcp.py / run_mcp_server.py. Tools include browser automation (Playwright), terminal/code execution (sandbox), file operations, web search/scraping (Crawl4AI), Python execution, and computer-vision-driven GUI interaction.",
+  "memory_model": "Short-term conversational memory (message history in ReAct loop). No first-class long-term memory store advertised; relies on conversation context window + tool-returned observations.",
+  "supported_model_providers": "Primary: OpenAI (GPT-4o default). Extensible via base_url override in config.toml, enabling Azure OpenAI, Anthropic-via-proxy, DeepSeek, Ollama, vLLM, and other OpenAI-compatible endpoints. Vision models supported for GUI/browser screenshots.",
+  "observability_story": "Configuration-driven structured logging via config.toml; no first-class trace UI. Sandbox isolation for tool execution. No native Langfuse/OpenTelemetry integration in core repo at capture.",
+  "typical_use_case": "General computer-use automation: open-ended tasks that span browser + terminal + filesystem (e.g., 'research X and write a report', data analysis with code execution, browsing + scraping + summarization). Positioned as an open-source clone of the Manus.im product.",
+  "maturity_signal": "Viral early-2025 launch (56k+ stars within weeks of Manus product controversy), but velocity slowed: last release v0.3.0 in April 2025, with 353 open issues and 199 open PRs suggesting maintainer bandwidth lagging community demand. Active but not yet enterprise-hardened; explicit 'unstable' labels on multi-agent flow. OpenManus-RL spinoff (GRPO RL tuning, with UIUC) shows the team is pushing the research frontier rather than productizing.",
+  "one_paragraph_differentiator": "OpenManus is the open-source general computer-use agent — the third leg of the 2025 computer-use tripod alongside browser-use (browser-only, DOM-centric) and Skyvern (browser-only, vision-first, enterprise). Where browser-use and Skyvern restrict the action space to a single browser tab, OpenManus exposes a polyglot toolbox (browser + terminal + filesystem + Python sandbox + GUI clicks) and is therefore the closest OSS analog to OpenAI Computer Use and Anthropic Computer Use. Unlike MetaGPT (its sibling project from the same authors), it is not a role-based multi-agent SDLC framework — it is a single-agent ReAct/ToolCall loop with an optional planner, deliberately simple. Its differentiator vs. OpenAI Agents SDK and LangChain is scope: it ships a working general-purpose agent out of the box rather than primitives.",
+  "known_anti_patterns": "Viral hype risk — built in days as a response to closed-source Manus.im, so much of the early star count reflects narrative rather than capability. No published benchmarks in README. Multi-agent flow self-labeled 'unstable'. Memory model is thin. Issue/PR backlog suggests maintainer load. Watch for: rebrand/abandonment risk if MetaGPT team refocuses on OpenManus-RL research arm only.",
+  "analysis_depth": "deep"
+}

@@ -1,0 +1,56 @@
+{
+  "slug": "pydantic-ai",
+  "framework_name": "Pydantic AI (PydanticAI)",
+  "repo_url": "https://github.com/pydantic/pydantic-ai",
+  "docs_url": "https://ai.pydantic.dev/",
+  "maintainer_org": "Pydantic (Pydantic Services Inc., team behind pydantic + Logfire)",
+  "stars_at_capture": 17300,
+  "last_commit_at": "2026-05-23 (release v1.102.0)",
+  "license": "MIT",
+  "primary_language": "Python (>=3.9)",
+  "execution_kernel_pattern": "Typed agent loop with dependency-injected RunContext. Agent is a generic Agent[DepsType, OutputType]; Agent.run / run_sync / run_stream iterates an LLM<->tool conversation until a final Pydantic-validated output is produced. Tools are async functions registered via @agent.tool, with signatures auto-converted into JSON schema by Pydantic and re-validated on each call (auto-retry-on-validation-error baked into the loop). State/context is NOT a global store — instead passed as a typed deps object (any dataclass/Pydantic model) accessible via ctx.deps inside tools and instructions, giving thread-safe per-run isolation. A separate sub-package pydantic-graph offers an explicit typed DAG/state-machine when control flow gets non-linear, but is not the default kernel.",
+  "multi_agent_support": {
+    "style": "Five layered patterns: (1) agent delegation (parent agent calls child agent inside a tool, child returns before control resumes; ctx.usage is passed for combined token accounting), (2) programmatic hand-off (app code sequences agents — closest to OpenAI Agents SDK's handoffs but driven explicitly by user code rather than baked into the kernel), (3) graph-based orchestration via pydantic-graph for state-machine workflows, (4) Deep Agents preset combining planning + file ops + sandboxed code + durable execution, (5) A2A (Agent2Agent) protocol support for cross-process agent calls.",
+    "notes": "No first-class 'swarm' or 'team' object. Multi-agent is composed from primitives (tools, graphs, deps sharing). Delegate agents can use different models and subset of parent deps. Logfire traces span across delegations."
+  },
+  "tool_protocol": "Native: @agent.tool and @agent.tool_plain Python decorators; signature -> JSON schema via Pydantic; auto-retry on validation failure with structured error feedback to the LLM. Approval workflows for human-in-the-loop tool gating. MCP: first-class MCP client support — Pydantic AI agents can consume external MCP servers as tool providers. Also supports tool approval, dynamic instructions, and streaming structured output.",
+  "memory_model": "No built-in long-term memory store. Conversation memory is the message history threaded through Agent.run(message_history=...). Working memory is the typed deps object (DI pattern) — caller is responsible for persistence. The Deep Agents preset adds planning + file-based scratchpads. Durable execution feature persists in-flight runs across API failures (so partial state survives crashes), but this is execution-resumption, not semantic memory.",
+  "supported_model_providers": [
+    "OpenAI",
+    "Anthropic",
+    "Google Gemini",
+    "DeepSeek",
+    "xAI Grok",
+    "Cohere",
+    "Mistral",
+    "Perplexity",
+    "Azure AI Foundry",
+    "Amazon Bedrock",
+    "Google Cloud (Vertex)",
+    "Ollama",
+    "LiteLLM (passthrough)",
+    "Groq",
+    "OpenRouter",
+    "Together AI",
+    "Fireworks AI"
+  ],
+  "observability_story": "Tight first-party integration with Pydantic Logfire (same vendor). One-line instrumentation surfaces per-step model calls, tool invocations, validation errors, delegation chains, token usage, and latency. OpenTelemetry-compatible under the hood. Because Logfire is built by the same team, observability is treated as a kernel-level concern rather than a plugin.",
+  "typical_use_case": "Production Python backends needing typed, validated agent outputs — e.g. customer-support agents that must return a typed SupportResult schema; structured-data extraction pipelines; tool-using API agents where mis-typed tool args would break downstream systems. Marketed explicitly for 'production grade applications'.",
+  "maturity_signal": "v1.x stable release line (v1.102.0 as of 2026-05-23), MIT-licensed, 17.3k stars, weekly releases, used in production by adopters per docs. Backed by Pydantic the company (commercial Logfire offering creates strong maintenance incentive). One of the few agent frameworks shipping a 1.x semver with a public stability commitment.",
+  "one_paragraph_differentiator": "Among general-purpose Python agent kernels, Pydantic AI sits closest to openai-agents-sdk in shape — both are minimalist, Python-native, decorator-driven loops with handoffs/delegation, MCP, streaming, and built-in tracing — but they occupy distinct kernel positions. Where openai-agents-sdk treats the loop as primary and types as best-effort, Pydantic AI inverts that: every boundary (tool args, tool returns, agent output, deps) is a Pydantic-validated typed contract, and validation failure is a first-class control-flow event that auto-retries with structured feedback to the LLM. It is also model-agnostic from day one (17+ providers), whereas openai-agents-sdk's center of gravity is OpenAI. Against LangChain it trades breadth (chains/retrievers/integrations) for a tighter, opinionated kernel; against smolagents it trades code-as-action terseness for typed JSON-tool rigor; and against framework-as-DSL approaches like CrewAI/AutoGen it offers programmatic primitives rather than role-based ceremony. Pydantic-graph is offered as an opt-in escape hatch for explicit state machines, NOT as the default execution model — distinguishing it from LangGraph where the graph IS the kernel.",
+  "known_anti_patterns": [
+    "Treating pydantic-graph as the default — it is an escape hatch for genuinely non-linear flows; using it for linear tool-loops adds ceremony without benefit.",
+    "Stuffing mutable global state into deps — deps is meant for connections/config/IDs; mutating shared state across concurrent runs breaks the per-run isolation guarantee.",
+    "Ignoring auto-retry-on-validation: writing tool functions that raise generic exceptions instead of pydantic ValidationError loses the structured-feedback retry loop.",
+    "Assuming long-term memory is built in — only message_history threading is provided; vector stores / episodic memory are caller's responsibility.",
+    "Picking it primarily for 'Pythonic-ness' over openai-agents-sdk without needing typed contracts — if you don't validate outputs, the marginal value over openai-agents-sdk is small."
+  ],
+  "analysis_depth": "doc-deep",
+  "proposed_graph_edges": [
+    {"src": "pydantic-ai", "dst": "openai-agents-sdk", "rel": "competes_in_niche"},
+    {"src": "pydantic-ai", "dst": "MCP", "rel": "protocol_supports"},
+    {"src": "pydantic-ai", "dst": "langchain", "rel": "competes_in_niche"},
+    {"src": "pydantic-ai", "dst": "smolagents", "rel": "competes_in_niche"},
+    {"src": "pydantic-ai", "dst": "openai-agents-sdk", "rel": "shared_pattern"}
+  ]
+}

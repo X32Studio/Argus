@@ -28,12 +28,6 @@ Everything is packaged as **one Claude Code skill**. If you have Claude Code, yo
 
 **Many eyes. Never asleep.**
 
-<div align="center">
-  <video src="asserts/demo.mp4" controls muted width="100%"></video>
-  <br />
-  <sub>If the video does not render on your platform, <a href="asserts/demo.mp4">open the demo video</a>.</sub>
-</div>
-
 ## Meet Argus
 
 <div align="center">
@@ -106,9 +100,15 @@ cd my-watch
 claude
 ```
 
-### Step 3 — Tell Argus What to Track
+### Step 3 — Start a Topic
 
-Type this inside the Claude Code chat, not in the shell:
+Type this command inside the Claude Code chat, not in the shell:
+
+```text
+/argus init "open-source agent frameworks"
+```
+
+You can also start with natural language:
 
 ```text
 I want to long-term track open-source agent frameworks
@@ -116,13 +116,13 @@ I want to long-term track open-source agent frameworks
 
 Argus will ask a few simple questions, create the topic files, start the dashboard, and ask how you want to run the loop.
 
-If you are not sure what to choose, choose:
+If you are not sure what to choose, select this option in Claude Code:
 
 ```text
 Run it here in this session
 ```
 
-That is the beginner path. Keep this Claude Code window open, and Argus will keep running iterations. You can watch the dashboard at:
+That is a Claude Code option, not a shell command. It is the beginner path. Keep this Claude Code window open, and Argus will keep running iterations. You can watch the dashboard at:
 
 ```text
 http://localhost:5173/t/<slug>
@@ -130,16 +130,32 @@ http://localhost:5173/t/<slug>
 
 `<slug>` is the folder-friendly topic name Argus creates, such as `open-source-agent-frameworks`.
 
+For example:
+
+```text
+http://localhost:5173/t/open-source-agent-frameworks
+```
+
 ### Optional — Run the Loop in a Separate Terminal
 
 Use this only if you want the recurring loop to live in its own Claude Code session, for example overnight.
 
-In your first Claude Code session, choose **Hand off to cron via `/argus loop`** or **Just finish topic creation**.
+In your first Claude Code session, select one of these options:
+
+```text
+Hand off to cron via /argus loop
+```
+
+or:
+
+```text
+Just finish topic creation
+```
 
 Then open another terminal in the same watch folder:
 
 ```bash
-cd path/to/my-watch
+cd my-watch
 claude
 ```
 

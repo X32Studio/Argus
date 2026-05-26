@@ -1,0 +1,761 @@
+{
+  "nodes": [
+    {
+      "id": "work:langchain",
+      "label": "LangChain (+ LangGraph)",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:autogen",
+      "label": "AutoGen",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:crewai",
+      "label": "CrewAI",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:smolagents",
+      "label": "smolagents",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:browser-use",
+      "label": "browser-use",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:llamaindex",
+      "label": "LlamaIndex (agents)",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:metagpt",
+      "label": "MetaGPT",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:skyvern",
+      "label": "Skyvern",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:openmanus",
+      "label": "OpenManus",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:openai-agents-sdk",
+      "label": "OpenAI Agents SDK",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:chatdev",
+      "label": "ChatDev (DevAll v2)",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:pydantic-ai",
+      "label": "Pydantic AI",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:agno",
+      "label": "Agno (formerly Phidata)",
+      "type": "framework",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "technique:mcp",
+      "label": "Model Context Protocol",
+      "type": "protocol",
+      "recorded": true,
+      "kind": "technique"
+    },
+    {
+      "id": "technique:a2a",
+      "label": "A2A (Agent-to-Agent protocol)",
+      "type": "protocol",
+      "recorded": true,
+      "kind": "technique"
+    },
+    {
+      "id": "work:codeact-paper",
+      "label": "CodeAct paper (Wang et al., ICML 2024)",
+      "type": "paper",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "work:aflow-paper",
+      "label": "AFlow paper (Tang et al., ICLR 2025 oral)",
+      "type": "paper",
+      "recorded": true,
+      "kind": "work"
+    },
+    {
+      "id": "route:github-landscape-snapshot",
+      "kind": "route",
+      "label": "GitHub landscape snapshot"
+    },
+    {
+      "id": "route:official-docs-whitepaper-read",
+      "kind": "route",
+      "label": "Official docs & whitepaper read"
+    },
+    {
+      "id": "route:benchmark-comparison-studies",
+      "kind": "route",
+      "label": "Benchmark comparison studies"
+    },
+    {
+      "id": "route:maintainer-blog-posts-changelogs",
+      "kind": "route",
+      "label": "Maintainer blog posts & changelogs"
+    },
+    {
+      "id": "route:independent-engineering-write-ups",
+      "kind": "route",
+      "label": "Independent engineering write-ups"
+    },
+    {
+      "id": "route:example-apps-cookbook-inspection",
+      "kind": "route",
+      "label": "Example apps & cookbook inspection"
+    },
+    {
+      "id": "route:interop-protocol-tracking",
+      "kind": "route",
+      "label": "Interop & protocol tracking"
+    },
+    {
+      "id": "route:browser-computer-use-agent-thread",
+      "kind": "route",
+      "label": "Browser / computer-use agent thread"
+    },
+    {
+      "id": "route:academic-agent-literature",
+      "kind": "route",
+      "label": "Academic agent literature"
+    }
+  ],
+  "edges": [
+    {
+      "src": "work:crewai",
+      "dst": "work:autogen",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "work:metagpt",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "work:chatdev",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "work:langchain",
+      "rel": "influenced_by"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "technique:a2a",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "work:llamaindex",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "work:autogen",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "work:smolagents",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "work:crewai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "work:openai-agents-sdk",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "work:crewai",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "technique:a2a",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "work:crewai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "work:langchain",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "work:metagpt",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "work:chatdev",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "technique:a2a",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "work:openai-agents-sdk",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "work:langchain",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "work:autogen",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "work:crewai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "work:openai-agents-sdk",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:browser-use",
+      "dst": "work:skyvern",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:browser-use",
+      "dst": "work:openmanus",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:browser-use",
+      "dst": "work:skyvern",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:browser-use",
+      "dst": "work:openmanus",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "work:langchain",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "technique:a2a",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "work:autogen",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "work:openai-agents-sdk",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "work:chatdev",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "work:crewai",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "work:autogen",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "work:chatdev",
+      "rel": "influenced_by"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "work:chatdev",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "work:crewai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:skyvern",
+      "dst": "work:browser-use",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:skyvern",
+      "dst": "work:openmanus",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:skyvern",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:skyvern",
+      "dst": "work:browser-use",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:openmanus",
+      "dst": "work:metagpt",
+      "rel": "maintainer_overlap"
+    },
+    {
+      "src": "work:openmanus",
+      "dst": "work:browser-use",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:openmanus",
+      "dst": "work:skyvern",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:openmanus",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "work:langchain",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "work:autogen",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "work:autogen",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "work:crewai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "work:smolagents",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "technique:a2a",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:chatdev",
+      "dst": "work:metagpt",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:chatdev",
+      "dst": "work:crewai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:chatdev",
+      "dst": "work:autogen",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:chatdev",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "work:openai-agents-sdk",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "technique:a2a",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "work:langchain",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "work:smolagents",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "work:openai-agents-sdk",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:langchain",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:llamaindex",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:crewai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:pydantic-ai",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:openai-agents-sdk",
+      "rel": "competes_in_niche"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:langchain",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:llamaindex",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:agno",
+      "dst": "technique:mcp",
+      "rel": "protocol_supports"
+    },
+    {
+      "src": "work:agno",
+      "dst": "work:langchain",
+      "rel": "benchmark_pair"
+    },
+    {
+      "src": "technique:a2a",
+      "dst": "technique:mcp",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "work:codeact-paper",
+      "rel": "influenced_by"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "work:aflow-paper",
+      "rel": "maintainer_overlap"
+    },
+    {
+      "src": "work:aflow-paper",
+      "dst": "work:metagpt",
+      "rel": "shared_pattern"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:browser-use",
+      "dst": "route:browser-computer-use-agent-thread",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:skyvern",
+      "dst": "route:browser-computer-use-agent-thread",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:openmanus",
+      "dst": "route:browser-computer-use-agent-thread",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:chatdev",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:agno",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:codeact-paper",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:aflow-paper",
+      "dst": "route:official-docs-whitepaper-read",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:smolagents",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:browser-use",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:metagpt",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:skyvern",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:openmanus",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:openai-agents-sdk",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:chatdev",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:pydantic-ai",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:agno",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:codeact-paper",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:aflow-paper",
+      "dst": "route:github-landscape-snapshot",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:aflow-paper",
+      "dst": "route:academic-agent-literature",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:aflow-paper",
+      "dst": "route:benchmark-comparison-studies",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:codeact-paper",
+      "dst": "route:academic-agent-literature",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:codeact-paper",
+      "dst": "route:benchmark-comparison-studies",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:langchain",
+      "dst": "route:maintainer-blog-posts-changelogs",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:autogen",
+      "dst": "route:maintainer-blog-posts-changelogs",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:crewai",
+      "dst": "route:maintainer-blog-posts-changelogs",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:llamaindex",
+      "dst": "route:maintainer-blog-posts-changelogs",
+      "rel": "belongs_to_route"
+    }
+  ],
+  "updated_at": "2026-05-26T15:10:00Z"
+}

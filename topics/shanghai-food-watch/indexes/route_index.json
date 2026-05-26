@@ -1,0 +1,132 @@
+{
+  "black-pearl-and-michelin": {
+    "direction": "black-pearl-and-michelin",
+    "status": "in-progress",
+    "search_count": 4,
+    "last_searched_at": "2026-05-26",
+    "representative_works": ["taian-table", "fu-he-hui", "canton-8-runan", "fu-1088", "lao-zheng-xing", "yong-fu-hongkou", "xin-rong-ji-nanjing-xi", "lan-xin", "yu-waitan-xintiandi", "jing-xi-hui-waitan", "yong-fu-north-bund"],
+    "next_angles": [
+      "remaining 2-star Michelin list (Bao Li Xuan, T'ang Court, Imperial Treasure, Ji Pin Court, House of Rong, Da Vittorio, 8½ Otto e Mezzo Bombana, Tou Zao, 102 House)",
+      "Black Pearl 2钻 升钻 list: 中国菜·头灶, Ling Long 上海总会店",
+      "Black Pearl 一钻 new entries: 1929 by Guillaume Galliot, NABI, VIVANT by JohnnyPham (10 first-time inclusions in Shanghai 2026)",
+      "Lei Garden 利苑 — Pudong + Xuhui",
+      "Yi Long Court 逸龙阁 @ Peninsula",
+      "8½ Otto e Mezzo Bombana (Michelin 2-star)"
+    ],
+    "novelty_remaining": "high",
+    "evidence_quality": "high",
+    "actionability_for_the_topic": "high"
+  },
+  "red-xiaohongshu-trending": {
+    "direction": "red-xiaohongshu-trending",
+    "status": "not-started",
+    "search_count": 1,
+    "last_searched_at": "2026-05-26",
+    "representative_works": [],
+    "next_angles": [
+      "iter 2 attempted 武康路/安福路 aggregator search but found general-trend articles, not specific restaurants — next try direct dianping ranking pages or specific 探店 公众号 articles",
+      "Lokal, Dongxin Restaurant (东欣酒家), 13DE MARZO CAFE flagged as 武康路/安福路 RED check-in candidates",
+      "queue: photogenic-but-mediocre risk flag for any RED-only-sourced restaurant"
+    ],
+    "novelty_remaining": "high",
+    "evidence_quality": "low",
+    "actionability_for_the_topic": "medium"
+  },
+  "dianping-must-eat": {
+    "direction": "dianping-must-eat",
+    "status": "in-progress",
+    "search_count": 1,
+    "last_searched_at": "2026-05-26",
+    "representative_works": [],
+    "next_angles": [
+      "2025 大众点评 必吃榜 上海 155 restaurants — only ~8 names extracted from media coverage (张记天增面馆, 三玛璐酒家, 小辫子羊肉面馆, 大龙汤包, 湘御原味湘菜, 菰城宴, 夏记早餐, 轮慈净素包子). Need direct dianping ranking pages.",
+      "neighborhood top-3 in 武康路 / 安福路 / 巨富长 / 新天地 — try direct dianping district ranking URLs",
+      "shift detection: ratings up >0.3 in last quarter",
+      "consider seeding 3-4 烟火小店 records from the 2025 list extraction as the mid-tier neighborhood addition iter 1 flagged as missing"
+    ],
+    "novelty_remaining": "high",
+    "evidence_quality": "medium",
+    "actionability_for_the_topic": "high"
+  },
+  "editorial-reviews": {
+    "direction": "editorial-reviews",
+    "status": "in-progress",
+    "search_count": 2,
+    "last_searched_at": "2026-05-26",
+    "representative_works": ["atica", "noras-wine-shop"],
+    "next_angles": [
+      "Time Out Shanghai best of 2025/2026 list",
+      "That's Shanghai food coverage",
+      "SmartShanghai recently-opened — Nora's was iter 2, remaining queue: Penicillin, Bizy Boy, Nono's, Le Cafe Louis Vuitton, Mi Shang Prada",
+      "Rambu (Sage Gastro chef's successor concept) — Jun Nishiyama's new project"
+    ],
+    "novelty_remaining": "high",
+    "evidence_quality": "medium",
+    "actionability_for_the_topic": "medium"
+  },
+  "chinese-food-media": {
+    "direction": "chinese-food-media",
+    "status": "in-progress",
+    "search_count": 1,
+    "last_searched_at": "2026-05-26",
+    "representative_works": ["old-jesse"],
+    "next_angles": [
+      "企鹅吃喝指南 上海 best of 2026",
+      "一大口美食榜 上海 list",
+      "公众号 reviews comparing the Fu Group properties",
+      "公众号 long-form on Fabula (priority — still missing)"
+    ],
+    "novelty_remaining": "high",
+    "evidence_quality": "high",
+    "actionability_for_the_topic": "high"
+  },
+  "openings-and-closings": {
+    "direction": "openings-and-closings",
+    "status": "in-progress",
+    "search_count": 2,
+    "last_searched_at": "2026-05-26",
+    "representative_works": ["fabula", "oceans-table", "noras-wine-shop", "ultraviolet-paul-pairet", "sage-gastro"],
+    "next_angles": [
+      "openings Q1-Q2 2026 — anything since this round of editorial coverage?",
+      "Rambu (chef Jun Nishiyama's next concept after Sage Gastro closure)",
+      "Penicillin, Bizy Boy, Nono's (queued from SmartShanghai list)",
+      "remaining 2025 closures from NOMFLUENCE big-list: Charbon, Roodoodoo, Liquid Laundry, Boxing Cat, Tock's, Awfully Chocolate, EHB, Tasty Congee — establish a 'fame-maker' closure cluster",
+      "Alea (Fabula's casual sibling) — same building, lower price point"
+    ],
+    "novelty_remaining": "high",
+    "evidence_quality": "high",
+    "actionability_for_the_topic": "high"
+  },
+  "chef-and-restaurant-group": {
+    "direction": "chef-and-restaurant-group",
+    "status": "in-progress",
+    "search_count": 2,
+    "last_searched_at": "2026-05-26",
+    "representative_works": ["taian-table", "fabula", "fu-he-hui", "fu-1088", "yong-fu-north-bund", "yong-fu-hongkou", "sage-gastro", "ultraviolet-paul-pairet"],
+    "next_angles": [
+      "Fu Group portfolio: Fu 1015, Fu 1039 (remaining siblings to record)",
+      "Yong Fu Group: confirmed founder Weng Yongjun (1971-era), brands 明路川 and LES NUAGES still unrecorded; planned Singapore + London + NYC expansions",
+      "Bottega Group: Bottega, Forno, Ática — full portfolio mapping",
+      "Stefan Stiller post-Taian Table projects",
+      "Chef Tony Lu other concepts (卢怿明)",
+      "Paul Pairet VOL Group post-Ultraviolet — Mr & Mrs Bund, Polux still open; track dispersed brigade",
+      "Jun Nishiyama → Rambu lineage (Sage Gastro successor)"
+    ],
+    "novelty_remaining": "high",
+    "evidence_quality": "high",
+    "actionability_for_the_topic": "high"
+  },
+  "personal-verdicts": {
+    "direction": "personal-verdicts",
+    "status": "not-started",
+    "search_count": 0,
+    "last_searched_at": null,
+    "representative_works": [],
+    "next_angles": [
+      "no personal-verdict data yet — this will be user-driven; leave route open"
+    ],
+    "novelty_remaining": "unknown",
+    "evidence_quality": "unknown",
+    "actionability_for_the_topic": "high (when populated)"
+  }
+}
