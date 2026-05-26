@@ -1,9 +1,9 @@
-- Completion time: 2026-05-26 15:33 UTC+8
-- Core work summary: Published the canonical Argus Claude Code skill updates.
-- Key changes made: Included skill orchestration, command/loop template updates, frontend contract docs, and validator script.
 - Completion time: 2026-05-26 15:42 UTC+8
 - Core work summary: Added the three showcase screenshots to the bilingual READMEs.
 - Key changes made: Inserted start flow, dashboard graph, and report preview sections using asserts/showcase assets.
 - Completion time: 2026-05-26 15:44 UTC+8
 - Core work summary: Published the dashboard report-link fix in the Argus app template.
 - Key changes made: Updated Hero's Open Report action to preserve the current topic slug.
+- Completion time: 2026-05-26 15:44 UTC+8
+- Core work summary: Prepared all remaining working-tree changes for publishing.
+- Key changes made: Included remaining runtime cleanup, live Claude files, and test directory changes in the final push.

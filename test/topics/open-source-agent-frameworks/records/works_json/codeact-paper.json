@@ -1,0 +1,94 @@
+{
+  "slug": "codeact-paper",
+  "framework_name": "CodeAct (paper: Executable Code Actions Elicit Better LLM Agents)",
+  "title": "Executable Code Actions Elicit Better LLM Agents",
+  "authors": [
+    "Xingyao Wang",
+    "Yangyi Chen",
+    "Lifan Yuan",
+    "Yizhe Zhang",
+    "Yunzhu Li",
+    "Hao Peng",
+    "Heng Ji"
+  ],
+  "venue": "ICML 2024 (PMLR 235)",
+  "arxiv_id": "2402.01030",
+  "arxiv_version": "v4",
+  "first_submitted": "2024-02-01",
+  "last_revised": "2024-06-07",
+  "publication_year": 2024,
+  "repo_url": "https://arxiv.org/abs/2402.01030",
+  "code_repo_url": "https://github.com/xingyaoww/code-act",
+  "pdf_url": "https://arxiv.org/pdf/2402.01030",
+  "dataset_url": "https://huggingface.co/datasets/xingyaoww/code-act",
+  "model_urls": [
+    "https://huggingface.co/xingyaoww/CodeActAgent-Mistral-7b-v0.1",
+    "https://huggingface.co/xingyaoww/CodeActAgent-Llama-2-7b"
+  ],
+  "maintainer_org": "Wang, Chen, Yuan, Zhang, Li, Peng, Ji — UIUC (Department of Computer Science, University of Illinois Urbana-Champaign) + Apple (Yizhe Zhang)",
+  "primary_language": "research paper (English; experiments in Python)",
+  "license": "Paper: CC BY 4.0 (arXiv). Code repo: MIT. CodeActInstruct dataset and CodeActAgent model weights hosted on Hugging Face under xingyaoww/.",
+  "last_commit_at": "2024-06-07 (arXiv v4 revision); accompanying GitHub repo had ~31 commits as of capture, exact latest-commit timestamp not captured.",
+  "stars": 1700,
+  "forks": 138,
+  "execution_kernel_pattern": "n/a — this is the paper proposing the code-act kernel. The paper's framework: Agent emits Python code as the unified action; a Python interpreter executes it and returns stdout/stderr/exceptions as the observation; multi-turn loop with self-debug. Trio of roles formalized: agent / user / environment, with code-as-action mediating agent↔environment and natural language mediating agent↔user.",
+  "multi_agent_support": {
+    "style": "none",
+    "notes": "Single-agent paper. The CodeActAgent is one LLM interacting with a Python interpreter and a human user. No multi-agent orchestration is proposed."
+  },
+  "tool_protocol": "self (code-as-action) — tools are Python functions or arbitrary PyPI packages; the LLM composes them with control/data flow rather than emitting a per-call JSON object. The paper contrasts this against JSON and pre-defined-format text actions, both of which require curated tool schemas.",
+  "typical_use_case": "Foundational reference for any agent design where the action space is executable code rather than a tool-call schema. Cited as the academic anchor by smolagents (Hugging Face) and by Manus / OpenManus / OpenInterpreter-style projects. Most common usage today: justifying the choice of CodeAgent-style execution in an OSS framework or in a research baseline. The released CodeActAgent-Mistral-7B and CodeActAgent-Llama-2-7B serve as open instruction-tuned checkpoints for code-as-action research.",
+  "maturity_signal": "ICML 2024 accepted; arXiv v4 (Jun 2024) is the final version; accompanying code/data/model all released; ~1.7k GitHub stars / 138 forks on the reference implementation. As an academic artifact this is stable. The paper's influence is visible in downstream OSS — smolagents docs cite it directly as the conceptual basis for CodeAgent.",
+  "one_paragraph_differentiator": "CodeAct is the paper that formalized the argument 'agents should emit executable Python code, not JSON tool calls, as their action.' Versus ReAct (Yao et al., 2022) — which gave us the Thought/Action/Observation loop but kept the action space as free-form text matching a tool registry — CodeAct keeps the loop but consolidates the action into a single typed space: Python source. Versus Toolformer (Schick et al., 2023) — which inlines tool calls inside generation via special tokens — CodeAct externalizes execution to a Python interpreter and uses stdout/stderr as feedback. Versus standard function-calling (OpenAI/Anthropic JSON schemas) — which presumes a fixed, hand-curated tool registry — CodeAct lets the agent use any PyPI package and compose tools with control flow in one action. The paper's empirical contribution: across 17 LLMs on API-Bank (atomic tool-call) and on the new M3ToolEval benchmark (multi-tool composition), code-as-action achieves up to 20% absolute success-rate improvement over JSON/text formats, with up to 30% fewer turns. The conceptual contribution: code-as-action gets four properties for free — large pre-training corpus, native control/data flow, access to PyPI as a tool library, and traceback as automated feedback.",
+  "known_anti_patterns": "Author-flagged limitations (Impact Statement section): (1) CodeActAgent still hallucinates — e.g., 'imagine the content of a variable without actually printing it out', suggesting need for downstream alignment (RLHF/DPO). (2) CodeActAgent-Llama-2-7B showed NO improvement on M3ToolEval despite working on MINT; authors discuss possible causes in Appendix H — code-as-action gains are not unconditional on weaker base models. (3) Self-improvement capability is described as 'limited' — the agent can self-debug from tracebacks but does not perform deep meta-reasoning over its own history. (4) Trust/safety: executing arbitrary model-generated Python is dangerous; the paper's evaluation environments are research sandboxes, not production. The paper itself does not propose a sandboxing solution — that gap is later filled by downstream OSS (smolagents' LocalPythonExecutor / E2B / Modal / Docker / Wasm backends; OpenInterpreter's container modes). (5) The 20% headline number is measured on 2023/early-2024 LLMs; on frontier models with strong native function-calling (GPT-4o, Claude 3.5+), the gap shrinks — see CodeActAgent results table where gpt-4-0613 already achieves 67.1% on M3ToolEval with code-as-action vs solid baselines.",
+  "analysis_depth": "deep",
+  "key_findings": {
+    "headline_quant": "Up to 20% absolute improvement in success rate on M3ToolEval (code-as-action vs JSON or text format), with up to 30% fewer interaction turns. Gap widens as LLM capability increases.",
+    "models_tested_count": 17,
+    "benchmarks_evaluated": [
+      "API-Bank level-1 (atomic tool-call, §2.2)",
+      "M3ToolEval — new benchmark introduced by this paper: 82 human-curated tasks spanning web browsing, finance, travel itinerary, science, information processing; each domain has its own toolset; max 10 turns; exact-match metric (§2.3)",
+      "MINT-Bench in- and out-of-domain (for CodeActAgent eval, §3.2)",
+      "MiniWob++ (computer/text-action OOD generalization)",
+      "ScienceWorld (text-action OOD)",
+      "MMLU, HumanEval, GSM8K, MT-Bench (general-capability preservation checks)"
+    ],
+    "models_tested_examples": [
+      "gpt-4-1106-preview",
+      "gpt-4-0613",
+      "claude-2",
+      "gpt-3.5-turbo-0613 / 1106",
+      "gemini-pro",
+      "text-davinci-003",
+      "Llama-2-7b/13b/70b-chat-hf",
+      "Mistral-7B-Instruct",
+      "CodeLlama variants",
+      "Lemur",
+      "AgentLM (Llama-2 fine-tune baseline)",
+      "FireAct (Llama-2 fine-tune baseline)"
+    ],
+    "codeactinstruct_dataset": {
+      "size": "7,000 multi-turn interaction trajectories ('7k high-quality multi-turn interaction trajectories with CodeAct')",
+      "construction": "Distilled from stronger LLMs (synthetic). Focuses on agent-environment interaction with computer (information seeking, software-package use, external memory) and physical world (robot planning). Data selection promotes self-improvement / self-debug behavior.",
+      "url": "https://huggingface.co/datasets/xingyaoww/code-act",
+      "license_note": "Hosted under the authors' HF namespace; specific license string not asserted in the paper body — consult dataset card before commercial use."
+    },
+    "codeactagent_model": {
+      "variants": [
+        "CodeActAgent-Llama-2-7b (4k context)",
+        "CodeActAgent-Mistral-7b-v0.1 (32k context)"
+      ],
+      "key_result": "Mistral variant reaches 57.4 / 32.4 on MINT in/out-of-domain and 12.2 on M3ToolEval — outperforming similarly-sized open-source baselines (FireAct, AgentLM, Llama-2-Chat, Mistral-Instruct) and matching some 70B models on M3ToolEval. Llama-2 variant improves on MINT but shows 0.0 on M3ToolEval — the paper flags this asymmetry.",
+      "generalization": "CodeActAgent (Llama-2, 7B) — never optimized for text actions — still matches AgentLM-7B (which IS tuned for text actions) on OOD text-action benchmarks. Implies code-as-action training transfers to text-action competence.",
+      "general_capability_preservation": "CodeActAgent maintains or improves MMLU / HumanEval / GSM8K / MT-Bench, except a slight MMLU regression for the Mistral variant. Ablation (Tab. A.8) shows both CodeActInstruct AND general-conversation data contribute."
+    }
+  },
+  "academic_grounding": "This IS the academic grounding for the code-act pattern. The paper situates itself against (a) text-action work — ReAct (Yao et al., 2022b), Park et al. 2023 — and (b) JSON-action work — Qin et al. 2023b (ToolLLM), Chase 2022 (LangChain). It also distinguishes itself from earlier code-generation-for-control work (Liang et al. 2022 [Code-as-Policies], Singh et al. 2023, Wang et al. 2023a [Voyager]) which 'rely on pre-specified control primitives and hand-engineered prompts, and struggle to dynamically adjust actions based on new observations.' CodeAct's claimed novelty: (i) general-purpose (not control-primitive-bound), (ii) integrated with Python interpreter for multi-turn dynamic adjustment, (iii) systematic empirical study across 17 LLMs and two benchmarks, (iv) a released instruction-tuned model demonstrating the paradigm works in fine-tuning, not just prompting.",
+  "primary_urls": [
+    "https://arxiv.org/abs/2402.01030",
+    "https://arxiv.org/pdf/2402.01030",
+    "https://github.com/xingyaoww/code-act",
+    "https://huggingface.co/datasets/xingyaoww/code-act",
+    "https://huggingface.co/xingyaoww/CodeActAgent-Mistral-7b-v0.1"
+  ]
+}

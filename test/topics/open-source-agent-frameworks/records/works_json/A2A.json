@@ -1,0 +1,110 @@
+{
+  "framework_name": "A2A (Agent-to-Agent)",
+  "schema_kind": "protocol",
+  "repo_url": "https://github.com/a2aproject/A2A",
+  "spec_repo_url": "https://github.com/a2aproject/A2A",
+  "primary_site_url": "https://a2a-protocol.org/",
+  "maintainer_org": "Agent2Agent Protocol Project — a Linux Foundation project (donated by Google Cloud in mid-2025; launched at Open Source Summit North America 2025). TSC has eight voting seats: Google, Microsoft, Cisco, AWS, Salesforce, ServiceNow, SAP, IBM Research. Per-SDK MAINTAINERS.md files list per-language maintainer groups (a2a-python, a2a-java, a2a-go, a2a-js, a2a-dotnet, a2a-samples) — i.e. governance is no longer Google-only; spec changes flow through GitHub RFCs and TSC consensus, mirroring the MCP→LF Projects move but with a different foundation home (LF Agentic AI Foundation, distinct from the LF Projects, LLC umbrella MCP sits under).",
+  "spec_version_at_capture": "1.0.0 (announced March 2026 as the first stable release; the 'Announcing Version 1.0' banner on a2a-protocol.org and the v1.0.0 GitHub release on a2aproject/A2A dated 2026-03-12 mark the cut-over from the original April 2025 0.x draft series)",
+  "last_commit_at": "2026-03-12 (v1.0.0 release tag on a2aproject/A2A)",
+  "license": "Apache-2.0 (spec + reference SDKs)",
+  "primary_language": "spec (HTTP/JSON-RPC). Reference SDKs in Python (a2a-sdk), Go (a2a-go), JavaScript/TypeScript (@a2a-js/sdk), Java (Maven), and .NET (NuGet A2A).",
+  "execution_kernel_pattern": "n/a — protocol, not framework. A2A defines an agent↔agent message protocol between a Client Agent (acts on behalf of a user / another agent) and a Remote Agent (exposes an HTTP endpoint implementing A2A). The execution kernel lives entirely inside each agent; A2A only defines the wire surface (discovery, task lifecycle, message/artifact exchange).",
+  "execution_kernel_internals": {
+    "role_model": "Three actors per the spec's key-concepts page: (1) User — human or automated initiator; (2) A2A Client (Client Agent) — application, service, or another AI agent that acts on behalf of the user; (3) A2A Server (Remote Agent) — an AI agent or agentic system that exposes an HTTP endpoint implementing the A2A protocol. This is peer↔peer between agentic systems, NOT host↔server like MCP. Agents are explicitly 'opaque' to one another — internal tool sets, prompts, and chain-of-thought are not exchanged.",
+    "wire_format": "Three protocol bindings are normative in the spec: (a) JSON-RPC 2.0 over HTTP(S) — section 9, the canonical binding all reference SDKs implement first; (b) gRPC — section 10; (c) HTTP+JSON/REST — section 11. Section 12 permits custom bindings. All three carry the same semantic methods.",
+    "transports": {
+      "request_response": "Synchronous JSON-RPC over HTTPS POST — the default for short-lived interactions.",
+      "streaming_sse": "Send Streaming Message + Subscribe to Task return Server-Sent Events streams of incremental TaskStatus/Artifact updates; declared per-agent via AgentCard.capabilities.streaming.",
+      "push_notifications": "Webhook-based asynchronous delivery — the Remote Agent calls back into a Client-configured URL with task updates. Configured via Push Notification operations (set/get/list/delete); declared via AgentCard.capabilities.pushNotifications. Designed for long-running tasks where the SSE stream cannot be held open.",
+      "extended_agent_card": "Get Extended Agent Card returns an authenticated, possibly higher-fidelity AgentCard variant (e.g. private skills exposed only to authorized clients)."
+    }
+  },
+  "multi_agent_support": {
+    "style": "n/a",
+    "notes": "A2A IS the inter-agent protocol — it provides the discovery/messaging substrate that multi-agent frameworks plug into. Discovery via AgentCard (RFC 8615 well-known URI at /.well-known/agent-card.json, plus curated registries and direct configuration). Task lifecycle is first-class: a Task is a stateful unit of work with a unique ID; an agent may respond with either a new Task (long-running) or a Message (immediate). Messages carry Parts (text / file ref / structured data); Artifacts are tangible outputs produced during a task. The protocol does NOT prescribe orchestration topology (supervisor / mesh / handoff) — that is the framework's job."
+  },
+  "capability_surface": {
+    "core_methods": {
+      "send_message": "Initiate an agent interaction (request/response).",
+      "send_streaming_message": "Initiate with real-time SSE streaming of TaskStatus + Artifact updates.",
+      "get_task": "Retrieve current task state and produced artifacts by task ID.",
+      "list_tasks": "Discover tasks with filtering/pagination (server-side enumeration).",
+      "cancel_task": "Request cooperative cancellation of an in-flight task.",
+      "subscribe_to_task": "Re-attach an SSE stream to an existing task (resumption after disconnect).",
+      "push_notification_ops": "set/get/list/delete webhook configurations for async delivery.",
+      "get_extended_agent_card": "Fetch the authenticated extended AgentCard (richer card for trusted clients)."
+    },
+    "agent_card_schema": {
+      "identity": ["name", "description", "provider", "version (used for ETag + caching)"],
+      "service": ["url (A2A endpoint)"],
+      "capabilities": ["streaming: bool", "pushNotifications: bool"],
+      "security": ["schemes — API Key / OAuth2 / OIDC / Mutual TLS / HTTP Auth"],
+      "skills": ["AgentSkill objects: id, name, description, inputModes, outputModes, examples"],
+      "signature": "Optional digital signature on the AgentCard for verification — the 'Signed Agent Cards' feature shipped in v1.0."
+    },
+    "discovery_mechanisms": {
+      "well_known_uri": "RFC 8615 well-known URI: GET https://{domain}/.well-known/agent-card.json — the standardized, recommended mechanism for public agents.",
+      "curated_registries": "Central registries (enterprise / marketplace) hold AgentCard collections queryable by skill, tag, provider; can apply access controls and selective disclosure (different cards per client identity).",
+      "direct_configuration": "Hardcoded URLs / env vars / config files — explicitly called out as inflexible but acceptable for tightly-coupled deployments."
+    }
+  },
+  "tool_protocol": "self (A2A). A2A is the inter-agent protocol; tool exposure to LLMs is out of scope and is delegated to MCP (or framework-native tools). Inside a Remote Agent, tool use happens against MCP servers / framework adapters — the A2A wire never sees individual tool calls, only Messages and Artifacts at the agent-output boundary. A2A is therefore best understood as orthogonal to MCP rather than a competitor.",
+  "memory_model": "Task-scoped state is first-class: Tasks have IDs, lifecycles, and persisted Artifacts; clients can re-fetch via Get Task or re-stream via Subscribe to Task. Conversation memory beyond a task (long-term agent memory) is out of scope — left to the agent implementation.",
+  "durability_model": "Task IDs + Subscribe to Task give re-attach semantics for streaming clients; push notifications cover async delivery when no client is connected. The protocol intentionally separates 'task durability' (server keeps task state until terminal) from 'connection durability' (client may reconnect at will). No replay or checkpoint primitive at the protocol level beyond the task store.",
+  "supported_model_providers": "n/a (transport-level). A2A is model-agnostic; any agent stack (LangGraph, CrewAI, Google ADK, Semantic Kernel, AutoGen, LlamaIndex, pydantic-ai, custom Python) can implement either side.",
+  "observability_story": "Spec-level: structured TaskStatus events on the SSE stream; agents may surface progress via streamed Artifact updates. Authentication and audit are deferred to the underlying HTTP stack (OAuth2 / OIDC / mTLS). No protocol-level tracing primitive — observability lives in the framework.",
+  "security_model": {
+    "trust_boundary": "Both peers are agents — there is NO single 'trusted host' the way MCP has. Each side authenticates the other independently. Agents are 'opaque' — internal tool sets, prompts, and reasoning chains are not exposed across the wire.",
+    "authentication": "Spec section 7 specifies 'standard web security practices' via AgentCard.security.schemes — API Key, OAuth2, OIDC, Mutual TLS, HTTP Auth. Clients authenticate per request; servers validate and authorize against the declared scheme.",
+    "agent_card_signing": "v1.0 added Signed Agent Cards: a cryptographic signature on the card itself so a discovering client can verify the card was issued by the claimed provider — addresses the agent-impersonation attack surface that .well-known discovery otherwise creates.",
+    "credential_hygiene": "Spec 'strongly recommends out-of-band dynamic credentials rather than embedding static secrets' in AgentCards.",
+    "registry_acls": "Curated registries may return different AgentCards to different clients (selective disclosure), useful for partner-only / private skills."
+  },
+  "typical_use_case": "Cross-vendor, cross-framework agent collaboration: e.g. a CrewAI agent in one org calls a Google ADK agent in another org, both speaking A2A v1.0 over HTTPS, neither side exposing its prompts or internal tool list. The bus is intentionally horizontal — A2A doesn't care what model, framework, or runtime is behind either endpoint, only that both sides honor the AgentCard + Task + Message contract. Production deployments cited by the LF announcement and Google Cloud Next 2026 include Microsoft, AWS, Salesforce, SAP, ServiceNow — i.e. enterprise SaaS-to-SaaS agent traffic, not the local-IDE-tool use case MCP dominates.",
+  "maturity_signal": "Strong and accelerating: (1) v1.0.0 stable release in March 2026 after roughly one year of 0.x drafts; (2) governance under Linux Foundation (LF Agentic AI Foundation) with eight-org TSC (Google, Microsoft, Cisco, AWS, Salesforce, ServiceNow, SAP, IBM Research) — the same kind of neutral-stewardship move MCP made; (3) 150+ organizations publicly declared support per the Google Cloud Next 2026 messaging; (4) five first-party SDKs (Python, Go, JS/TS, Java, .NET) with per-SDK maintainer groups; (5) production cited at Microsoft, AWS, Salesforce, SAP, ServiceNow; (6) native protocol support landed in Google ADK 1.0, LangGraph, CrewAI (2026), LlamaIndex Agents, Semantic Kernel, AutoGen, and Spring AI; (7) ACP (the IBM/BeeAI competitor) was reported merged into A2A under LF in 2026, removing the main competing inter-agent surface from the field.",
+  "one_paragraph_differentiator": "A2A is the agent↔agent protocol — a peer-to-peer HTTP surface (JSON-RPC 2.0 canonical, gRPC + REST normative alternatives) where both sides are agents and neither is a 'host'. The conceptual model is small and deliberately framework-agnostic: AgentCards for discovery (RFC 8615 well-known URI, signed in v1.0), Tasks as stateful units of work with explicit lifecycle and re-attach semantics (Subscribe to Task, Get Task), Messages as conversational turns made of Parts (text/file-ref/structured), and Artifacts as the durable outputs of a task. Where MCP is host↔server (one trusted application talking to many opaque tool servers), A2A is peer↔peer (two opaque agentic systems exchanging high-level task intent). The two protocols are complementary by design and almost everyone runs both: MCP plugs tools into an agent's local context; A2A lets that agent delegate work to a peer in another org without exposing its internal toolset. The strongest single signal in 2025-2026 was governance: Google donated A2A to the Linux Foundation in mid-2025, the LF Agentic AI Foundation launched the project at Open Source Summit NA, and within nine months the TSC seated eight organizations including direct Google competitors (Microsoft, AWS, Salesforce). Combined with v1.0.0 in March 2026, five first-party SDKs, and the reported absorption of ACP, A2A has effectively become the default inter-agent bus for enterprise multi-vendor agent traffic — the same role MCP plays at the tool layer.",
+  "framework_adoption_audit": {
+    "claim_under_test": "'A2A is now broadly supported across major agent frameworks' — the marketing claim from the LF / Google announcements.",
+    "verdict": "Stronger than the equivalent MCP-adoption claim, but with one large hole: OpenAI Agents SDK has no native A2A. Among the topic's frameworks, native A2A support is concentrated in Python-first stacks tied to Linux Foundation members; OpenAI's stack uses its own handoff mechanism instead.",
+    "rows": [
+      {"framework": "langchain (incl. LangGraph)", "role": "client + server", "primitives": "full task lifecycle + streaming via langgraph A2A integration", "evidence": "LangGraph A2A integration cited in LF launch materials and 2026 framework comparisons"},
+      {"framework": "crewai", "role": "client + server", "primitives": "task delegation + AgentCard exposure", "evidence": "CrewAI added A2A task delegation in 2026 per Best Multi-Agent Frameworks 2026 survey"},
+      {"framework": "autogen", "role": "client + server", "primitives": "native A2A per LF announcement", "evidence": "Native A2A listed in Stellagent / Galileo adoption tables"},
+      {"framework": "llamaindex", "role": "client + server", "primitives": "native A2A in LlamaIndex Agents", "evidence": "LlamaIndex Agents cited as a native A2A framework in 2026 surveys"},
+      {"framework": "pydantic-ai", "role": "server only", "primitives": "expose Agent as A2A server via fasta2a.pydantic_ai.agent_to_a2a(); returns an ASGI app", "evidence": "pydantic-ai docs: 'fasta2a>=0.6.1 ships a Pydantic AI bridge'; original in-package A2A support was removed in pydantic-ai 2.0 and re-shipped via the external fasta2a bridge"},
+      {"framework": "openai-agents-sdk", "role": "no native support", "primitives": "handoff is OpenAI-proprietary; A2A is not built in", "evidence": "GitHub issue #472 on openai-agents-python (opened 2025-04-10) still tracks A2A support; SDK uses its own handoff primitive rather than A2A"},
+      {"framework": "swarm (OpenAI)", "role": "no native support", "primitives": "handoff is OpenAI-proprietary", "evidence": "Swarm predates A2A and uses OpenAI-internal handoff semantics; no A2A bridge"},
+      {"framework": "smolagents", "role": "no first-party support", "primitives": "—", "evidence": "Not on any A2A adopter list as of v1.0"},
+      {"framework": "metagpt", "role": "no first-party support", "primitives": "—", "evidence": "Not on any A2A adopter list"},
+      {"framework": "browser-use", "role": "no first-party support", "primitives": "—", "evidence": "Browser-use targets browser automation, not inter-agent messaging"},
+      {"framework": "skyvern / openmanus", "role": "no first-party support", "primitives": "—", "evidence": "Not on any A2A adopter list"},
+      {"framework": "agno", "role": "no first-party support (as of capture)", "primitives": "—", "evidence": "Not on any A2A adopter list"}
+    ],
+    "implication": "A2A adoption is concentrated in (a) Linux Foundation member stacks (Google ADK, Semantic Kernel, AutoGen, LangGraph, CrewAI, LlamaIndex) and (b) Python-first interop-focused frameworks (pydantic-ai). OpenAI's stack (Agents SDK, Swarm) is the conspicuous holdout — same pattern as ACP, opposite pattern from MCP (which OpenAI did adopt). For the graph: protocol_supports edges from langchain, crewai, autogen, llamaindex, pydantic-ai → A2A are warranted; openai-agents-sdk and swarm should explicitly NOT have a protocol_supports edge to A2A."
+  },
+  "differentiation_vs_peers": {
+    "vs_mcp": "Orthogonal, not competitive. MCP is host↔server (one host application talks to many opaque tool/data servers, model-controlled tool calls dominate). A2A is agent↔agent (two opaque agentic systems exchange task intent at the message/artifact level; no shared tool list, no shared prompts). The two protocols routinely run side by side: an agent uses MCP inward (to acquire tools/data) and A2A outward (to delegate to peers). Both were donated to the Linux Foundation in 2025; both reached neutral governance at roughly the same time.",
+    "vs_acp": "ACP (Agent Communication Protocol, IBM/BeeAI) was the most direct competitor at the inter-agent layer through 2025. Per 2026 reporting, ACP merged into A2A under LF governance, removing the main parallel protocol from the field. IBM Research now holds a TSC seat on the A2A project.",
+    "vs_openai_handoff": "OpenAI Agents SDK's handoff primitive is in-process, OpenAI-proprietary, and assumes both sides share the same runtime and (typically) the same model vendor. A2A is cross-process, vendor-neutral, and assumes the two agents are opaque to each other. They solve different problems — handoff is intra-application, A2A is inter-organizational.",
+    "vs_pydantic_ai_a2a_module": "pydantic-ai's A2A integration is a server-only bridge: agent_to_a2a() wraps a pydantic-ai Agent as an A2A-speaking ASGI app. It does not give pydantic-ai a built-in A2A client; consuming peer agents still goes through the underlying a2a-sdk Python client."
+  },
+  "known_anti_patterns": [
+    "Confusing A2A with MCP. They are at different layers and complementary — picking 'one or the other' is the wrong question; the right answer is usually both.",
+    "Treating an AgentCard discovered via /.well-known/agent-card.json as inherently trustworthy. v1.0 added Signed Agent Cards specifically because the well-known URL pattern is impersonable by anyone who controls a domain at one point in time.",
+    "Embedding static long-lived secrets in an AgentCard. The spec explicitly recommends out-of-band dynamic credentials.",
+    "Holding an SSE Subscribe-to-Task stream open for long-running work instead of registering a push-notification webhook. Long SSE sessions are fragile across NATs and intermediaries; push notifications exist precisely for this.",
+    "Building cross-org agent collaboration on the OpenAI handoff primitive. Handoff is intra-application and OpenAI-proprietary; the moment the peer is in a different org or framework, A2A is the only standardized option.",
+    "Annotating every framework→A2A edge in a graph as uniform 'native support'. Pydantic-ai is server-only; openai-agents-sdk has no support; the LF members (ADK, LangGraph, CrewAI, AutoGen, LlamaIndex, Semantic Kernel) have first-class support. Depth metadata matters.",
+    "Assuming A2A v0.x deployments are wire-compatible with v1.0. The 0.x → 1.0 transition (March 2026) is the bigger break than any prior 0.x bump and added Signed Agent Cards as a new optional-but-recommended feature."
+  ],
+  "urls": [
+    "https://a2a-protocol.org/",
+    "https://a2a-protocol.org/latest/specification/",
+    "https://a2a-protocol.org/latest/topics/key-concepts/",
+    "https://a2a-protocol.org/latest/topics/agent-discovery/",
+    "https://github.com/a2aproject/A2A"
+  ],
+  "analysis_depth": "deep",
+  "depth_upgrade_notes": "Iteration 6 promotes A2A from a referenced-only node (called out in MCP.json missing_graph_nodes) to a first-class recorded node. Read this iteration: a2a-protocol.org landing + v1.0 announcement, spec table-of-contents (sections 3.1 core methods, 7 security, 9-12 bindings), key-concepts page (Task/Message/Part/Artifact + role model), agent-discovery page (RFC 8615 well-known URI + signed cards + registries), a2aproject/A2A GitHub metadata, GOVERNANCE.md (LF TSC composition), MAINTAINERS.md (per-SDK maintainer groups), pydantic-ai a2a docs (fasta2a bridge), LF launch announcement, Google Cloud Next 2026 messaging. Three findings reshape the graph: (a) governance transferred from Google-only to LF Agentic AI Foundation with eight-org TSC — same posture shift MCP made, different LF home; (b) v1.0.0 (March 2026) is the first stable release and added Signed Agent Cards as the key security primitive; (c) framework adoption splits cleanly along OpenAI vs non-OpenAI lines — OpenAI Agents SDK has no native A2A and uses proprietary handoff instead, while every major Python-first non-OpenAI stack (LangGraph, CrewAI, AutoGen, LlamaIndex, pydantic-ai, Google ADK, Semantic Kernel) supports it. Edge to MCP is shared_pattern (parallel LF-stewardship arc, complementary scope), not competes_in_niche — the protocols address different layers."
+}

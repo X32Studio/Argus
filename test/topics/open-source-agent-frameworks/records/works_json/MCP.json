@@ -1,0 +1,120 @@
+{
+  "framework_name": "Model Context Protocol (MCP)",
+  "schema_kind": "protocol",
+  "repo_url": "https://modelcontextprotocol.io/specification/2025-06-18",
+  "spec_repo_url": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+  "primary_site_url": "https://modelcontextprotocol.io/",
+  "maintainer_org": "Model Context Protocol — A Series of LF Projects, LLC (originally introduced and authored by Anthropic, transferred to Linux Foundation in 2025); Core Maintainers hold day-to-day decision rights; spec changes ultimately approved per LF Projects governance",
+  "spec_version_at_capture": "2025-06-18 (next dated revision 2025-11-25 visible in the spec repo schema directory; this record uses 2025-06-18 as the stable referent)",
+  "last_commit_at": "2025-11-25 (latest dated schema directory in modelcontextprotocol/modelcontextprotocol)",
+  "license": "MIT (spec + reference implementations); content under CC-BY-4.0 in some pages",
+  "primary_language": "spec (transports carry JSON-RPC 2.0; reference SDKs in TypeScript, Python, Kotlin, Java, C#, Swift, Rust, Go)",
+  "execution_kernel_pattern": "n/a — protocol, not framework. MCP defines a host↔client↔server message protocol with capability negotiation; the host application (e.g. Claude Desktop, IDE, agent runtime) supplies the execution kernel and decides when to call MCP tools / read MCP resources / pull MCP prompts.",
+  "execution_kernel_internals": {
+    "role_model": "Host = the LLM application that owns user trust and initiates connections. Client = a connector inside the host that maintains one stateful session to a single server. Server = an external service that exposes primitives. The host fans out to many clients; each client talks to one server. This is host↔server, NOT agent↔agent (A2A is the agent-to-agent counterpart).",
+    "wire_format": "JSON-RPC 2.0, UTF-8 encoded, stateful sessions with explicit lifecycle (initialize → initialized notification → normal traffic → shutdown).",
+    "capability_negotiation": "During initialize, client and server each declare which optional features they implement. Server-side features: resources, prompts, tools (plus logging, completions). Client-side features: sampling, roots, elicitation. A peer MUST NOT use a feature the other side did not advertise.",
+    "transports": {
+      "stdio": "Client launches server as a subprocess; newline-delimited JSON-RPC over stdin/stdout; logs may flow on stderr. Recommended whenever feasible (local, no auth surface).",
+      "streamable_http": "Single HTTP endpoint (POST + GET). POST carries client→server JSON-RPC; server may respond as application/json or open a Server-Sent Events stream for streaming and server-initiated requests. Supports session IDs via Mcp-Session-Id header, resumability via Last-Event-ID, MCP-Protocol-Version header.",
+      "http_sse_deprecated": "The original 2024-11-05 HTTP+SSE transport is deprecated and superseded by Streamable HTTP; backwards-compat dance documented (clients probe POST first, fall back to GET-SSE).",
+      "custom": "Protocol is transport-agnostic; custom transports MUST preserve JSON-RPC framing and the lifecycle."
+    }
+  },
+  "multi_agent_support": {
+    "style": "none",
+    "notes": "MCP is host↔server, not agent↔agent. It does not define inter-agent message passing, agent discovery, or handoff. A2A (Google, open-sourced 2025) is the agent-to-agent counterpart; ACP (IBM/BeeAI) is another competing inter-agent surface. MCP and A2A are complementary in principle (MCP plugs in tools/data; A2A coordinates peers) and the missing nodes A2A and ACP are worth adding to the graph in a future iteration."
+  },
+  "capability_surface": {
+    "server_features": {
+      "resources": {
+        "control": "application-controlled",
+        "mechanics": "Server advertises addressable URIs (file://, custom schemes); client calls resources/list and resources/read; server may push resources/updated notifications. Returns text or binary blobs with mime types. The HOST decides which resources to attach to a model turn — the LLM does not auto-fetch.",
+        "purpose": "Context injection (files, DB rows, doc pages, git history) without exposing arbitrary read APIs to the model."
+      },
+      "tools": {
+        "control": "model-controlled",
+        "mechanics": "Server publishes tools/list with name + JSON-schema input + optional annotations; client surfaces them as function-calling tools to the model; model decides to call; client invokes tools/call; server returns content blocks (text/image/resource refs). Annotations are EXPLICITLY untrusted per the spec.",
+        "purpose": "The most-adopted primitive — every MCP-supporting framework supports tools."
+      },
+      "prompts": {
+        "control": "user-controlled",
+        "mechanics": "Server publishes prompts/list of named, parameterized prompt templates; client surfaces them as slash commands / menu items; user picks one, client calls prompts/get with arguments and inserts the rendered messages into the conversation.",
+        "purpose": "Sharable, server-versioned prompt workflows; not invoked autonomously by the model."
+      }
+    },
+    "client_features": {
+      "sampling": "Server can ask the client/host to run an LLM completion on its behalf via sampling/createMessage. Lets a server be 'agentic' (e.g. recursive summarization) without bundling its own model credentials. Spec requires explicit user approval before sampling and lets the user control the prompt and what the server sees — server visibility is intentionally limited.",
+      "roots": "Server can ask client to declare URI/filesystem boundaries it is allowed to operate within (e.g. workspace folders).",
+      "elicitation": "Server can request additional input from the user mid-session (e.g. a missing parameter) via the host UI."
+    },
+    "utilities": [
+      "configuration",
+      "progress notifications",
+      "cancellation (CancelledNotification)",
+      "structured error reporting",
+      "logging",
+      "completions (argument autocomplete)"
+    ]
+  },
+  "tool_protocol": "self — MCP IS the tool protocol the topic's frameworks adopt. Defines tools/list, tools/call, structured tool result content blocks, and (in 2025-06-18) annotations + structuredContent.",
+  "memory_model": "n/a at the protocol level. MCP carries resources as opaque content; durable memory and retrieval policy live in the host. Some servers (e.g. memory.json reference server) expose memory operations as tools, but that is a server choice, not a protocol primitive.",
+  "durability_model": "Session-scoped state with resumable SSE streams (Last-Event-ID for Streamable HTTP); Mcp-Session-Id for stateful HTTP sessions; per-session capability negotiation. No checkpoint/replay primitive at the protocol level — durability of the *agent loop* is the host's responsibility.",
+  "supported_model_providers": "n/a (transport-level). MCP is model-agnostic; any host with any model can speak it.",
+  "observability_story": "Spec-level: structured logging notifications (logging/setLevel + logging/message) and progress tracking. Operational tracing (LangSmith / OTel) lives in the host. Inspector tool (npx @modelcontextprotocol/inspector) is the canonical interactive debugger for servers.",
+  "security_model": {
+    "trust_boundary": "Host owns the trust boundary; client connects on behalf of the host; servers are untrusted by default. Tool annotations and descriptions are explicitly flagged as untrusted unless the server itself is trusted.",
+    "user_consent_principles": "Spec mandates explicit user consent for: exposing user data to a server, invoking any tool, and any sampling request. Hosts SHOULD provide UI to review and authorize each activity.",
+    "transport_hardening": "Streamable HTTP servers MUST validate Origin to prevent DNS rebinding, SHOULD bind to localhost for local use, SHOULD authenticate remote connections. Session IDs MUST be cryptographically secure.",
+    "auth": "2025-06-18 spec layers an OAuth-based authorization story for HTTP transports (separate page); DCR (Dynamic Client Registration) and Client-Initiated Metadata Discovery (CIMD) appear as advertised client features.",
+    "limits": "Spec cannot enforce these at the wire — it MUST be honored by the host. The protocol intentionally cannot police a misbehaving host."
+  },
+  "typical_use_case": "Plugging external data sources and tools into LLM applications via a single uniform JSON-RPC surface, so that any compliant host (Claude Desktop, VS Code/Copilot Chat, Cursor, ChatGPT, an agent framework) can consume any compliant server (filesystem, GitHub, Slack, Postgres, custom enterprise system) without per-host glue code. The 'USB-C for AI' framing in the official site captures the intended interop posture.",
+  "maturity_signal": "highest interop momentum of any agent-adjacent protocol: native support in Claude (Anthropic) and ChatGPT (OpenAI); first-party adoption in VS Code Copilot Chat, Cursor, Zed, JetBrains, etc.; broad framework client support (LangChain via langchain-mcp-adapters, OpenAI Agents SDK first-class, LlamaIndex, AutoGen, CrewAI, smolagents, browser-use, MetaGPT community work, Skyvern); spec moved under LF Projects governance in 2025, indicating an explicit pivot from Anthropic-owned to neutral stewardship; multiple dated spec revisions in 2025 (2025-03-26 → 2025-06-18 → 2025-11-25) show active iteration.",
+  "one_paragraph_differentiator": "MCP is the host↔server context/tool protocol — a JSON-RPC 2.0 session over stdio or Streamable HTTP with capability negotiation between three roles (host, client, server) and three server-side primitives (Resources, Tools, Prompts) plus three client-side primitives (Sampling, Roots, Elicitation), each with a deliberately different control axis (user-controlled prompts, application-controlled resources, model-controlled tools). What makes it dominant is not technical novelty — it explicitly takes its design cues from LSP — but the network effect: Anthropic shipped it first-party in Claude in late 2024, OpenAI adopted it for ChatGPT and the Agents SDK in 2025, and IDE vendors (VS Code, Cursor, JetBrains, Zed) plus every major agent framework wired up clients within a year, so 'speak MCP' is now the cheapest path to being plug-compatible with the broadest set of hosts and servers. Against A2A, MCP is orthogonal: A2A is agent↔agent (peer discovery, task delegation), MCP is host↔server (context, tools, prompts). Against ACP, MCP overlaps only at the edges and has won the mindshare battle decisively. Against bespoke per-framework tool adapters, MCP wins on portability (one server speaks to every host) and loses on expressiveness (richer per-framework tool features — streaming, partial results, structured fan-out — must round-trip through MCP's JSON-RPC content-block model). The 2025 move to Linux Foundation stewardship is the single biggest governance signal: MCP is now treated as ecosystem-critical infrastructure, not an Anthropic product.",
+  "framework_adoption_audit": {
+    "claim_under_test": "'Every framework supports MCP' — the implicit claim from the existing graph where 8 frameworks have an edge to MCP.",
+    "verdict": "The claim is true in a weak sense (every major framework has at least an MCP client adapter) but misleading in a strong sense: almost all framework integrations implement only the *Tools* primitive on the *client* side. Server-side authoring, Resources, Prompts, and Sampling are unevenly implemented.",
+    "rows": [
+      {"framework": "langchain", "role": "client only", "primitives": "tools only (resources/prompts/sampling not bridged)", "evidence": "langchain-mcp-adapters README — 'converts MCP tools into LangChain tools', no mention of resources/prompts/sampling"},
+      {"framework": "openai-agents-sdk", "role": "client only", "primitives": "tools (primary) + prompts (list_prompts/get_prompt for instructions); no resources, no sampling", "evidence": "openai.github.io/openai-agents-python/mcp/ — HostedMCPTool / MCPServerStreamableHttp / MCPServerStdio / MCPServerManager classes; explicit prompt support"},
+      {"framework": "smolagents", "role": "client only", "primitives": "tools only", "evidence": "smolagents docs describe MCPClient for tools; no server authoring, no resources"},
+      {"framework": "llamaindex", "role": "client only", "primitives": "tools only via llama-index-tools-mcp", "evidence": "LlamaHub MCP tool spec"},
+      {"framework": "autogen", "role": "client only", "primitives": "tools only via autogen-ext mcp adapter", "evidence": "autogen-ext.mcp module"},
+      {"framework": "crewai", "role": "client only", "primitives": "tools only via crewai-tools MCP adapter", "evidence": "crewai-tools MCP integration"},
+      {"framework": "browser-use", "role": "client + server", "primitives": "tools (client side) + exposes browser-use itself as an MCP server", "evidence": "browser-use ships an mcp server entry point so it can be consumed by Claude/Cursor"},
+      {"framework": "metagpt", "role": "client only (community)", "primitives": "tools only", "evidence": "MCP support is community-driven, not first-party"},
+      {"framework": "skyvern", "role": "client only", "primitives": "tools only", "evidence": "Skyvern MCP integration is a tools bridge"},
+      {"framework": "openmanus", "role": "client only", "primitives": "tools only", "evidence": "Same shallow-client pattern"}
+    ],
+    "implication": "Edges of type protocol_supports from these frameworks → MCP should be annotated with depth metadata (e.g. {role: 'client', primitives: ['tools']}) rather than treated as uniform. The graph currently overstates uniformity."
+  },
+  "differentiation_vs_peers": {
+    "vs_a2a": "A2A (Agent-to-Agent, Google, 2025) operates one layer up: agent discovery (AgentCard), task delegation, peer messaging. MCP does not address peer agents at all. Frameworks that want both interop axes need both protocols. A2A is a missing node in this graph.",
+    "vs_acp": "ACP (Agent Communication Protocol, IBM/BeeAI) is a competing inter-agent protocol with overlapping scope to A2A; MCP largely co-exists with it. ACP is a missing node.",
+    "vs_openai_function_calling": "OpenAI function-calling is a *model-API-level* tool description; MCP is a *transport-level* tool protocol that can be implemented over any model. MCP servers can be exposed *as* function-calling tools to any model.",
+    "vs_lsp": "MCP explicitly cites Language Server Protocol as design inspiration. Like LSP it standardizes a JSON-RPC capability negotiation between a host and per-language (per-domain) server processes."
+  },
+  "known_anti_patterns": [
+    "Equating 'has MCP support' with 'fully implements MCP'. Most framework integrations are tools-only clients; resources, prompts, sampling, and server authoring are usually absent. A graph edge framework → MCP without depth metadata silently overstates parity.",
+    "Treating tool annotations / tool descriptions returned by an MCP server as trusted — the spec explicitly forbids this. A compromised or malicious server can ship hostile descriptions.",
+    "Skipping Origin validation on Streamable HTTP servers — the spec calls this out as a DNS-rebinding hole; local-bound (127.0.0.1) servers without Origin checks are routinely exposed to drive-by attacks from any visited webpage.",
+    "Sharing one MCP server process across multiple users without session isolation — sessions carry implicit capability and auth state.",
+    "Using the deprecated 2024-11-05 HTTP+SSE transport for new servers — backwards-compat is supported but new code should target Streamable HTTP.",
+    "Treating MCP as an agent-to-agent protocol — it isn't. Use A2A / ACP / framework-native handoff for peer coordination.",
+    "Bundling secrets into MCP server JSON-RPC payloads instead of using the spec's OAuth/DCR authorization flow."
+  ],
+  "missing_graph_nodes_worth_adding": [
+    {"slug": "a2a", "name": "Agent-to-Agent Protocol (A2A)", "why": "Peer-to-peer counterpart to MCP; competes_in_niche edge with MCP at the 'interop' layer"},
+    {"slug": "acp", "name": "Agent Communication Protocol (ACP)", "why": "Competing inter-agent protocol with overlapping A2A scope"}
+  ],
+  "urls": [
+    "https://modelcontextprotocol.io/",
+    "https://modelcontextprotocol.io/specification/2025-06-18",
+    "https://modelcontextprotocol.io/specification/2025-06-18/basic/transports",
+    "https://github.com/modelcontextprotocol/modelcontextprotocol",
+    "https://openai.github.io/openai-agents-python/mcp/"
+  ],
+  "analysis_depth": "deep",
+  "depth_upgrade_notes": "Iteration 4 promotes MCP from a referenced-only node to a recorded node. Read this iteration: main spec landing page, 2025-06-18 spec overview, transports page (stdio + Streamable HTTP detail), server-features overview, modelcontextprotocol GitHub repo metadata, GOVERNANCE.md (LF Projects), langchain-mcp-adapters README, OpenAI Agents SDK MCP docs page. Two findings re-shape the graph: (a) LF Projects governance — MCP is no longer Anthropic-led at the institutional level; (b) framework adoption is shallow — almost every framework client implements only the Tools primitive, so the uniform protocol_supports edge in the existing graph overstates parity and should be enriched with {role, primitives} metadata in a future schema iteration."
+}

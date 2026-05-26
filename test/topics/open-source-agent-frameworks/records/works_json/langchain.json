@@ -1,0 +1,68 @@
+{
+  "framework_name": "LangChain (with LangGraph as agent kernel)",
+  "repo_url": "https://github.com/langchain-ai/langchain",
+  "langgraph_repo_url": "https://github.com/langchain-ai/langgraph",
+  "maintainer_org": "LangChain Inc (langchain-ai)",
+  "stars_at_capture": 138000,
+  "last_commit_at": "2026-05-22",
+  "license": "MIT",
+  "primary_language": "Python",
+  "execution_kernel_pattern": "graph-state (LangGraph StateGraph as primary kernel; legacy LangChain AgentExecutor uses an imperative tool-loop / ReAct pattern; prebuilt create_react_agent on LangGraph is the modern default)",
+  "execution_kernel_internals": {
+    "core_class": "langgraph.graph.state.StateGraph",
+    "docstring": "A graph whose nodes communicate by reading and writing to a shared state. The signature of each node is State -> Partial<State>. Each state key can optionally be annotated with a reducer function that will be used to aggregate the values of that key received from multiple nodes.",
+    "init_signature": "StateGraph(state_schema, context_schema=None, *, input_schema=None, output_schema=None)",
+    "state_schema": "TypedDict or Pydantic class; per-key reducers declared via Annotated[type, reducer] where reducer is (Value, Value) -> Value",
+    "node_api": "add_node(name, action, *, defer=False, metadata=None, input_schema=None, retry_policy=None, cache_policy=None, error_handler=None, destinations=None, timeout=None) — each node returns a Partial<State> dict",
+    "edge_api": "add_edge(start_key, end_key) for static edges (start_key may be a list for fan-in joins); add_conditional_edges(source, path, path_map=None) where path is a callable/Runnable returning the next node name or a sequence of names",
+    "channels_model": "Internally compiles state-schema keys into BaseChannel instances (LastValue by default, DeltaChannel / reducer-backed channels when annotated); ManagedValueSpecs are separate. Execution model is Pregel-style supersteps over these channels.",
+    "compile_output": "compile(checkpointer=None, store=None, interrupt_before=None, interrupt_after=None, debug=False) returns a CompiledStateGraph (a Pregel Runnable) that can stream, invoke, and persist after every superstep"
+  },
+  "multi_agent_support": {
+    "style": "orchestrator + peer-handoff (both supported)",
+    "topologies": {
+      "supervisor": "A router node (often an LLM agent whose tools ARE the worker agents) inspects shared state and dispatches to one worker subgraph per superstep; implemented as add_conditional_edges from the supervisor node to worker node names.",
+      "swarm": "Peer agents are nodes in one StateGraph; each agent has handoff tools that, when called, return a Command(goto=<other_agent>, update=<state_patch>) so control jumps directly to a peer without going through a supervisor. Packaged as langgraph-swarm.",
+      "hierarchical": "Nested StateGraphs — a worker node is itself a compiled StateGraph (i.e. a supervisor-of-supervisors). The outer state schema is composed with the inner one via input/output schemas.",
+      "network": "Any-to-any handoff: every agent has handoff tools targeting every other agent; equivalent to a fully-connected swarm. Useful when no clear hierarchy exists."
+    },
+    "handoff_primitive": "langgraph.types.Command — a special return value from a node or tool that combines a state update with a `goto` to redirect execution to a named node. Handoff tools are ordinary LangChain tools whose implementation returns a Command.",
+    "official_framing_quote": "LangGraph prefers an approach where you explicitly define different agents and transition probabilities, preferring to represent it as a graph. Autogen frames it more as a 'conversation'... this 'graph' framing makes it more intuitive and provides better developer experience for constructing more complex and opinionated workflows. — LangChain blog, langgraph-multi-agent-workflows",
+    "notes": "LangChain's higher-level 'Deep Agents' package layers planning + subagent + filesystem on top of these primitives."
+  },
+  "tool_protocol": "mixed (native LangChain Tool/StructuredTool interface; first-class OpenAI tool-calling; integrations for Anthropic / Gemini tool-calling; MCP client support via langchain-mcp-adapters; A2A interop emerging through community adapters)",
+  "memory_model": "Short-term working memory via the LangGraph state object (typed dict / Pydantic), persisted through Checkpointers (Memory, SQLite, Postgres, Redis) — every superstep writes a checkpoint, enabling crash-resume, time-travel, and human-in-the-loop interrupts. Long-term cross-session memory via the Store interface (key/value + semantic). Legacy LangChain ConversationBufferMemory etc. still exists but is deprecated in favor of LangGraph state.",
+  "durability_model": "Pregel-style supersteps with after-step checkpointing; interrupt() suspends the graph at a node boundary and resume continues from the last checkpoint; compile() accepts interrupt_before/interrupt_after lists for declarative HITL pauses.",
+  "supported_model_providers": [
+    "OpenAI",
+    "Anthropic",
+    "Google (Gemini / Vertex)",
+    "AWS Bedrock",
+    "Azure OpenAI",
+    "Cohere",
+    "Mistral",
+    "Groq",
+    "Fireworks",
+    "Together",
+    "Ollama (local)",
+    "HuggingFace",
+    "vLLM",
+    "many more via init_chat_model"
+  ],
+  "observability_story": "LangSmith is the canonical observability layer: traces, runs, datasets, evals, prompt versioning, and online monitoring. Auto-instruments any LangChain/LangGraph run via env vars. Open-source projects can also pipe through OpenTelemetry, but LangSmith is the first-party path.",
+  "typical_use_case": "Production LLM applications that need to compose multiple model calls, tools, and retrieval steps with explicit control flow: enterprise RAG, customer-support agents, coding/research copilots, and long-running stateful workflows that require checkpointing, human-in-the-loop approval, and resumability. LangGraph in particular targets durable, multi-step agent processes where reliability and observability dominate over rapid prototyping.",
+  "maturity_signal": "mature — 138k stars, 1,254 releases, broad enterprise adoption, dedicated commercial entity (LangChain Inc) with LangSmith + LangGraph Platform; active 2026 releases (e.g. langgraph-sdk 0.3.15 in May 2026).",
+  "one_paragraph_differentiator": "LangChain is the incumbent general-purpose LLM framework, and LangGraph is its second-generation agent kernel that reframes agents as explicit StateGraphs — nodes of signature `State -> Partial<State>` over a typed shared state with per-key reducers, executed in Pregel-style supersteps with a checkpointer that persists after every step. This is a deliberate move away from the opaque AgentExecutor of original LangChain. The maintainers explicitly contrast their model with AutoGen's conversation framing: 'LangGraph prefers an approach where you explicitly define different agents and transition probabilities, preferring to represent it as a graph.' That graph framing yields a unified primitive for four multi-agent topologies — supervisor (router node + conditional edges into worker subgraphs), swarm (peer agents whose handoff tools return a `Command(goto=..., update=...)`), hierarchical (subgraphs-of-subgraphs), and network (fully-connected swarm) — without needing a separate group-chat abstraction. Against LlamaIndex (retrieval-first, indexing-centric) it covers a broader surface; against AutoGen (conversation-driven GroupChat) it is lower-level and graph-typed, trading conversational ergonomics for execution control and durability; against Smolagents (code-act minimalism) it is heavyweight and integration-rich. The signature differentiator is the combination of typed graph state + per-step checkpointer + Command-based handoff + LangSmith observability + a managed deployment story, which together target long-running production agents rather than demo notebooks.",
+  "known_anti_patterns": [
+    "Historical surface-area sprawl: hundreds of integration modules of varying quality; users routinely import deprecated chains/memory classes.",
+    "Two overlapping mental models (legacy LangChain AgentExecutor vs. modern LangGraph create_react_agent) causes confusion in tutorials and Stack Overflow answers.",
+    "Marketing-flavored superlatives ('the agent engineering platform') without head-to-head benchmark publication; comparative performance claims usually come from third parties.",
+    "Tight coupling between OSS and commercial LangSmith/LangGraph Platform can pull users toward hosted services for full observability.",
+    "Untyped or under-reduced state keys: forgetting the Annotated[..., reducer] declaration silently makes a list-valued state key overwrite instead of append across nodes — a frequent source of 'lost messages' bugs.",
+    "Building supervisors with plain string routing instead of conditional edges with a path_map — loses type-checking of node names and produces confusing runtime errors when an LLM hallucinates a worker name.",
+    "Overusing Command handoffs inside subgraphs when a normal edge would do — Commands bypass static-edge checking and can produce graphs that are correct but unanalyzable.",
+    "Treating Checkpointer=MemorySaver as production-safe — it is in-process only; durability claims require SQLite/Postgres/Redis variants and matching side-effect idempotency on tools."
+  ],
+  "analysis_depth": "deep",
+  "depth_upgrade_notes": "Iteration 2 closed two gaps from iteration 1: (a) StateGraph source file (libs/langgraph/langgraph/graph/state.py) was read — captured the actual class docstring, init signature, node/edge APIs, and channel model; (b) maintainer blog (langgraph-multi-agent-workflows) was retrieved for the official graph-vs-conversation framing quote. The canonical multi-agent concepts doc still resolved through a redirect chain that returned no body — topology details are now reconstructed from the source + blog + Command-primitive knowledge rather than the canonical doc."
+}

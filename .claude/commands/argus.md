@@ -44,9 +44,54 @@ Options: `Generate generic and I'll edit` · `Add specifics now`. If user picks 
 
 ### 3. Generate the topic files
 
+**Authoritative spec:** `.claude/skills/argus/docs/frontend-contract.md` defines the schemas the frontend reads. **Conform to that contract literally — every drift breaks dashboard rendering silently.** Re-read sections §3.2 (topic.yaml) and §3.3 (knowledge_graph.json) of the contract before generating.
+
 Generate (initial status `draft`, with `# UNCERTAIN: <reason>` comments next to fields where you had to guess):
 
-- `topics/<slug>/topic.yaml` — full rich schema. If another topic already exists under `topics/`, use it as a shape reference; otherwise generate from spec. Include `meta` (with `slug`, `name`, `description`, `status: draft`, `created_at: <today YYYY-MM-DD>`), `concept_layers[]` (3-5), `execution_routes[]` (5-10), `scope_in[]`, `scope_out[]`, `recency_floor`, `record_fields[]`, `graph_edge_types[]`, `report_sections[]`, `iteration_mix: {new_min: 1, deepen_min: 1, challenge_min: 1, synthesis_every_n_cycles: 7}`.
+- `topics/<slug>/topic.yaml` — full rich schema, conforming exactly to `frontend-contract.md` §3.2. **Every list item with a free-form `name` MUST also carry a machine-friendly `key`** (kebab-case for `concept_layers` / `execution_routes`, snake_case for `graph_edge_types` / `record_fields`).
+
+  Required yaml shape (collapse to one-line maps where descriptions are short, expand for long ones — both are valid YAML):
+
+  ```yaml
+  meta:
+    slug: <kebab-case-slug>
+    name: <Human title>
+    description: <one or two sentences>
+    status: draft
+    created_at: <today YYYY-MM-DD>
+
+  concept_layers:                # 3-5 entries; the ontology used to reason about claims
+    - key: <kebab-case>          # required, stable identifier
+      name: <Human label>        # required
+      description: <one sentence>
+
+  execution_routes:              # 5-10 entries; stable search buckets / memory partitions
+    - key: <kebab-case>          # required, stable identifier (the frontend turns this into a route:<key> node in the knowledge graph)
+      name: <Human label>        # required
+      description: <one sentence>
+      anchor_examples: [optional, list, of, seed, work, names]
+
+  scope_in:   [list of strings]
+  scope_out:  [list of strings]
+  recency_floor: <year int>
+
+  record_fields:                 # 10-30 entries; the per-source record schema
+    - {key: <snake_case>, required: true|false, description: <one sentence>}
+
+  graph_edge_types:              # 5-15 entries; controlled edge vocabulary
+    - {key: <snake_case>, description: <one sentence>}
+
+  report_sections:               # 6-10 entries; canonical section keys for report/main.md
+    - <kebab-case-or-snake_case-key>
+
+  iteration_mix:
+    new_min: 1
+    deepen_min: 1
+    challenge_min: 1
+    synthesis_every_n_cycles: 7
+  ```
+
+  **Do not** drop `key:` even when `name:` is human-readable — both are required side-by-side. The frontend filters graph nodes by `kind` (a separate node-level field; see knowledge_graph stub below) and looks up routes by `key`.
 - `topics/<slug>/proposal.md` — prose framing: why these concept layers, why this scope, where contradictions usually come from, reading order, anti-patterns. If another topic's `proposal.md` already exists, use it as a structural reference. Keep it to roughly one screen — not exhaustive.
 - `.claude/loops/<slug>.md` — **single merged dispatch stub** (researcher + synthesis in one). If another `.claude/loops/*.md` already exists, copy its structure and only swap the slug/path strings; otherwise write a stub that (a) sets `TOPIC_SLUG` and `TOPIC_DIR`, (b) reads `topic.yaml` and stops if `meta.status` is not `accepted`, (c) reads `logs/cycle.txt`, (d) computes mode by `next_cycle % synthesis_every_n_cycles`, (e) reads either `.claude/loop.md` or `.claude/loop-summary.md` (never both in one iteration), (f) writes `next_cycle` back. Do not generate a separate `-summary.md` stub.
 
@@ -81,7 +126,27 @@ Otherwise: use `Edit` to flip `meta.status` from `draft` to `accepted` and add `
 
 Write these files with minimal valid content so the dashboard renders an empty-state view rather than a 404 error:
 
-- `topics/<slug>/indexes/knowledge_graph.json` = `{"nodes":[],"edges":[],"updated_at":"<today ISO timestamp>"}`
+- `topics/<slug>/indexes/knowledge_graph.json` — conform to `frontend-contract.md` §3.3. **Seed the route nodes from `topic.yaml.execution_routes`** so the dashboard's sidebar shows the routes immediately:
+
+  ```json
+  {
+    "nodes": [
+      {"id": "route:<execution_routes[0].key>", "kind": "route", "label": "<execution_routes[0].name>"},
+      {"id": "route:<execution_routes[1].key>", "kind": "route", "label": "<execution_routes[1].name>"}
+      // ... one per execution_routes[] entry
+    ],
+    "edges": [],
+    "updated_at": "<today ISO timestamp>"
+  }
+  ```
+
+  **Hard schema rules** (from `frontend-contract.md` §3.3):
+  - Every node `id` MUST be `<kind>:<slug>` — `route:`, `work:`, `technique:`, `transferable_idea:`, or `pitfall:` prefix. Bare ids like `langchain` are forbidden and silently break frontend filtering.
+  - Every node MUST carry a `kind` field (use `kind`, not `type`).
+  - When researcher loop later adds a `kind: work` node for a paper/repo/blog, it **MUST also add a `belongs_to_route` edge** connecting `work:<slug>` ↔ `route:<route-key>` for the work's primary route. Otherwise the work won't appear in any sidebar route's list.
+  - Edges connect nodes via `rel` whose value is one of `topic.yaml.graph_edge_types[].key`.
+  - `kind: work` node's slug MUST match the filename in `records/works_json/<slug>.json` so the inspector can fetch detail.
+
 - `topics/<slug>/indexes/master_index.jsonl` = empty file (zero bytes)
 - `topics/<slug>/indexes/route_index.json` = `{}`
 - `topics/<slug>/logs/search_log.jsonl` = empty file
