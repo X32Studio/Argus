@@ -10,7 +10,7 @@
   <b>中文</b> · <a href="README.md">English</a>
 </p>
 
-<sub>by X32 Studio</sub> &nbsp;·&nbsp; <img src="asserts/x32studio_top.png" alt="X32 Studio" height="20" style="vertical-align: middle" />
+<sub>by X32 Studio</sub>
 
 </div>
 
