@@ -32,37 +32,35 @@ Under the hood, Argus uses **data as backend**. Every source record, graph edge,
   <sub>If the video does not render on your platform, <a href="asserts/demo.mp4">open the demo video</a>.</sub>
 </div>
 
-## What You Get
-
-Argus is not just a prompt. It gives you a working loop and a visual surface for the knowledge it builds.
-
-<div align="center">
-  <img src="asserts/showcase/start.png" alt="Argus start flow in Claude Code" />
-  <br />
-  <sub><b>Start from one sentence.</b> Argus turns a broad research intent into a scoped topic, asks the right clarifying questions, then guides the run mode.</sub>
-</div>
-
-<br />
-
-<div align="center">
-  <img src="asserts/showcase/dashborad.png" alt="Argus dashboard knowledge graph" />
-  <br />
-  <sub><b>Watch the knowledge graph grow.</b> Records, routes, source relationships, and weak spots become navigable instead of disappearing into chat history.</sub>
-</div>
-
-<br />
-
-<div align="center">
-  <img src="asserts/showcase/report.png" alt="Argus generated deep research report" />
-  <br />
-  <sub><b>Read the living report.</b> Argus keeps rewriting the synthesis as new evidence arrives, with citations back to structured source records.</sub>
-</div>
-
 ## Meet Argus
 
 <div align="center">
   <img src="asserts/comic/comic.png" alt="Argus mascot comic showing the research loop" />
 </div>
+
+## What You Get
+
+Argus is not just a prompt. It gives you a working loop and a visual surface for the knowledge it builds.
+
+<table>
+  <tr>
+    <td width="33%" align="center">
+      <img src="asserts/showcase/start.png" alt="Argus start flow in Claude Code" />
+      <br />
+      <sub><b>Start from one sentence.</b><br />Argus scopes the topic, asks the right questions, and guides the run mode.</sub>
+    </td>
+    <td width="33%" align="center">
+      <img src="asserts/showcase/dashborad.png" alt="Argus dashboard knowledge graph" />
+      <br />
+      <sub><b>Watch the graph grow.</b><br />Records, routes, source relationships, and weak spots become navigable.</sub>
+    </td>
+    <td width="33%" align="center">
+      <img src="asserts/showcase/report.png" alt="Argus generated deep research report" />
+      <br />
+      <sub><b>Read the living report.</b><br />Argus rewrites the synthesis as evidence arrives, with citations back to records.</sub>
+    </td>
+  </tr>
+</table>
 
 Argus is cute on purpose. The interface should feel approachable, but the loop underneath is stubborn: a hundred little eyes staying open across papers, repos, filings, blogs, news, threads, and anything else the web yields.
 

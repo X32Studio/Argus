@@ -1,9 +1,9 @@
 - Completion time: 2026-05-26 15:44 UTC+8
-- Core work summary: Published the dashboard report-link fix in the Argus app template.
-- Key changes made: Updated Hero's Open Report action to preserve the current topic slug.
-- Completion time: 2026-05-26 15:44 UTC+8
 - Core work summary: Prepared all remaining working-tree changes for publishing.
 - Key changes made: Included remaining runtime cleanup, live Claude files, and test directory changes in the final push.
 - Completion time: 2026-05-26 15:45 UTC+8
 - Core work summary: Prepared the repository for the v0.1 version tag.
 - Key changes made: Added this release log entry before tagging v0.1.
+- Completion time: 2026-05-26 15:46 UTC+8
+- Core work summary: Repositioned README showcase screenshots below the mascot comic.
+- Key changes made: Converted the three showcase screenshots into one side-by-side row in both READMEs.
