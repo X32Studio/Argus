@@ -93,7 +93,8 @@ At the start of every iteration:
 5. Read `${TOPIC_DIR}/report/main.md` if it exists.
 6. Read `${TOPIC_DIR}/report/reference_index.md` if it exists.
 7. Read `${TOPIC_DIR}/report/iteration_log.md` if it exists.
-8. Identify:
+8. **Build the dedup ledger:** read `${TOPIC_DIR}/indexes/master_index.jsonl` (one line per existing work — `{slug, title, year, depth, route_key, …}`) AND list `${TOPIC_DIR}/records/works_json/` directory contents. This is your authoritative "what's already covered, at what depth" — use it in step 10 to skip duplicates and decide which works are eligible for a depth-upgrade pass.
+9. Identify:
    - directions already explored
    - directions weakly understood
    - directions with shallow records that need deeper reading
@@ -101,10 +102,16 @@ At the start of every iteration:
    - which `concept_layers[]` are over-covered or under-covered
    - which report conclusions are weakly supported, stale, or too generic
    - which report sections point to especially promising follow-up directions
-9. Choose a mix that meets `topic.yaml.iteration_mix` minimums:
-   - at least `new_min` genuinely new directions
-   - at least `deepen_min` high-value existing direction(s) to deepen if records are shallow
-   - at least `challenge_min` direction(s) that improve, sharpen, or overturn an existing report conclusion if the report looks under-supported
+10. Choose a mix that meets `topic.yaml.iteration_mix` minimums:
+    - at least `new_min` genuinely new directions
+    - at least `deepen_min` high-value existing direction(s) to deepen if records are shallow
+    - at least `challenge_min` direction(s) that improve, sharpen, or overturn an existing report conclusion if the report looks under-supported
+
+    **Dedup gate (apply BEFORE handing any candidate to a subagent):**
+    - If the candidate's slug already exists in `master_index.jsonl` at `analysis_depth: deep` → **SKIP**. Don't dispatch a subagent for it. It's done.
+    - If the candidate exists at `analysis_depth: shallow` or `medium` → eligible as a **depth-upgrade pass**. Pass `existing_depth: <shallow|medium>` in the subagent's prompt so it extends the existing record rather than starting from scratch. The subagent should still write to `records/works_json/<slug>.json` (overwrite), but with strictly more or equal information than before — never less.
+    - If the candidate's normalized title closely matches an existing record but the slug differs → use the **existing slug**. Do not introduce a duplicate-with-different-slug, which silently fragments the graph.
+    - Dedup happens in **this iteration's parent**, not inside subagents. Subagents are forbidden from reading the shared index (per-work isolation rule, see Parallel Deep-Read section).
 
 Every iteration must expand knowledge, not just collect links.
 
@@ -152,6 +159,126 @@ For blogs or technical articles:
 - save the original URL
 - store the content or a concise summary in `${TOPIC_DIR}/sources/blogs/` when possible
 
+## Parallel Deep-Read via Subagents
+
+When this iteration's planned mix includes **two or more candidate works to deep-read**, dispatch the per-work reading in parallel via the `Agent` tool. This gives the iteration a 3-5x speedup without changing the cron cadence (cron schedules iterations; subagents accelerate inside one).
+
+### When to use
+
+- ≥ 2 works queued for `medium` or `deep` analysis this iteration.
+- Each work is independently analyzable (cross-paper comparison happens later, in the synthesis loop's iteration — not here).
+
+### When NOT to use
+
+- Only 1 candidate to deep-read → do it inline; subagent overhead isn't worth it.
+- Candidate works are tightly coupled and you need them in the same head right now (rare — usually compare via the knowledge graph after).
+- Iteration is mostly maintenance (state-file housekeeping, log cleanup, route_index touch-ups) with no new sources.
+
+### Per-subagent contract (one subagent per candidate work)
+
+1. Read its assigned work's primary source (paper URL, repo README, blog). Use `WebFetch` for the URL. If the source offers a PDF, save it to `${TOPIC_DIR}/sources/papers/<slug>.pdf` via `Bash: curl`.
+2. Extract every field declared in `topic.yaml.record_fields[]` that the source provides. Set `analysis_depth`: `shallow` if only abstract/landing-page level; `medium` if methods read but ablations skimmed; `deep` if methods + ablations + transfer assessment fully extracted.
+3. Write the per-work JSON to `${TOPIC_DIR}/records/works_json/<slug>.json`.
+4. Write the per-work markdown to `${TOPIC_DIR}/records/works_md/<slug>.md` following the seven-section structure from the "Structured Records" section.
+5. Return a concise summary to the parent:
+   ```
+   {
+     slug: "...",
+     title: "...",
+     year: ...,
+     analysis_depth: "...",
+     proposed_graph_edges: [{src, dst, rel}, ...],  // edges this work introduces
+     proposed_route_index_updates: { <route_key>: { add_to_representative_works: [slug], ... } },
+     proposed_search_log_entry: { ... }
+   }
+   ```
+6. **Self-limit budget (hard):** if your fetch + extraction is exceeding ~6 minutes wall-clock OR ~20 turns of search/read on this single work, **downgrade** `analysis_depth` (deep → medium → shallow), write the partial record with whatever you have, and return. **Never** burn unbounded turns chasing one paper — the iteration's other subagents and the cron's next tick depend on you returning. A partial record is always more useful than a hung subagent.
+
+**Per-work isolation rule (hard):** each subagent writes ONLY its own `works_json/<slug>.json` and `works_md/<slug>.md`. It does NOT touch `knowledge_graph.json`, `master_index.jsonl`, `route_index.json`, `research_state.md`, `search_log.jsonl`, or any other shared file. Those belong to the parent's post-collation phase. Violating this rule = race condition between concurrent subagents and silent data loss.
+
+### Dispatch pattern
+
+Send all subagent invocations in a **single message** with multiple `Agent` tool-use blocks so they execute concurrently. Use `subagent_type: "general-purpose"` unless a more specific agent type fits the source type. **Always pass `run_in_background: true`** — see "Parent watchdog" below for why. Each subagent's `prompt` field is self-contained — it can't see this loop's context, so include: the topic slug, `TOPIC_DIR`, the work's primary URL + any preliminary info, the relevant subset of `topic.yaml.record_fields[]`, the per-work isolation rule (copy it verbatim), and the return-format schema above. Capture each returned task ID — you'll cross-check against returned results in the collation phase.
+
+### Parent watchdog (Bash sleep as wall-clock guarantee)
+
+Claude Code's Agent tool does NOT provide a kill primitive for in-flight subagents. Foreground dispatch (default) blocks the parent until ALL subagents return — fatal if any one hangs. Background dispatch (`run_in_background: true`) lets the parent move past the dispatch, but the parent still receives completion notifications passively and could in principle wait forever if a subagent never returns.
+
+To guarantee the parent always proceeds to collation within a bounded wall-clock window:
+
+After dispatching N background subagents, immediately call **`Bash`** with:
+- `command`: `sleep 420` (7 minutes; calibrated to subagent self-limit of ~6 min + ~1 min slack)
+- `run_in_background: false` (foreground — blocks the parent for exactly 7 minutes, no longer)
+- `timeout`: `450000` (450 seconds; Bash tool's own ceiling, prevents the sleep itself from running away)
+
+While the parent is blocked in `Bash sleep`, Agent completion notifications continue to queue into the parent's context. When `sleep` returns, the parent has whichever results have arrived — and proceeds to collation regardless of any still-unfinished subagents.
+
+This is an **explicit wall-clock contract**, not an observation. Cost: every multi-subagent iteration takes a minimum of 7 minutes (even if all subagents finish in 30 seconds — they all wait out the sleep). For the autoresearch use case this is acceptable: cron-fired iterations are not latency-sensitive, and the watchdog guarantee outweighs the wasted seconds. If the iteration cadence requires faster turnaround, drop the sleep duration accordingly but keep the mechanism.
+
+### Parent post-collation phase
+
+After `Bash sleep` returns, the parent does shared-file writes — single-writer, no races:
+
+1. **Knowledge graph** (`${TOPIC_DIR}/indexes/knowledge_graph.json`): union of all `proposed_graph_edges` **from subagents that returned during the sleep window**, dedupe by `(src, dst, rel)` triple.
+2. **Master index** (`${TOPIC_DIR}/indexes/master_index.jsonl`): append one line per returned subagent.
+3. **Route index** (`${TOPIC_DIR}/indexes/route_index.json`): merge `proposed_route_index_updates`; increment `search_count`, update `last_searched_at`, append to `representative_works`.
+4. **Search log** (`${TOPIC_DIR}/logs/search_log.jsonl`): append `proposed_search_log_entry` from each returned subagent.
+5. **Unnotified subagents** (the watchdog escape hatch): cross-check the N task IDs you dispatched against the N return values you actually have. For each task ID with no return value, write an entry to `${TOPIC_DIR}/logs/research_state.md` under a `## subagent_unnotified` heading:
+   ```
+   ## subagent_unnotified
+   <ISO timestamp>: <slug>, task_id=<id>, dispatched_at=<ISO>, presumed_hung_or_slow.
+   ```
+   That slug rolls forward to next iteration's candidate pool. Do NOT attempt to kill the task (no kill primitive exists); the runaway subagent will either complete eventually (its return is harmlessly discarded) or be terminated when Claude Code reclaims the session.
+6. **Research state** (`${TOPIC_DIR}/logs/research_state.md`): write the iteration narrative as usual, including a count of `subagent_unnotified` entries if any.
+
+### Self-validation pass (run at every iteration's end)
+
+After collation finishes, parent runs the contract validator with auto-fix:
+
+```bash
+bash .claude/skills/argus/scripts/validate-contract.sh --fix ${TOPIC_SLUG}
+```
+
+This:
+- Auto-injects missing `key:` fields in `topic.yaml` list items (concept_layers / execution_routes / graph_edge_types / record_fields)
+- Auto-renames graph nodes whose `id` lacks the `<kind>:` prefix and rewires the edges
+- Auto-seeds any `route:<key>` nodes declared in yaml but missing from graph
+- Drops dangling edges
+- Cannot auto-fix: a `kind: work` node whose `records/works_json/<slug>.json` file is missing (would require synthesizing research)
+
+After the validator runs, if its exit code is non-zero (residual violations exist), parent appends those violations to `${TOPIC_DIR}/logs/research_state.md` under a `## contract_violations` heading:
+
+```
+## contract_violations  <ISO timestamp>
+- [work_no_record] work node 'work:foo': no records/works_json/foo.json
+- [edge_bad_rel] edge rel='custom_rel' not in topic.yaml.graph_edge_types
+- ... etc.
+```
+
+Each violation is a candidate for the next iteration to either fix (do the missing deep-read, add the missing edge type to yaml) or demote (delete the orphan graph node).
+
+The spec the validator enforces is `.claude/skills/argus/docs/frontend-contract.md` §3 — read it if a violation's meaning is unclear.
+
+### Failure handling
+
+If a subagent fails (timeout, wrong return format, source unfetchable):
+- Append to `search_log.jsonl` with `result_status: "subagent_failed"` and the reason.
+- Do **not** write a partial record for that slug.
+- Other subagents' successful records still land normally — one bad apple does not poison the batch.
+- The failed slug rolls forward to the next iteration's candidate pool — but mark it in `search_log.jsonl` as `failure_count: N+1` so successive failures (3+ times on the same slug) tell future iterations to **demote the slug to historical-anchor / low-priority** instead of retrying forever.
+
+### Time budget (three layers — self-limit, sleep watchdog, cron backoff)
+
+Wall-clock guarantees, ordered weakest to strongest:
+
+1. **Subagent self-limit** (~6 min / ~20 turns) — see subagent contract step 6. First line of defense; works in 99% of cases.
+2. **Parent sleep watchdog** (`Bash sleep 420`) — see Parent watchdog section above. **Hard** guarantee that parent proceeds to collation within 7 minutes, regardless of subagent state. Catches the 1% case where subagent ignores its self-limit or has a tool that genuinely never returns.
+3. **Cron natural backoff** — if iteration still takes longer than the cron tick (`/loop 2m`), Claude Code queues/skips the next tick. No manual intervention.
+
+**Three same-slug failures (failure_count ≥ 3) in `search_log.jsonl`** → demote that slug to historical-anchor / low-priority in subsequent iterations. Don't retry the same broken source forever.
+
+**Why parent doesn't kill subagents:** Claude Code's Agent tool has no kill primitive. The closest mechanism is "parent proceeds without waiting for the hung one" (the watchdog above) — that's what this design uses. The hung subagent eventually terminates with Claude Code session lifecycle; its output is then either harmlessly discarded (parent already moved on) or — in pathological cases — overwrites a per-work file long after the fact. Per-work isolation makes the worst case a stale `works_json/<slug>.json` write, which the next iteration's dedup gate will catch and either accept or upgrade.
+
 ## Structured Records
 
 For every useful work, create or update:
@@ -172,6 +299,16 @@ In the markdown record, mirror the JSON content and include these standard secti
 ## Knowledge Graph
 
 Maintain `${TOPIC_DIR}/indexes/knowledge_graph.json`.
+
+**Authoritative spec:** `.claude/skills/argus/docs/frontend-contract.md` §3.3 defines the exact node and edge schema the frontend reads. Conform literally — drift here silently empties the dashboard.
+
+**Node-id contract (hard):**
+- Every node id MUST be `<kind>:<slug>` — `route:`, `work:`, `technique:`, `transferable_idea:`, or `pitfall:` prefix
+- Every node MUST carry a `kind` field (use `kind`, NOT `type`)
+- `kind: work` slug MUST equal the filename stem in `records/works_json/<slug>.json`
+- Edges' `rel` values MUST be one of `topic.yaml.graph_edge_types[].key`
+
+**When adding a new work to the graph (researcher loop):** always also add a `belongs_to_route` edge connecting `work:<slug>` ↔ `route:<primary-route-key>`. Without this edge, the work is invisible in the dashboard sidebar. If the work spans multiple routes, pick the one that best characterizes its primary contribution; the others can be linked via `transferable_to` or `compares_against` per the topic's `graph_edge_types[]`.
 
 The graph should connect entities relevant to this topic's `record_fields[]` (works, techniques, data representations, objectives, model families, benchmarks, pitfalls, transferable ideas, etc.).
 

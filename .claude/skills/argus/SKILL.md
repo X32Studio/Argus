@@ -86,21 +86,82 @@ User signals fresh start ("track X", "set up research on Y", "build a dossier on
    - `http://localhost:5173/t/<slug>`
    - The dashboard auto-refreshes every 2 minutes once the loop starts producing records.
 
-5. **Tell the user the ONE command they still need to type** to start the research loop:
-   - `/argus loop <slug>` (or just `/argus loop` to auto-pick the most recent accepted topic)
-   - This is the only manual step — it schedules a recurring cron task and the user must explicitly invoke it. Behind the scenes `/argus loop` is a thin wrapper around `/loop` with brand-aligned UX and validation; same scheduling behavior.
+5. **Ask the user once how to run the loop.** Single `AskUserQuestion`:
 
-6. **Do NOT fire the loop on the user's behalf.** Recurring cron deserves explicit consent — the user types `/argus loop` themselves.
+   > "Topic ready. How should I run the research loop?"
+
+   Options:
+   - `Run it here in this session (recommended)` — skill orchestrates, no further typing needed; loop dies when you close Claude Code, but state persists on disk and you can resume any time by re-triggering this skill
+   - `Hand off to cron via /argus loop` — survives Claude Code restart; you'll type `/argus loop <slug>` manually
+   - `Just finish topic creation, no loop yet`
+
+6. **If user picks `/argus loop` cron path:** print the command (`/argus loop <slug>`) and stop using this skill.
+
+7. **If user picks "no loop yet":** print the slug for future reference and stop.
+
+8. **If user picks "in-session" (default path):** enter the orchestration loop. The skill itself drives iterations, dispatching one fresh subagent per iteration. Three layers of context isolation: Skill (orchestrator) → Iteration Runner subagent (per cycle) → Paper Reader sub-subagents (parallel deep-read inside one iteration, see `.claude/loop.md` Parallel Deep-Read section).
+
+   **Loop body — repeat until a stop condition (step 9) fires:**
+
+   a. Read `topics/<slug>/logs/cycle.txt` (single integer N). Compute `next_cycle = N + 1`. Read `topic.yaml.iteration_mix.synthesis_every_n_cycles` (default 7). Decide `mode = (next_cycle % synthesis_every_n_cycles == 0 && next_cycle > 0) ? "SYNTHESIS" : "RESEARCH"`.
+
+   b. **Dispatch ONE iteration runner subagent.** Use the `Agent` tool — `subagent_type: "general-purpose"`, `run_in_background: true`, `description: "Argus iteration #<next_cycle> (<mode>) for <slug>"`. The `prompt` field MUST be self-contained — runner cannot see this skill's context. Include:
+      - Literal `TOPIC_SLUG` and `TOPIC_DIR` values
+      - `mode = <RESEARCH|SYNTHESIS>` and `next_cycle = <N>` (so runner doesn't recompute)
+      - Instruction: "Read `.claude/loop.md` (if RESEARCH) or `.claude/loop-summary.md` (if SYNTHESIS) and execute exactly ONE iteration in that mode."
+      - Hard rule: "Do NOT touch `${TOPIC_DIR}/logs/cycle.txt` — the orchestrating parent manages it. You are forbidden from writing that file."
+      - The full per-work isolation rule (copy verbatim from `.claude/loop.md` "Parallel Deep-Read" section). Runner may itself dispatch sub-subagents for parallel paper reading per that section.
+      - Return-format schema (runner must return this):
+        ```json
+        {
+          "mode": "...",
+          "cycle": <N>,
+          "candidates_processed": <int>,
+          "new_works_added": <int>,
+          "depth_upgrades": <int>,
+          "saturation_signal": <bool>,
+          "narrative": "<~3 sentence summary of this iteration>"
+        }
+        ```
+
+   c. **Watchdog:** call `Bash` with `command: "sleep 420"`, `run_in_background: false`, `timeout: 450000`. Foreground 7-min block. While the parent is blocked, the runner's completion notification (if any) queues into parent context.
+
+   d. After `sleep` returns, parse the runner's return value. If notification arrived, you have the summary; if not, append a line under `## iteration_runner_unnotified` heading in `${TOPIC_DIR}/logs/research_state.md` (with timestamp + task_id + presumed_hung).
+
+   e. **Parent updates `cycle.txt`** (the ONE shared file the orchestrator writes directly): overwrite with `next_cycle` + newline. Runner is forbidden from this file.
+
+   f. **Append orchestrator log** to `${TOPIC_DIR}/logs/orchestrator.jsonl`:
+      ```json
+      {"ts": "<ISO>", "cycle": <N>, "mode": "...", "runner_returned": <bool>, "summary": "<brief>"}
+      ```
+      Create the file if missing.
+
+   g. **Saturation counter** (in-memory only, no disk):
+      - If `mode == SYNTHESIS` and `saturation_signal == true`: `saturation_count++`
+      - Else if `mode == RESEARCH` and `new_works_added > 0`: `saturation_count = 0`
+      - If `saturation_count >= 3`: trigger STOP_SATURATED (see step 9).
+
+   h. **Inter-iteration pause:** `Bash sleep 30` (foreground), lets filesystem caches settle and any trailing background notification land.
+
+   i. **Context-exhaustion self-check** (every ~10 iterations): if your own context appears to be approaching ~80% of capacity (heuristic: orchestrator log already past ~5000 tokens of iteration summaries), trigger STOP_CONTEXT.
+
+   j. Loop back to step (a) for the next iteration.
+
+9. **Stop conditions:**
+   - **STOP_USER**: user explicitly says "stop" / interrupts / closes the session → loop dies naturally; state on disk is current.
+   - **STOP_SATURATED**: three consecutive SYNTHESIS iterations report `saturation_signal: true`. Print: "Topic appears saturated after N iterations. State preserved at `${TOPIC_DIR}/`. Re-trigger this skill any time to resume; new sources will reset the counter."
+   - **STOP_CONTEXT**: parent's own context budget is near limit. Write a resume hint to `${TOPIC_DIR}/logs/research_state.md` under `## orchestrator_pause` (timestamp + last cycle + saturation_count). Print: "I've run N iterations. My context is filling up. Close and reopen Claude Code, then say 'resume `<slug>`' or trigger this skill again — I'll pick up from cycle `<N+1>`. (Or use `/argus loop <slug>` to switch to cron, which survives Claude Code restart.)"
+   - **STOP_BLOCKER**: any runaway failure mode the parent can't recover from → log to `research_state.md`, print a clear message, stop.
 
 ### Flow B — resume / view an existing topic
 
-User signals continuation ("show me my X research", "open the dashboard for Y", "what's the status of Z").
+User signals continuation ("show me my X research", "open the dashboard for Y", "resume <slug>").
 
-1. Execute `/argus list` (read `.claude/commands/argus.md` and follow the `list` subcommand). This prints a table of slug · name · status · dates.
+1. Execute `/argus list` (read `.claude/commands/argus.md` and follow the `list` subcommand).
 2. If the user's intended topic is in the list:
-   - **Auto-start the dashboard** following the same procedure as Flow A step 3 (check port 5173, npm install if needed, npm run dev in background, curl-verify).
-   - Print: `View dashboard: http://localhost:5173/t/<slug>` (or note it's already running, if 5173 was busy).
-   - Print: `Resume the loop: /argus loop <slug>` (the user manually re-fires the cron).
+   - **Auto-start the dashboard** following Flow A step 3 (check port 5173, npm install if needed, npm run dev in background, curl-verify).
+   - Print: `View dashboard: http://localhost:5173/t/<slug>` (or note already running).
+   - Ask via `AskUserQuestion`: "Resume the loop in this session, or hand off to cron?" (same options as Flow A step 5). Then follow Flow A step 6-9 accordingly.
 3. If not in the list, fall back to Flow A.
 
 ### Flow C — user wants to understand the engine or install it elsewhere
@@ -113,19 +174,21 @@ If they ask "what is this?", "how does it work?", or "how do I install Argus on 
   cp -r <path-to-this-repo>/.claude/skills/argus ~/.claude/skills/argus
   ```
   Or symlink. Then in any empty directory they can open Claude Code and say "I want to track X" — Argus will offer to bootstrap into that directory.
-- Engine internals: see `README.md` for vision + quick-start; `docs/plans/2026-05-25-topic-driven-research-engine-design.md` for design rationale.
+- Engine internals: see `README.md` for vision + quick-start; `.claude/skills/argus/docs/plans/2026-05-25-topic-driven-research-engine-design.md` for design rationale.
 
 ## Things this skill must NOT do
 
 - Do not write `topic.yaml`, `proposal.md`, loop stubs, or empty stubs directly. `/argus init` (now in the bootstrapped `.claude/commands/argus.md`) does all that.
-- Do not invoke `/argus loop` or `/loop` autonomously. The user explicitly starts the research loop by typing `/argus loop` themselves.
+- Do not invoke `/argus loop` (cron path) autonomously — that's a user choice in Flow A step 5. **In-session loop is the default once the user explicitly picks it** in that AskUserQuestion; that explicit consent is what authorizes the skill to drive iterations directly.
+- Do not write `${TOPIC_DIR}/logs/cycle.txt` from any place except the orchestrator parent's loop body (step 8e). Runner subagents are forbidden from this file.
 - Do not kill an existing dev server on port 5173. If the port is busy, leave it alone and just print the URL — never `kill <pid>` to make room.
-- Do not `git commit` or `git push`. The synthesis loop does that.
+- Do not kill iteration runner subagents. There's no Agent kill primitive; the watchdog is the `Bash sleep` budget, not active termination. Hung runners die with the Claude Code session.
+- Do not `git commit` or `git push`. The synthesis loop methodology handles that internally if a git repo is detected.
 - Do not trigger on single-shot questions. Step 1 catches ambiguous intent.
 - Do not re-bootstrap a directory that already has live engine files unless the user explicitly asks to upgrade (in which case offer to re-run `bootstrap.sh`, noting it will overwrite engine prompts but preserve `topics/` and `.claude/loops/`).
 - Do not edit files inside `.claude/skills/argus/templates/` from this skill — those are the canonical source; user only edits them when intentionally modifying the engine.
 
-**Do start** the dev server automatically (when port 5173 is free) so the user only has to type `/loop`. This is the explicit policy as of the 2026-05-25 amendment E — see `docs/plans/2026-05-25-...md`.
+**Do start** the dev server automatically (when port 5173 is free) so the user doesn't need to. **Do start** the in-session research loop once the user explicitly opts into that path in Flow A step 5. These are explicit policies (amendments E + J) — see `.claude/skills/argus/docs/plans/2026-05-25-...md`.
 
 ## Mental model — when this skill applies
 
