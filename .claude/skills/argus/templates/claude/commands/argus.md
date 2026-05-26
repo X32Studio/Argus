@@ -26,21 +26,40 @@ Steps:
 
 From the description, derive a kebab-case slug (lower, ASCII, words joined by `-`, max 40 chars; strip stopwords if needed). If `topics/<slug>/` already exists, append `-2`, `-3`, ... until free.
 
-### 2. Ask 3-5 clarifying questions via `AskUserQuestion`
+### 2. Pick a mode (lazy vs detailed)
 
-Ask these in a single `AskUserQuestion` call (multiple questions in one block), tailored to the description:
+Before asking any detailed questions, ask the user **once** via `AskUserQuestion`:
 
-1. **Scope boundary** — what's clearly *in* scope? what's clearly *out*? (multiSelect over reasonable defaults inferred from the description, with "Other" for custom).
-2. **Recency floor** — how old can the most-cited works be? Options like `last 3 years (2023+)`, `last 5 years (2021+)`, `last 10 years (2016+)`, `no floor (include classical)`.
-3. **Known method families to prioritize** — multiSelect over candidates you propose based on the description.
-4. **End goal** — is this for training a model / building a product / writing a survey / making a decision? (single-select).
-5. *(Optional, only if the description is broad)* **Anti-patterns to flag** — which kinds of works to explicitly down-rank (multiSelect; e.g., "marketing/survey w/o mechanism", "benchmarks with no real-world validation", etc.).
+> "Want to answer a few setup questions, or let me infer everything from the description? Either way you'll review one final confirmation before the loop starts."
+
+Options (lazy first, marked recommended so a single keypress accepts):
+- `Use my inferred defaults (recommended)` — skip the clarifying-question block. You infer scope, recency, methods, end goal, and anti-patterns from the one-line description alone. Annotate every inferred field in `topic.yaml` with `# UNCERTAIN: <reason>` so the user can revisit later.
+- `Walk me through the questions` — proceed to step 2b below.
+
+If user picks `Use my inferred defaults`: **skip to step 3.**
+If user picks the detailed path: continue to step 2b.
+
+### 2b. Ask only the questions you actually need (detailed mode)
+
+**Don't fixed-ask 5 questions.** Look at the description first. For each of the five candidate axes below, decide: can I infer this confidently from the description? If yes, skip the question and just use the inferred value (still mark it `# UNCERTAIN:` in yaml if the inference was shaky). If no, ask.
+
+Bundle the kept questions into a single `AskUserQuestion` call (multiple `questions[]` in one block). Aim for 1-3 questions in most cases; 0 is fine if the description is already specific; 5 only if everything is genuinely ambiguous.
+
+**Every question you DO ask: the FIRST option must be your best guess, labeled `<your guess> (recommended)`.** That way the user can rapid-fire the first option to confirm your inference, but with a chance to override.
+
+Candidate axes (only ask if the answer isn't obvious from the description):
+
+1. **Scope boundary** — what's clearly *in* / *out* of scope (multiSelect, "Other" available).
+2. **Recency floor** — `last 3y (2023+)` / `last 5y (2021+)` / `last 10y (2016+)` / `no floor`.
+3. **Method families to prioritize** (multiSelect).
+4. **End goal** — train a model / build a product / write a survey / make a decision (single-select).
+5. **Anti-patterns to flag** (multiSelect, only if the description is broad enough to need them).
 
 If the description is **very broad** (under 5 specific technical words OR mentions multiple disjoint subfields), first ask a single `AskUserQuestion`:
 
 > "Your description is broad — I can generate a generic proposal, but it'll need heavy editing. Want to add specifics first?"
 
-Options: `Generate generic and I'll edit` · `Add specifics now`. If user picks the second, ask them to type the specifics, then re-evaluate.
+Options: `Generate generic and I'll edit (recommended)` · `Add specifics now`. If user picks the second, ask them to type the specifics, then re-evaluate.
 
 ### 3. Generate the topic files
 
@@ -118,7 +137,7 @@ Run the full acceptance validation (the same checks that `/argus accept` runs):
 
 If anything fails: keep `status: draft`, print the list of failures, and skip step 5. Tell the user to fix and then run `/argus accept <slug>`.
 
-If any `# UNCERTAIN:` markers remain in the yaml, list them once and ask via `AskUserQuestion`: "There are N `UNCERTAIN` markers. Accept and start anyway?" with options `Accept and start` · `Stop, I'll fix them first`. If the user picks the second option, keep `draft` and stop.
+If any `# UNCERTAIN:` markers remain in the yaml, list them once and ask via `AskUserQuestion`: "There are N `UNCERTAIN` markers. Accept and start anyway?" with options `Accept and start (recommended)` · `Stop, I'll fix them first`. The first option is the default so a single keypress proceeds. If the user picks the second option, keep `draft` and stop.
 
 Otherwise: use `Edit` to flip `meta.status` from `draft` to `accepted` and add `accepted_at: <today YYYY-MM-DD>`.
 
@@ -195,7 +214,7 @@ Steps:
 4. Verify `.claude/loops/<slug>.md` exists (the single merged stub). If missing: explain and offer to regenerate.
    If a legacy `.claude/loops/<slug>-summary.md` exists from a prior split-stub topic, delete it (the merged stub handles synthesis internally).
    If `topics/<slug>/logs/cycle.txt` does not exist, create it with the content `0\n`.
-5. Verify any `# UNCERTAIN:` markers remaining in the yaml. If there are any, print them and ask via `AskUserQuestion`: "There are still N `UNCERTAIN` markers. Accept anyway?" with options `Accept as-is` · `Stop, I'll fix them first`.
+5. Verify any `# UNCERTAIN:` markers remaining in the yaml. If there are any, print them and ask via `AskUserQuestion`: "There are still N `UNCERTAIN` markers. Accept anyway?" with options `Accept as-is (recommended)` · `Stop, I'll fix them first`. First option is the default.
 6. If all good: update `meta.status` to `accepted` and set `meta.accepted_at` to today's `YYYY-MM-DD`. Use `Edit` to make the change (preserve all other yaml).
 7. Print:
 
