@@ -8,3 +8,4 @@ app/public/*
 !app/public/.gitkeep
 app/tsconfig.tsbuildinfo
 app/tsconfig.node.tsbuildinfo
+asserts/*.mov

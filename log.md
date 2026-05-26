@@ -1,3 +1,9 @@
-- Completion time: 2026-05-25 23:31 UTC+8
-- Core work summary: Initialized the Argus project as a Git repository and prepared it for GitHub publishing.
-- Key changes made: Added this session log before the first repository commit and push.
+- Completion time: 2026-05-26 15:25 UTC+8
+- Core work summary: Reframed the README opening around the core research pain point and product thesis.
+- Key changes made: Added never-ending deep research positioning, data-as-backend architecture, and frontend graph/report value.
+- Completion time: 2026-05-26 15:27 UTC+8
+- Core work summary: Emphasized Argus as a complete Claude Code skill experience.
+- Key changes made: Updated both READMEs to state that one Claude Code window can run bootstrap, setup, loop, validation, and reporting.
+- Completion time: 2026-05-26 15:28 UTC+8
+- Core work summary: Sharpened the README opening copy to be more compelling for new users.
+- Key changes made: Reworked the hook around weak one-off research workflows and compounding research assets.
