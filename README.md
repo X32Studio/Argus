@@ -4,7 +4,7 @@
 
 # Argus
 
-### Deep research that keeps digging after the first answer
+### For research you need to keep coming back to
 
 <p>
   <a href="README.zh-CN.md">中文</a> · <b>English</b>
@@ -16,13 +16,20 @@
 
 ---
 
-One-off deep research is a great demo and a weak workflow. It gives you a polished brief, then loses the trail: which sources mattered, what contradicted what, what still looked shallow, and what should be checked next.
+Most research tools are good at answering one question. But many real projects are not one question. You keep coming back: new papers appear, new repos launch, policies change, competitors move, and yesterday's answer already feels incomplete.
 
-Argus is for work that compounds: literature reviews, open-source intelligence, industry maps, regulatory watches, competitive research, and technical landscape tracking. Give it a topic and it keeps going: scouting sources, writing structured records, extending a typed knowledge graph, publishing citation-backed reports, then turning the gaps in those reports into the next search plan.
+Use Argus when you need to keep watching a topic over days or weeks:
 
-Everything is packaged as **one Claude Code skill**. If you have Claude Code, you can open one window and let Argus lead: bootstrap, topic design, dashboard launch, iteration loop, validation, and reporting.
+- You are reading papers for a survey, thesis, investment memo, or product decision.
+- You are tracking an open-source ecosystem and want to know which projects matter.
+- You are following a market, regulation, company, or fast-moving technical area.
+- You keep asking "what changed?", "what did we miss?", and "what should we check next?"
 
-Under the hood, Argus uses **data as backend**. Every source record, graph edge, search log, and synthesis brief is stored as plain Markdown / JSON / JSONL / YAML. The frontend reads those files and turns them into an explorable knowledge graph and a living deep-research report. No database. No black-box memory. No cloud lock-in.
+You give Argus the topic in one sentence. It asks a few questions to understand what you care about, then keeps collecting useful sources, remembering what it found, and updating a dashboard for you.
+
+When you come back, you do not start from zero. You see what Argus found, how the pieces relate, what the current story is, and what still needs digging.
+
+Everything is packaged as **one Claude Code skill**. If you have Claude Code, you can open one window and let Argus lead you through setup, dashboard launch, research loop, and report updates.
 
 **Many eyes. Never asleep.**
 
@@ -40,122 +47,125 @@ Under the hood, Argus uses **data as backend**. Every source record, graph edge,
 
 ## What You Get
 
-Argus is not just a prompt. It gives you a working loop and a visual surface for the knowledge it builds.
+Argus is not just a prompt. It gives you a working research loop and a place to see the work accumulate.
 
 <table>
   <tr>
     <td width="33%" align="center">
       <img src="asserts/showcase/start.png" alt="Argus start flow in Claude Code" />
       <br />
-      <sub><b>Start from one sentence.</b><br />Argus scopes the topic, asks the right questions, and guides the run mode.</sub>
+      <sub><b>Start from one sentence.</b><br />Tell Argus what you want to follow. It asks a few questions and sets up the watch.</sub>
     </td>
     <td width="33%" align="center">
       <img src="asserts/showcase/dashborad.png" alt="Argus dashboard knowledge graph" />
       <br />
-      <sub><b>Watch the graph grow.</b><br />Records, routes, source relationships, and weak spots become navigable.</sub>
+      <sub><b>See the field take shape.</b><br />Sources stop being a pile of links and become a map you can explore.</sub>
     </td>
     <td width="33%" align="center">
       <img src="asserts/showcase/report.png" alt="Argus generated deep research report" />
       <br />
-      <sub><b>Read the living report.</b><br />Argus rewrites the synthesis as evidence arrives, with citations back to records.</sub>
+      <sub><b>Read the living report.</b><br />The report keeps improving as new evidence arrives, with citations you can check.</sub>
     </td>
   </tr>
 </table>
 
 Argus is cute on purpose. The interface should feel approachable, but the loop underneath is stubborn: a hundred little eyes staying open across papers, repos, filings, blogs, news, threads, and anything else the web yields.
 
-Use it when the answer should not be a paragraph. Use it when the answer should become a growing research asset.
+Use it when the answer should not be a paragraph. Use it when the answer should become a place you can return to.
 
-## What It Does
+## In Plain English
 
-- **Scouts** new sources for your topic and writes structured records.
-- **Builds a knowledge graph** with typed edges like `contradicts`, `transferable_to`, `risky_for`, `suggests_experiment`, and `belongs_to_route`.
-- **Writes a synthesis brief** with citations to exact record paths.
-- **Reads its own weak spots** and turns them into the next iteration's search plan.
-- **Runs in plain files**: Markdown, JSON, JSONL, and YAML. No database, no cloud lock-in, no opaque vector store.
+- Argus keeps looking for useful material on your topic.
+- It saves what it finds instead of leaving everything inside a chat.
+- It shows you a map of the important ideas, projects, sources, and relationships.
+- It writes a report that explains the current picture and points back to the sources.
+- It notices weak or missing parts of the report and uses them to decide what to look for next.
 
 ## Quick Start
 
-You do not need to wire together a crawler, database, vector store, scheduler, and frontend. Install the skill once; after that, Argus can guide the whole flow from one Claude Code window.
+You do not need to assemble a crawler, database, vector store, scheduler, and frontend. Install the skill once; after that, Argus guides the whole flow from Claude Code.
 
-### 1. Install Once
+### What You Need
+
+- **Claude Code** installed and logged in.
+- **Git**, to clone this repository.
+- **Node.js / npm**, only for the local dashboard. Argus will run `npm install` for the dashboard when needed.
+
+### Step 1 — Install Argus Once
+
+Run this in your normal terminal:
 
 ```bash
-git clone <this-repo> argus
+git clone https://github.com/X32Studio/Argus.git argus
 mkdir -p ~/.claude/skills
 cp -r argus/.claude/skills/argus ~/.claude/skills/argus
 ```
 
-After this, Argus is available from any Claude Code session on your machine.
+After this, every Claude Code session on your machine can discover the Argus skill.
 
-### 2. Create a Watch Directory
+### Step 2 — Make a Folder for One Research Watch
+
+Each long-running research topic should live in its own folder. Create one and open Claude Code there:
 
 ```bash
-mkdir my-watch && cd my-watch
+mkdir my-watch
+cd my-watch
 claude
 ```
 
-### 3. Run It: Two Ways
+### Step 3 — Tell Argus What to Track
 
-#### Way A — One-line Argus start, all in this session
+Type this inside the Claude Code chat, not in the shell:
 
-This is the recommended path when you want the simplest experience: one Claude Code window, one sentence, Argus walks you through the rest.
+```text
+I want to long-term track open-source agent frameworks
+```
 
-Inside Claude Code, say one line:
+Argus will ask a few simple questions, create the topic files, start the dashboard, and ask how you want to run the loop.
 
-> "I want to long-term track open-source agent frameworks"
+If you are not sure what to choose, choose:
 
-Argus will:
+```text
+Run it here in this session
+```
 
-1. Bootstrap the engine files into the current directory.
-2. Ask 3-5 clarifying questions.
-3. Create and accept the topic config.
-4. Start the dashboard at `http://localhost:5173`.
-5. Ask how to run the loop.
+That is the beginner path. Keep this Claude Code window open, and Argus will keep running iterations. You can watch the dashboard at:
 
-Choose **Run in this session**.
+```text
+http://localhost:5173/t/<slug>
+```
 
-Keep that Claude Code session open. Argus will run research iterations right there and write state to `topics/<slug>/`. If you stop the session, the loop stops, but all files remain on disk and you can resume later.
+`<slug>` is the folder-friendly topic name Argus creates, such as `open-source-agent-frameworks`.
 
-#### Way B — Create the topic, then run `/argus loop` in another terminal
+### Optional — Run the Loop in a Separate Terminal
 
-Use this when you want a separate terminal to own the recurring loop, especially for overnight or weekend tracking.
+Use this only if you want the recurring loop to live in its own Claude Code session, for example overnight.
 
-In the first Claude Code session, start the same way:
+In your first Claude Code session, choose **Hand off to cron via `/argus loop`** or **Just finish topic creation**.
 
-> "I want to long-term track open-source agent frameworks"
-
-When Argus asks how to run, choose **Hand off to cron via `/argus loop`** or **Just finish topic creation**.
-
-Then open a second terminal in the same watch directory:
+Then open another terminal in the same watch folder:
 
 ```bash
 cd path/to/my-watch
 claude
 ```
 
-Inside that second Claude Code session, run:
+Inside that second Claude Code chat, type:
 
 ```text
 /argus loop <slug>
 ```
 
-If there is only one accepted topic, this also works:
+If there is only one accepted topic in the folder, this shorter command also works:
 
 ```text
 /argus loop
 ```
 
-Stop it with:
+To stop the recurring loop:
 
 ```text
 /argus loop stop
-```
-
-Open the dashboard while it runs:
-
-```text
-http://localhost:5173/t/<slug>
 ```
 
 ## How It Works

@@ -1,9 +1,9 @@
-- Completion time: 2026-05-26 15:44 UTC+8
-- Core work summary: Prepared all remaining working-tree changes for publishing.
-- Key changes made: Included remaining runtime cleanup, live Claude files, and test directory changes in the final push.
-- Completion time: 2026-05-26 15:45 UTC+8
-- Core work summary: Prepared the repository for the v0.1 version tag.
-- Key changes made: Added this release log entry before tagging v0.1.
 - Completion time: 2026-05-26 15:46 UTC+8
 - Core work summary: Repositioned README showcase screenshots below the mascot comic.
 - Key changes made: Converted the three showcase screenshots into one side-by-side row in both READMEs.
+- Completion time: 2026-05-26 16:00 UTC+8
+- Core work summary: Made the bilingual Quick Start easier for beginners to follow.
+- Key changes made: Added prerequisites, copy-paste install commands, clearer window-specific instructions, and a default beginner path.
+- Completion time: 2026-05-26 16:02 UTC+8
+- Core work summary: Reworked README messaging around beginner-friendly use scenarios.
+- Key changes made: Replaced jargon-heavy positioning with plain explanations of when to use Argus, how it is used, and what users see.
