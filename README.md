@@ -4,7 +4,7 @@
 
 # Argus
 
-### For research you need to keep coming back to
+### Grow a research tree from a messy field
 
 <p>
   <a href="README.zh-CN.md">中文</a> · <b>English</b>
@@ -16,18 +16,13 @@
 
 ---
 
-Most research tools are good at answering one question. But many real projects are not one question. You keep coming back: new papers appear, new repos launch, policies change, competitors move, and yesterday's answer already feels incomplete.
+Some questions are not solved by one answer, or even by reading a handful of sources.
 
-Use Argus when you need to keep watching a topic over days or weeks:
+A real research field quickly branches: papers, repos, products, people, companies, regulations, claims, counterclaims, and loose ends. The hard part is not searching one more time. The hard part is remembering what you have already seen, which claims are reliable, where the contradictions are, and which branch deserves the next deep dive.
 
-- You are reading papers for a survey, thesis, investment memo, or product decision.
-- You are tracking an open-source ecosystem and want to know which projects matter.
-- You are following a market, regulation, company, or fast-moving technical area.
-- You keep asking "what changed?", "what did we miss?", and "what should we check next?"
+Argus takes a broad topic and keeps digging through it, round after round. Each pass adds sources, notes, relationships, open questions, and report updates to the same growing research tree.
 
-You give Argus the topic in one sentence. It asks a few questions to understand what you care about, then keeps collecting useful sources, remembering what it found, and updating a dashboard for you.
-
-When you come back, you do not start from zero. You see what Argus found, how the pieces relate, what the current story is, and what still needs digging.
+When you come back, you do not start from zero. You see which branches have grown, what sits under each branch, what the current story is, and where Argus thinks the next deeper pass should go.
 
 Everything is packaged as **one Claude Code skill**. If you have Claude Code, you can open one window and let Argus lead you through setup, dashboard launch, research loop, and report updates.
 
@@ -54,32 +49,30 @@ Argus is not just a prompt. It gives you a working research loop and a place to 
     <td width="33%" align="center">
       <img src="asserts/showcase/start.png" alt="Argus start flow in Claude Code" />
       <br />
-      <sub><b>Start from one sentence.</b><br />Tell Argus what you want to follow. It asks a few questions and sets up the watch.</sub>
+      <sub><b>Start from one sentence.</b><br />Tell Argus the messy field you want to understand. It asks a few questions and plants the first research tree.</sub>
     </td>
     <td width="33%" align="center">
       <img src="asserts/showcase/dashborad.png" alt="Argus dashboard knowledge graph" />
       <br />
-      <sub><b>See the field take shape.</b><br />Sources stop being a pile of links and become a map you can explore.</sub>
+      <sub><b>Watch the research tree grow.</b><br />Sources stop being a pile of links and become branches, routes, and relationships you can explore.</sub>
     </td>
     <td width="33%" align="center">
       <img src="asserts/showcase/report.png" alt="Argus generated deep research report" />
       <br />
-      <sub><b>Read the living report.</b><br />The report keeps improving as new evidence arrives, with citations you can check.</sub>
+      <sub><b>Read the living report.</b><br />Each deeper pass makes the report thicker, sharper, and easier to verify.</sub>
     </td>
   </tr>
 </table>
 
-Argus is cute on purpose. The interface should feel approachable, but the loop underneath is stubborn: a hundred little eyes staying open across papers, repos, filings, blogs, news, threads, and anything else the web yields.
-
-Use it when the answer should not be a paragraph. Use it when the answer should become a place you can return to.
+Use Argus when the answer should not be a paragraph. Use it when the answer should become a research tree you can keep returning to.
 
 ## In Plain English
 
-- Argus keeps looking for useful material on your topic.
+- Argus keeps looking for useful material in your field.
 - It saves what it finds instead of leaving everything inside a chat.
-- It shows you a map of the important ideas, projects, sources, and relationships.
+- It connects ideas, projects, sources, and relationships into one growing tree.
 - It writes a report that explains the current picture and points back to the sources.
-- It notices weak or missing parts of the report and uses them to decide what to look for next.
+- It notices weak or missing parts of the report and uses them to decide where to dig deeper next.
 
 ## Quick Start
 

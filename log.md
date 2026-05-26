@@ -1,9 +1,9 @@
-- Completion time: 2026-05-26 15:46 UTC+8
-- Core work summary: Repositioned README showcase screenshots below the mascot comic.
-- Key changes made: Converted the three showcase screenshots into one side-by-side row in both READMEs.
-- Completion time: 2026-05-26 16:00 UTC+8
-- Core work summary: Made the bilingual Quick Start easier for beginners to follow.
-- Key changes made: Added prerequisites, copy-paste install commands, clearer window-specific instructions, and a default beginner path.
 - Completion time: 2026-05-26 16:02 UTC+8
 - Core work summary: Reworked README messaging around beginner-friendly use scenarios.
 - Key changes made: Replaced jargon-heavy positioning with plain explanations of when to use Argus, how it is used, and what users see.
+- Completion time: 2026-05-26 16:05 UTC+8
+- Core work summary: Polished the Chinese README for more natural wording.
+- Key changes made: Replaced awkward translated phrases with clearer Chinese around use cases, dashboard, setup, and workflow.
+- Completion time: 2026-05-26 16:07 UTC+8
+- Core work summary: Reframed the README around iterative deep research in complex domains.
+- Key changes made: Removed mascot fluff and introduced the research-tree mental model across both READMEs.
