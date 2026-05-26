@@ -43,7 +43,7 @@ Argus is not just a prompt. It gives you a working research loop and a place to 
     <td width="33%" align="center">
       <img src="asserts/showcase/start.png" alt="Argus start flow in Claude Code" />
       <br />
-      <sub><b>Start from one sentence.</b><br />Tell Argus the messy field you want to understand. It asks a few questions and plants the first research tree.</sub>
+      <sub><b>Start with one command.</b><br />Run <code>/argus init "&lt;topic&gt;"</code>. Argus asks a few questions and plants the first research tree.</sub>
     </td>
     <td width="33%" align="center">
       <img src="asserts/showcase/dashborad.png" alt="Argus dashboard knowledge graph" />
@@ -106,12 +106,6 @@ Type this command inside the Claude Code chat, not in the shell:
 
 ```text
 /argus init "open-source agent frameworks"
-```
-
-You can also start with natural language:
-
-```text
-I want to long-term track open-source agent frameworks
 ```
 
 Argus will ask a few simple questions, create the topic files, start the dashboard, and ask how you want to run the loop.

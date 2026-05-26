@@ -1,9 +1,9 @@
-- Completion time: 2026-05-26 16:22 UTC+8
-- Core work summary: Audited README command instructions for copy-pasteable usage.
-- Key changes made: Made `/argus init` the primary startup command and added explicit SSH forwarding commands to the app README.
 - Completion time: 2026-05-26 17:07 UTC+8
 - Core work summary: Removed embedded demo videos from the bilingual READMEs.
 - Key changes made: Deleted the top README video blocks while keeping image-based showcase sections intact.
 - Completion time: 2026-05-26 17:08 UTC+8
 - Core work summary: Removed the demo video asset from the repository.
 - Key changes made: Deleted asserts/demo.mp4 after confirming README files no longer reference it.
+- Completion time: 2026-05-26 18:16 UTC+8
+- Core work summary: Removed natural-language startup examples from README instructions.
+- Key changes made: Made `/argus init "<topic>"` the required startup form in both READMEs and showcase captions.
