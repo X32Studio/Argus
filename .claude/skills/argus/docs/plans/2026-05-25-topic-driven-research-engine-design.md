@@ -363,3 +363,29 @@ F 把 `/argus loop` 包装 `/loop`——cron 路径的命令收口。J 不动那
 - **Session 关 = loop 停**:跟 cron 路径的"OS 级跨重启"对比,in-session loop 是 session-bound。State 在 disk,resume 可行,但要用户主动重新触发 skill。
 - **Parent context 上限**:即使三层隔离让 parent 只持轻量 summaries,每个 summary ~几百 token,跑 100+ iterations 仍可能撞 context limit。STOP_CONTEXT 是 graceful exit,不是 silent fail。
 - **不解决"我电脑要关一晚"**:想让 research 整夜跑,选 `/argus loop` cron 路径;在 session 路径下 Claude Code 关电脑/锁屏可能也会暂停 session。
+
+---
+
+## Amendment — 2026-06-16 (K):in-session orchestrator → per-cycle Workflow + ultracode quality
+
+**Decision:** 把 Amendment J 的"skill 手搓 orchestration loop（dispatch Agent + 两层 `Bash sleep 420` watchdog + 手动 parse + presumed-hung 记账）"换成 **per-cycle Workflow**。每个 RESEARCH cycle = 一次 `Workflow(.claude/workflows/argus-cycle.js)` 调用：plan → 并行 deep-read → (budget-gated) 对抗式 verify → 单写者 collate → validate。SYNTHESIS cycle 保持单线程，直接 `Agent` dispatch（Amendment H 立场不变）。
+
+**为什么:**
+- Workflow 的 `agent({schema})` + `parallel()`/`pipeline()` 原生处理 fan-out-and-join，**两层 `Bash sleep 420` watchdog 整段删除**——不再有"即使 subagent 30 秒返回也要等满 7 分钟"的钟表浪费，也不再需要 `## subagent_unnotified` / `## iteration_runner_unnotified` 记账。
+- Orchestrator 退化成一个 JS 控制流，几乎不持有 context，所以 **STOP_CONTEXT 风险大幅下降**（fan-out 的 context 在每个 workflow 内部，不在 skill）。
+- ultracode：`budget` 原语让 fan-out 深度随用户 `+Nk` directive 伸缩；新增**对抗式 claim verification**（per record 派 2-3 个 perspective-diverse skeptic 去 refute mechanism/transfer/evidence claim，过半 overstated/wrong → 在该 record 自己的文件里 flag + 降级）——这是原 methodology 完全没有的能力。
+
+**边界（keep）:**
+- **Cron `/argus loop` 路径完全不动**：cron tick 是一个 plain isolated session，host 不了 Workflow，继续用 `loop.md`/`loop-summary.md` 的手搓 mechanics。Workflow 是 session-bound background task，不跨 Claude Code 重启——这正是 cron 仍然存在的理由。
+- Dashboard、`frontend-contract.md`、`validate-contract.sh`、`topic.yaml` schema、`topics/<slug>/` 数据布局：全部不变。
+- `cycle.txt` 单写者原则不变：**skill** 在 workflow 返回后写它；runner/synthesis agent 仍禁止碰。
+
+**Workflow sandbox 约束（设计要点）:** Workflow script 无文件系统访问、不能 `Date.now()`。所以 JS 只持控制流 + schema，**所有读写都由 agent 做**；`slug/dir/cycle/today` 经 `args` 传入；`budget` 是 ambient（不经 args）。
+
+**双层 quality 分层:**
+- **Prompt-level**（refute-before-write、honesty gate on `analysis_depth`、synthesis completeness self-check）写进 `loop.md`/`loop-summary.md` → cron + workflow 两条路都受益。
+- **Orchestration-level**（并行对抗 verify、budget-scaled fan-out、loop-until-dry）写进 workflow script → 仅 workflow 路。
+
+**测试:** `.claude/skills/argus/test/` 下新增 harness（stub 注入 workflow globals 跑控制流断言）+ bootstrap 拷贝测试，`run.sh` 汇总。Dashboard vitest 不受影响。
+
+**Spec:** `docs/superpowers/specs/2026-06-16-argus-workflow-ultracode-engine-design.md`；实现 plan：`docs/superpowers/plans/2026-06-16-argus-workflow-ultracode-engine.md`。
