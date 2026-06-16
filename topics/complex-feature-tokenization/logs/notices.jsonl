@@ -30,3 +30,20 @@
 {"ts": "2026-06-16T19:00:01Z", "level": "info", "source": "runner", "cycle": 13, "text": "Cycle 13 done: +3 works, 0 flagged. 36 works, 227 nodes / 373 edges. Theme: one-token-per-feature keeps attention linear."}
 {"ts":"2026-06-16T14:54:17Z","level":"info","source":"orchestrator","cycle":13,"text":"Cycle 13 done: +3 works (TP-BERTa, AMFormer, TimeXer), 0 flagged. 36 works, 227 nodes."}
 {"ts":"2026-06-16T14:54:17Z","level":"info","source":"orchestrator","cycle":14,"text":"Cycle 14 starting (mode=SYNTHESIS): refreshing report/main.md with 18 new works since cycle 7."}
+{"ts":"2026-06-16T15:05:23Z","level":"attention","source":"orchestrator","cycle":14,"text":"Cycle 14 SYNTHESIS: brief refreshed + pushed. Default recipe FLIPPED to PLR+MLP-ensemble over attention. Not saturated."}
+{"ts":"2026-06-16T15:05:23Z","level":"blocked","source":"orchestrator","cycle":14,"text":"Waiting on you in CC: how to proceed from the stable-deliverable checkpoint."}
+{"ts":"2026-06-16T15:14:37Z","level":"info","source":"orchestrator","cycle":14,"text":"Got it: expand scope + broader sources. Added 4 routes (TS-foundation, recsys-transfer, industrial, libraries). Resuming."}
+{"ts":"2026-06-16T15:14:37Z","level":"attention","source":"orchestrator","cycle":14,"text":"Scope expanded to 12 routes; 4 new unexplored. Planner steered to broaden source types (repos/blogs/industrial)."}
+{"ts":"2026-06-16T15:14:37Z","level":"info","source":"orchestrator","cycle":15,"text":"Cycle 15 starting (mode=RESEARCH): hunting the 4 new routes + broader sources."}
+{"ts":"2026-06-16T15:28:08Z","level":"info","source":"orchestrator","cycle":15,"text":"Cycle 15 done: +3 works (Chronos, DLRM, pytorch-frame), 0 flagged. 39 works, 249 nodes. 3 new routes opened."}
+{"ts":"2026-06-16T15:28:08Z","level":"info","source":"orchestrator","cycle":16,"text":"Cycle 16 starting (mode=RESEARCH): continue broad sweep incl recsys-transfer route."}
+{"ts":"2026-06-16T15:39:05Z","level":"info","source":"orchestrator","cycle":16,"text":"Cycle 16 done: +3 works (Moirai, compositional/hash embeddings), 0 flagged. 42 works, 266 nodes. All 12 routes active."}
+{"ts":"2026-06-16T15:39:05Z","level":"info","source":"orchestrator","cycle":17,"text":"Cycle 17 starting (mode=RESEARCH): deepen broadened routes."}
+{"ts":"2026-06-16T15:52:10Z","level":"info","source":"orchestrator","cycle":17,"text":"Cycle 17 done: +3 works (TOTEM, RealMLP, HC-Kaggle), 0 flagged. 45 works, 290 nodes. Technique near-dups noted for dedup."}
+{"ts":"2026-06-16T15:52:10Z","level":"info","source":"orchestrator","cycle":18,"text":"Cycle 18 starting (mode=RESEARCH)."}
+{"ts":"2026-06-16T16:03:15Z","level":"info","source":"orchestrator","cycle":18,"text":"Cycle 18 done: +3 works (TimesFM, rtdl, TabPFN-2.5), 0 flagged. 48 works, 302 nodes. Works getting incremental."}
+{"ts":"2026-06-16T16:03:15Z","level":"info","source":"orchestrator","cycle":19,"text":"Cycle 19 starting (mode=RESEARCH). Monitoring for substantive saturation."}
+{"ts":"2026-06-16T16:15:41Z","level":"attention","source":"orchestrator","cycle":19,"text":"Cycle 19 done: +3 GAP-RELEVANT works (TabPFN-Wide, FiLM modulation, TabFormer). 51 works, 323 nodes. Deeper dig paying off."}
+{"ts":"2026-06-16T16:15:41Z","level":"info","source":"orchestrator","cycle":20,"text":"Cycle 20 starting (mode=RESEARCH). Synthesis consolidation next at cycle 21."}
+{"ts":"2026-06-16T16:28:11Z","level":"info","source":"orchestrator","cycle":20,"text":"Cycle 20 done: +3 works (TabFlex, LimiX, RQ-Kmeans). 54 works, 339 nodes. Entering synthesis."}
+{"ts":"2026-06-16T16:28:11Z","level":"info","source":"orchestrator","cycle":21,"text":"Cycle 21 starting (mode=SYNTHESIS): consolidate broadened scope (cycles 15-20) + technique-dedup pass."}

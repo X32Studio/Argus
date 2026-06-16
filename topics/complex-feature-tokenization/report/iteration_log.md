@@ -1,5 +1,71 @@
 # Iteration Log — Complex Feature Tokenization for Deep Tabular Models
 
+## Synthesis iteration — cycle 21 — 2026-06-16 (UTC)
+
+**Mode:** SYNTHESIS (third synthesis pass; REFRESH of the cycle-14 brief; synthesis_every_n_cycles = 7).
+
+**Files read:**
+- Methodology `.claude/loop-summary.md`; topic config `topic.yaml`, `proposal.md` (incl. the cycle-14 "Scope
+  expansion" section).
+- Indexes/logs: `master_index.jsonl` (54 works), `route_index.json` (all 12 routes), `knowledge_graph.json`
+  (339→335 nodes / 571 edges), `logs/research_state.md` (orchestrator_directive + cycles 15–20 in full).
+- Prior report: `report/main.md` (cycle-14 version, full), `reference_index.md`, `iteration_log.md`.
+- All 18 NEW records (cycles 15–20) read in full: tabpfn-wide-extreme-feature-counts,
+  feature-aware-modulation-temporal-tabular, tabformer-tabular-transformers-multivariate-time-series,
+  chronos-time-series-tokenization, totem-tokenized-time-series-embeddings, moirai-unified-universal-forecasting,
+  timesfm-patch-decoder-foundation, rqkmeans-semantic-ids-generative-retrieval,
+  compositional-embeddings-quotient-remainder, hash-embeddings-efficient-word-representations,
+  dlrm-criteo-ctr-feature-encoding, high-cardinality-categorical-encoding-kaggle-writeup,
+  pytorch-frame-stype-library, rtdl-research-tabular-dl-library, realmlp-better-by-default-tabular-mlp,
+  tabflex-scaling-tabpfn-linear-attention, limix-large-tabular-foundation-model, tabpfn-2-5-foundation-model.
+
+**What changed in the main report (vs cycle 14):**
+- **Default UNCHANGED, confirmed from 4 new literatures.** PLR + parameter-efficient MLP ensemble on time-based
+  splits survives; RealMLP and FiLM-on-TabM independently reinforce the linear-cost-MLP-at-width verdict. Saturation
+  on the recommendation.
+- **New cross-domain CONVERGENCE section in the executive summary:** "one fixed-width token per field in a shared
+  d-dim space" recurs across DLRM, pytorch-frame, Moirai, TabFormer, rtdl — stated explicitly with the design
+  implication (emit one d-token per field, keep encoders swappable).
+- **recommended-approaches** re-grounded: each component mapped to a runnable library (rtdl numerical leg,
+  pytorch-frame registry / high-cardinality escape hatch, TabM backbone). Recipe B (temporal-static) now gives an
+  explicit ranked recipe — FiLM (cheap) / TabFormer row-compression (structural) / TimeXer (exogenous fusion). Recipe
+  D (buy-don't-build) upgraded: TabPFN-2.5 / LimiX / TabPFN-Wide push the feature ceiling past 70.
+- **categorical-and-high-cardinality** turned from a thin pillar into a bounded-memory primitive menu (QR, hash,
+  RQ-Kmeans, target/ordered encoding) + the high-cardinality convergence (shared codebook + unique key).
+- **open-problems** re-evaluated the headline gap precisely: TabPFN-Wide covers width (HDLSS only), TabFormer the
+  temporal-static skeleton, FiLM token-level numeric fusion — but no single work covers high-cardinality INPUTS +
+  per-row temporal + 70+ width + many-rows + time-split jointly. Added the NEW grouping-vs-1:1-token tension
+  (TabPFN-2.5 vs TabPFN-Wide).
+
+**Technique-dedup (cycle 21):** merged 4 clear semantic duplicate technique nodes →
+vqvae-codebook-tokenization→vq-vae-quantization; revin-instance-normalization→instance-normalization-revin;
+patch-tokenization-time-series→temporal-patch-tokenization; rqvae-semantic-ids→rq-vae-semantic-id. Rewired all edges
+onto canonicals, deduped triples (0 collisions, 0 self-loops), deleted duplicates. 339→335 nodes (technique 144→140);
+571 edges preserved; `validate-contract.sh --fix` → exit 0. Recorded under "## technique_dedup cycle 21" in
+research_state.md. Conservatively did NOT merge related-not-duplicate techniques (Chronos value-bins vs VQ-VAE vs
+TabFormer per-field bins; RQ-Kmeans vs RQ-VAE).
+
+**Newly promoted Must-Read:** tabformer-tabular-transformers-multivariate-time-series (closest to the full setting),
+pytorch-frame-stype-library + rtdl (runnable scaffolds), tabpfn-2-5-foundation-model (stronger buy-don't-build).
+
+**Newly identified weak / risky claims:** TabPFN-Wide width is HDLSS-only (not the user's regime); FiLM is
+numeric-only + PLR-incompatible; RQ-Kmeans/QR never see raw features and utilization≠accuracy; DLRM "scales" = tables
+not tokens; TabPFN-2.5/LimiX are vendor/self-reported (medium confidence); the grouping-vs-1:1-token tension is
+unresolved.
+
+**Completeness self-check:** all 51 distinct `[Ref:]` slugs in main.md resolve to real records (0 broken);
+reference_index covers all 54 records exactly once. SAINT is the only record not cited in main.md body (tangential —
+row attention does not solve feature scaling); retained in reference_index.
+
+**Saturation:** saturation_signal = TRUE. The cycles 15–20 additions mostly CONFIRM rather than change the
+recommendations: the default is unchanged and now triangulated from 4 literatures; the genuinely new substance
+(FiLM, TabFormer, foundation-model ceiling, runnable libraries) fills in the temporal/library gaps but does NOT
+overturn any conclusion, and the residual headline gap (joint high-cardinality + per-row-temporal at 70+ width on
+many rows) is inherently the user's own unpublished setting. Diminishing returns — most new works are variants or
+adjacent-domain transfers of established mechanisms.
+
+**Published:** <commit SHA recorded after push>.
+
 ## Synthesis iteration — cycle 14 — 2026-06-16 (UTC)
 
 **Mode:** SYNTHESIS (second synthesis pass; REFRESH of the cycle-7 brief; synthesis_every_n_cycles = 7).

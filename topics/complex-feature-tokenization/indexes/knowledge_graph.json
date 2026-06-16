@@ -1206,6 +1206,576 @@
       "id": "pitfall:synthetic-favorable-evaluation",
       "kind": "pitfall",
       "label": "AMFormer 'arithmetic interaction is necessary' necessity claim leans on synthetic monomial data; real-world breadth is weak (4 datasets, single run); re-validate on in-the-wild TabReD/TabArena"
+    },
+    {
+      "id": "route:timeseries-foundation-models",
+      "kind": "route",
+      "label": "Time-Series Foundation Models"
+    },
+    {
+      "id": "route:recsys-tokenization-transfer",
+      "kind": "route",
+      "label": "Recsys & Semantic-ID Tokenization (transfer)"
+    },
+    {
+      "id": "route:industrial-feature-systems",
+      "kind": "route",
+      "label": "Industrial & Production Feature Systems"
+    },
+    {
+      "id": "route:libraries-and-implementations",
+      "kind": "route",
+      "label": "Libraries & Reference Implementations"
+    },
+    {
+      "id": "pitfall:dense-features-collapsed-into-one-token",
+      "kind": "pitfall",
+      "label": "All dense features collapsed into one token (no per-numerical interaction)"
+    },
+    {
+      "id": "pitfall:fixed-range-overflow-and-precision-loss",
+      "kind": "pitfall",
+      "label": "Fixed [-15,+15] quantization range: overflow on spikes + precision loss"
+    },
+    {
+      "id": "pitfall:no-builtin-high-cardinality-compression",
+      "kind": "pitfall",
+      "label": "No built-in high-cardinality categorical compression"
+    },
+    {
+      "id": "pitfall:no-learned-missingness-mask",
+      "kind": "pitfall",
+      "label": "No learned missingness mask (NaN as index-0 only)"
+    },
+    {
+      "id": "pitfall:scaling-claim-conflates-tables-with-interacting-tokens",
+      "kind": "pitfall",
+      "label": "'Scales' conflates big embedding tables with many interacting feature tokens"
+    },
+    {
+      "id": "pitfall:timestamp-not-true-temporal-tokenization",
+      "kind": "pitfall",
+      "label": "Timestamp = calendar features, not patch/forecast temporal tokenization"
+    },
+    {
+      "id": "pitfall:univariate-only-no-covariates-or-categoricals",
+      "kind": "pitfall",
+      "label": "Univariate only — no covariates, static attributes, or categoricals"
+    },
+    {
+      "id": "technique:explicit-pairwise-dotproduct-interaction",
+      "kind": "technique",
+      "label": "Explicit pairwise dot-product feature interaction (DLRM)"
+    },
+    {
+      "id": "technique:model-parallel-embedding-sharding",
+      "kind": "technique",
+      "label": "Model-parallel embedding-table sharding"
+    },
+    {
+      "id": "technique:regression-via-classification-cross-entropy",
+      "kind": "technique",
+      "label": "Regression-via-Classification (cross-entropy over value bins)"
+    },
+    {
+      "id": "technique:scale-and-uniform-quantize-value-tokenization",
+      "kind": "technique",
+      "label": "Scale + Uniform-Quantize Value Tokenization (Chronos)"
+    },
+    {
+      "id": "technique:stype-encoder-registry",
+      "kind": "technique",
+      "label": "stype -> StypeEncoder -> concatenate registry (PyTorch Frame)"
+    },
+    {
+      "id": "transferable_idea:numeric-value-binning-into-fixed-codebook-for-transformer",
+      "kind": "transferable_idea",
+      "label": "Numeric value binning into a fixed codebook for an off-the-shelf transformer"
+    },
+    {
+      "id": "transferable_idea:shared-d-field-token-space",
+      "kind": "transferable_idea",
+      "label": "Shared d-dim field-token space (one token per field)"
+    },
+    {
+      "id": "transferable_idea:stype-encoder-registry-for-heterogeneous-feature-typing",
+      "kind": "transferable_idea",
+      "label": "stype/encoder registry as a feature-typing front-end for 70+ heterogeneous features"
+    },
+    {
+      "id": "work:chronos-time-series-tokenization",
+      "kind": "work",
+      "label": "Chronos: Learning the Language of Time Series",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:dlrm-criteo-ctr-feature-encoding",
+      "kind": "work",
+      "label": "Deep Learning Recommendation Model (DLRM)",
+      "year": 2019,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:pytorch-frame-stype-library",
+      "kind": "work",
+      "label": "PyTorch Frame: A Modular Framework for Multi-Modal Tabular Learning",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:compositional-embeddings-quotient-remainder",
+      "kind": "work",
+      "label": "Compositional Embeddings Using Complementary Partitions (Quotient-Remainder trick)",
+      "year": 2020,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:quotient-remainder-trick",
+      "kind": "technique",
+      "label": "Quotient-Remainder Trick (two complementary index maps share an O(sqrt(|S|)) embedding budget)"
+    },
+    {
+      "id": "technique:complementary-partition-embeddings",
+      "kind": "technique",
+      "label": "Complementary Partition Embeddings (multiple complementary category partitions composed into one embedding)"
+    },
+    {
+      "id": "technique:hashing-trick",
+      "kind": "technique",
+      "label": "Hashing Trick (fixed hash maps high-cardinality ids into a bounded embedding table; collisions tolerated)"
+    },
+    {
+      "id": "transferable_idea:bound-high-cardinality-categorical-memory",
+      "kind": "transferable_idea",
+      "label": "Bound high-cardinality categorical embedding memory to O(sqrt(|S|)) via complementary-partition composition (no accuracy loss vs full table on recsys)"
+    },
+    {
+      "id": "pitfall:cqr-categorical-only-no-accuracy-gain",
+      "kind": "pitfall",
+      "label": "Compositional/QR embeddings are a categorical memory-compression trick only: they save memory, do NOT improve accuracy, and give no help for numerical features"
+    },
+    {
+      "id": "work:moirai-unified-universal-forecasting",
+      "kind": "work",
+      "label": "Unified Training of Universal Time Series Forecasting Transformers (Moirai)",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:any-variate-attention",
+      "kind": "technique",
+      "label": "Any-Variate Attention (binary field-ID bias + RoPE; parameter-free, unbounded number of variates)"
+    },
+    {
+      "id": "technique:multi-patch-size-projection",
+      "kind": "technique",
+      "label": "Multi-Patch-Size Projection Bank (per-frequency patch sizes {8,16,32,64,128} into one model)"
+    },
+    {
+      "id": "technique:mixture-distribution-head",
+      "kind": "technique",
+      "label": "Mixture-Distribution Output Head (4-component mixture for flexible predictive distributions)"
+    },
+    {
+      "id": "technique:channel-as-token",
+      "kind": "technique",
+      "label": "Channel-as-Token (one variate/channel -> one token over which attention runs)"
+    },
+    {
+      "id": "pitfall:quadratic-variates-times-length",
+      "kind": "pitfall",
+      "label": "Any-variate attention is quadratic in (variates x sequence length): flattening all variates+patches into one sequence blows up at 70+ features x long histories"
+    },
+    {
+      "id": "pitfall:no-categorical-or-static-path",
+      "kind": "pitfall",
+      "label": "Moirai has no categorical or static-covariate pathway: variates are numeric series only; mixed numeric+categorical+static heterogeneity is unmodeled"
+    },
+    {
+      "id": "work:hash-embeddings-efficient-word-representations",
+      "kind": "work",
+      "label": "Hash Embeddings for Efficient Word Representations",
+      "year": 2017,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:hash-embedding",
+      "kind": "technique",
+      "label": "Hash Embedding (importance-weighted multi-hash into a shared component-vector pool; learnable collision repair)"
+    },
+    {
+      "id": "pitfall:first-layer-d1-collision-indistinguishable",
+      "kind": "pitfall",
+      "label": "With a single hash function (k=1) hash embeddings degenerate to the plain hashing trick: collided ids are indistinguishable; multi-hash importance weights are what repair collisions"
+    },
+    {
+      "id": "pitfall:hashing-only-helps-above-cardinality-threshold",
+      "kind": "pitfall",
+      "label": "Hashing/hash-embedding compression only pays off above a cardinality threshold: below it a plain learned embedding table is as good and simpler"
+    },
+    {
+      "id": "work:totem-tokenized-time-series-embeddings",
+      "kind": "work",
+      "label": "TOTEM: TOkenized Time series EMbeddings for General Time Series Analysis",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:realmlp-better-by-default-tabular-mlp",
+      "kind": "work",
+      "label": "Better by Default: Strong Pre-Tuned MLPs and Boosted Trees on Tabular Data (RealMLP)",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "kind": "work",
+      "label": "High-Cardinality Categorical & Feature-Encoding Practice in Winning Tabular / Production Pipelines",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:channel-independent-tokenization",
+      "kind": "technique",
+      "label": "Channel-Independent Tokenization (flatten each channel into its own univariate token sequence sharing ONE codebook)"
+    },
+    {
+      "id": "technique:fixed-uniform-value-binning",
+      "kind": "technique",
+      "label": "Fixed Uniform Value Binning (Chronos-style scale-then-uniform-quantize value tokens)"
+    },
+    {
+      "id": "technique:pbld-periodic-numerical-embeddings",
+      "kind": "technique",
+      "label": "PBLD Periodic-Bias-Linear-Densenet Numerical Embeddings (per-feature cosine basis + original value -> R^4)"
+    },
+    {
+      "id": "technique:learnable-diagonal-scaling-layer",
+      "kind": "technique",
+      "label": "Learnable Diagonal Scaling Layer (per-feature scalar s_i before first linear; implicit feature-importance reweighting)"
+    },
+    {
+      "id": "technique:meta-tuned-default-hyperparameters",
+      "kind": "technique",
+      "label": "Meta-Tuned Default (TD) Hyperparameters (tune one config on a meta-train suite, freeze, ship no-HPO defaults)"
+    },
+    {
+      "id": "technique:ordered-target-statistics",
+      "kind": "technique",
+      "label": "Ordered Target Statistics (CatBoost: encode each example from random-permutation prefix; leakage-controlled)"
+    },
+    {
+      "id": "technique:out-of-fold-target-encoding",
+      "kind": "technique",
+      "label": "Out-of-Fold (K-fold) Target Encoding (encode each fold from the other folds to block label leakage)"
+    },
+    {
+      "id": "technique:leave-one-out-target-encoding",
+      "kind": "technique",
+      "label": "Leave-One-Out Target Encoding (exclude current row's label; still subtly biased)"
+    },
+    {
+      "id": "technique:count-frequency-encoding",
+      "kind": "technique",
+      "label": "Count/Frequency Encoding (label-free popularity scalar; complements target encoding)"
+    },
+    {
+      "id": "technique:empirical-bayes-target-smoothing",
+      "kind": "technique",
+      "label": "Empirical-Bayes Target Smoothing (Micci-Barreca: shrink rare-category means toward global prior by count-dependent weight)"
+    },
+    {
+      "id": "technique:entity-embeddings",
+      "kind": "technique",
+      "label": "Entity Embeddings (learned dense categorical embedding tables)"
+    },
+    {
+      "id": "technique:scalar-encoding-decoupled-from-cardinality",
+      "kind": "technique",
+      "label": "Scalar Encoding Decoupled from Cardinality (any-cardinality categorical -> fixed handful of dense scalar columns)"
+    },
+    {
+      "id": "pitfall:no-heterogeneous-feature-fusion",
+      "kind": "pitfall",
+      "label": "No heterogeneous-feature fusion (univariate/channel-independent only; no categorical/static/missing path)"
+    },
+    {
+      "id": "pitfall:avgwins-count-metric-not-mean-error",
+      "kind": "pitfall",
+      "label": "AvgWins is a count-of-best-cells metric, NOT mean error (narrow leads inflate the headline)"
+    },
+    {
+      "id": "pitfall:high-cardinality-fixed-8dim-embedding",
+      "kind": "pitfall",
+      "label": "High-cardinality fixed-8-dim embedding (RealMLP: constant dim, no frequency awareness, untested on thousands of categories)"
+    },
+    {
+      "id": "pitfall:route-mismatch-no-explicit-feature-interaction",
+      "kind": "pitfall",
+      "label": "Route mismatch: filed under feature-interaction-selection but models NO explicit feature interaction (diagonal scaling is per-feature reweighting only)"
+    },
+    {
+      "id": "pitfall:target-encoding-label-leakage",
+      "kind": "pitfall",
+      "label": "Target-encoding label leakage (greedy full-data target stats leak the row's own label; OOF/LOO/ordered construction is mandatory)"
+    },
+    {
+      "id": "work:timesfm-patch-decoder-foundation",
+      "kind": "work",
+      "label": "A decoder-only foundation model for time-series forecasting (TimesFM)",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:rtdl-research-tabular-dl-library",
+      "kind": "work",
+      "label": "rtdl — Research on Tabular Deep Learning (FT-Transformer, PLE/Periodic/PLR reference library)",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tabpfn-2-5-foundation-model",
+      "kind": "work",
+      "label": "TabPFN-2.5: Advancing the State of the Art in Tabular Foundation Models",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "transferable_idea:continuous-patch-token-mlp-embed",
+      "kind": "transferable_idea",
+      "label": "Continuous patch-as-token via RevIN-scale + small MLP residual embed (ordinality-preserving, MSE in value space)"
+    },
+    {
+      "id": "pitfall:timesfm-univariate-no-covariates-and-in-corpus-not-zero-shot",
+      "kind": "pitfall",
+      "label": "TimesFM is univariate-only (no covariates/categoricals/static); Electricity/Traffic/Weather/M4 are IN training, so not zero-shot there"
+    },
+    {
+      "id": "technique:linformer-kv-compression",
+      "kind": "technique",
+      "label": "Linformer low-rank key/value compression (sub-quadratic feature-axis attention)"
+    },
+    {
+      "id": "technique:feature-cell-grouping",
+      "kind": "technique",
+      "label": "Feature-cell grouping (bundle adjacent feature cells, group size 3) to compress feature-axis sequence"
+    },
+    {
+      "id": "transferable_idea:feature-grouping-for-many-columns",
+      "kind": "transferable_idea",
+      "label": "Group adjacent feature-cells to extend a permutation-invariant feature tokenizer to many more columns at ~fixed attention cost"
+    },
+    {
+      "id": "technique:thinking-rows-attention-sinks",
+      "kind": "technique",
+      "label": "Learned thinking rows appended to in-context set as extra-compute / attention-sink slots"
+    },
+    {
+      "id": "technique:tta-feature-transform-svd-augmentation",
+      "kind": "technique",
+      "label": "Test-time augmentation over feature transforms (robust/quantile/standard scaling, soft clipping) + appended SVD pseudo-features"
+    },
+    {
+      "id": "pitfall:proprietary-distillation-engine-noncommercial-license",
+      "kind": "pitfall",
+      "label": "TabPFN-2.5 distillation-to-MLP/tree engine is proprietary/unreleased; weights under non-commercial license"
+    },
+    {
+      "id": "pitfall:vendor-report-default-xgboost-baseline",
+      "kind": "pitfall",
+      "label": "TabPFN-2.5 is a vendor technical report; the 100% win rate is vs DEFAULT (untuned) XGBoost — the strong claim is the 87% rate / AutoGluon-1.4 match"
+    },
+    {
+      "id": "work:tabpfn-wide-extreme-feature-counts",
+      "kind": "work",
+      "label": "TabPFN-Wide: Continued Pre-Training for Extreme Feature Counts",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:feature-widening-synthetic-prior",
+      "kind": "technique",
+      "label": "Feature-Widening Synthetic Prior (TabPFN-Wide: continuous-widening + redundant-copy augmentation of the synthetic SCM prior to push the per-feature tokenizer past its feature-count ceiling)"
+    },
+    {
+      "id": "technique:continued-pretraining-foundation-adaptation",
+      "kind": "technique",
+      "label": "Continued Pre-Training for Foundation-Model Adaptation (adapt frozen TabPFNv2 weights to a new feature-count regime without architecture/tokenizer change)"
+    },
+    {
+      "id": "pitfall:hdlss-prior-assumes-low-sample-high-correlation",
+      "kind": "pitfall",
+      "label": "HDLSS-scoped prior: feature-widening assumes high-dim-low-sample-size with high feature correlation; unproven on many-row, low-correlation, mixed temporal/static wide tables"
+    },
+    {
+      "id": "transferable_idea:prior-engineering-to-extend-feature-ceiling",
+      "kind": "transferable_idea",
+      "label": "Prior-engineering (data-side) to extend a per-feature tokenizer's feature ceiling: widen the synthetic pretraining prior + continued pre-training, no tokenizer/architecture change"
+    },
+    {
+      "id": "work:feature-aware-modulation-temporal-tabular",
+      "kind": "work",
+      "label": "Feature-aware Modulation for Learning from Temporal Tabular Data",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:film-feature-wise-linear-modulation",
+      "kind": "technique",
+      "label": "FiLM Feature-wise Linear Modulation (hypernetwork emits per-feature affine gamma/beta conditioning)"
+    },
+    {
+      "id": "technique:yeo-johnson-power-transform",
+      "kind": "technique",
+      "label": "Yeo-Johnson Power Transform (signed-value power transform for skewed/heavy-tailed numerics; here time-conditioned)"
+    },
+    {
+      "id": "technique:time-conditioned-feature-modulation",
+      "kind": "technique",
+      "label": "Time-Conditioned Per-Feature Modulation (shared temporal embedding psi(t) drives a per-feature Yeo-Johnson + affine input-level transform; FiLM-for-tables)"
+    },
+    {
+      "id": "transferable_idea:time-conditioned-per-feature-modulation",
+      "kind": "transferable_idea",
+      "label": "Time-conditioned per-feature affine+power reparameterization: a cheap drop-in input-level transform that aligns each feature to a shared temporal embedding before any tokenizer"
+    },
+    {
+      "id": "pitfall:incompatible-with-plr-embeddings",
+      "kind": "pitfall",
+      "label": "Time-conditioned input modulation conflicts with PLR/periodic numerical embeddings (both reshape the numeric input distribution; gains do not stack and may cancel)"
+    },
+    {
+      "id": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "kind": "work",
+      "label": "Tabular Transformers for Modeling Multivariate Time Series (TabBERT / TabGPT / TabFormer)",
+      "year": 2021,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:per-field-quantization-local-vocabulary",
+      "kind": "technique",
+      "label": "Per-Field Quantization to Local Vocabulary (every column discretized into its own finite vocabulary, then learned per-bin embedding)"
+    },
+    {
+      "id": "technique:hierarchical-field-then-sequence-transformer",
+      "kind": "technique",
+      "label": "Hierarchical Field-then-Sequence Transformer (field-transformer compresses N field-tokens to one row embedding, then a sequence-transformer over rows)"
+    },
+    {
+      "id": "technique:masked-field-modeling-mlm",
+      "kind": "technique",
+      "label": "Masked Field Modeling (BERT-style MLM over quantized field tokens; TabBERT pretraining)"
+    },
+    {
+      "id": "transferable_idea:uniform-quantized-token-interface-for-mixed-fields",
+      "kind": "transferable_idea",
+      "label": "Uniform quantized-token interface for mixed fields: discretize numeric + categorical fields alike into per-field vocabularies so a single transformer ingests heterogeneous types uniformly"
+    },
+    {
+      "id": "transferable_idea:row-compression-before-temporal-model",
+      "kind": "transferable_idea",
+      "label": "Row-compression before the temporal model: collapse a row's N field-tokens to one row embedding (field-transformer) so the sequence model sees rows, not cells -> controls sequence length on wide tables"
+    },
+    {
+      "id": "technique:per-feature-token-stream",
+      "kind": "technique",
+      "label": "Per-Feature Token Stream (each feature emitted as its own token in a flat sequence; the granularity TabFormer's row-compression is an alternative to)"
+    },
+    {
+      "id": "pitfall:quantization-discards-numerical-order",
+      "kind": "pitfall",
+      "label": "Per-field quantization discards numerical order: bin-id embeddings are unordered lookups, losing magnitude/monotonicity (the weakness PLR/AutoDis fix)"
+    },
+    {
+      "id": "pitfall:weak-baselines-raw-features-only",
+      "kind": "pitfall",
+      "label": "TabFormer frozen-feature gains shown only vs raw features (no GBDT / FT-Transformer / numerical-embedding bar)"
+    },
+    {
+      "id": "pitfall:scaling-untested-beyond-12-fields",
+      "kind": "pitfall",
+      "label": "TabFormer validated only at 11-12 fields on synthetic fraud data; field-then-sequence hierarchy untested at 70+ heterogeneous fields"
+    },
+    {
+      "id": "work:tabflex-scaling-tabpfn-linear-attention",
+      "kind": "work",
+      "label": "TabFlex: Scaling Tabular Learning to Millions with Linear Attention"
+    },
+    {
+      "id": "work:rqkmeans-semantic-ids-generative-retrieval",
+      "kind": "work",
+      "label": "Learned Semantic-ID Codebooks via RQ-Kmeans (OneRec lineage)"
+    },
+    {
+      "id": "work:limix-large-tabular-foundation-model",
+      "kind": "work",
+      "label": "LimiX: A Large Tabular Foundation Model"
+    },
+    {
+      "id": "technique:non-causal-linear-attention",
+      "kind": "technique",
+      "label": "Non-causal linear attention (phi=elu+1) for order-invariant tabular ICL"
+    },
+    {
+      "id": "technique:sample-as-token-icl",
+      "kind": "technique",
+      "label": "Sample-as-token in-context learning (one row = one token)"
+    },
+    {
+      "id": "technique:softmax-self-attention",
+      "kind": "technique",
+      "label": "Softmax self-attention"
+    },
+    {
+      "id": "technique:mamba-ssm",
+      "kind": "technique",
+      "label": "Mamba state-space sequence model"
+    },
+    {
+      "id": "technique:rq-kmeans-residual-quantization",
+      "kind": "technique",
+      "label": "RQ-Kmeans: residual quantization with k-means centroid codebooks"
+    },
+    {
+      "id": "technique:discriminative-feature-encoding",
+      "kind": "technique",
+      "label": "Discriminative Feature Encoding (low-rank additive column-identity code)"
+    },
+    {
+      "id": "technique:context-conditional-masked-modeling",
+      "kind": "technique",
+      "label": "Context-Conditional Masked Modeling (masked joint-distribution objective)"
+    },
+    {
+      "id": "technique:two-way-feature-sample-attention",
+      "kind": "technique",
+      "label": "Two-way feature-axis + sample-axis attention"
+    },
+    {
+      "id": "transferable_idea:kmeans-on-residuals-codebook-for-high-cardinality",
+      "kind": "transferable_idea",
+      "label": "K-means-on-residuals as a training-free codebook for high-cardinality entities"
+    },
+    {
+      "id": "pitfall:random-projection-not-feature-tokenization",
+      "kind": "pitfall",
+      "label": "TabFlex 'thousands of features' is a random-projection ceiling, not faithful feature tokenization"
+    },
+    {
+      "id": "pitfall:utilization-is-not-downstream-accuracy",
+      "kind": "pitfall",
+      "label": "Codebook utilization/entropy is a tokenizer-internal metric, not downstream accuracy"
+    },
+    {
+      "id": "pitfall:quantizer-sees-one-prefused-embedding",
+      "kind": "pitfall",
+      "label": "RQ-Kmeans quantizer sees one pre-fused embedding, never raw heterogeneous features"
+    },
+    {
+      "id": "pitfall:dispatch-title-claims-tabpfn25-headtohead-but-benchmarks-tabpfn-v2",
+      "kind": "pitfall",
+      "label": "LimiX benchmarks TabPFN-v2/TabICL(v1), not TabPFN-2.5/TabICLv2 head-to-head"
     }
   ],
   "edges": [
@@ -3073,7 +3643,997 @@
       "src": "work:timexer-exogenous-endogenous-fusion",
       "dst": "pitfall:single-global-token-bottleneck-on-many-interacting-features",
       "rel": "has_pitfall"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "route:timeseries-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "technique:scale-and-uniform-quantize-value-tokenization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "technique:regression-via-classification-cross-entropy",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:scale-and-uniform-quantize-value-tokenization",
+      "dst": "transferable_idea:numeric-value-binning-into-fixed-codebook-for-transformer",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "work:temporal-fusion-transformer",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "pitfall:fixed-range-overflow-and-precision-loss",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "pitfall:univariate-only-no-covariates-or-categoricals",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:scale-and-uniform-quantize-value-tokenization",
+      "dst": "technique:autodis",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "route:libraries-and-implementations",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "technique:stype-encoder-registry",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "technique:feature-tokenizer",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "technique:plr-embedding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "technique:hard-discretization-binning",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "work:excelformer-semi-permeable-attention",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "work:trompt-prompt-tabular",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "work:tabnet-attentive-interpretable-tabular",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "work:tabtransformer-contextual-categorical-embeddings",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:stype-encoder-registry",
+      "dst": "transferable_idea:stype-encoder-registry-for-heterogeneous-feature-typing",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:stype-encoder-registry",
+      "dst": "route:libraries-and-implementations",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "pitfall:no-learned-missingness-mask",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "pitfall:timestamp-not-true-temporal-tokenization",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:pytorch-frame-stype-library",
+      "dst": "pitfall:no-builtin-high-cardinality-compression",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "route:industrial-feature-systems",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "work:entity-embeddings-categorical-variables",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "work:dcn-v2-deep-cross-network",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "work:autoint-feature-interaction",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "work:tiger-rqvae-semantic-ids",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "technique:explicit-pairwise-dotproduct-interaction",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "technique:model-parallel-embedding-sharding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:explicit-pairwise-dotproduct-interaction",
+      "dst": "transferable_idea:shared-d-field-token-space",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "pitfall:dense-features-collapsed-into-one-token",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:dlrm-criteo-ctr-feature-encoding",
+      "dst": "pitfall:scaling-claim-conflates-tables-with-interacting-tokens",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:compositional-embeddings-quotient-remainder",
+      "dst": "route:recsys-tokenization-transfer",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:compositional-embeddings-quotient-remainder",
+      "dst": "technique:quotient-remainder-trick",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:compositional-embeddings-quotient-remainder",
+      "dst": "technique:complementary-partition-embeddings",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:quotient-remainder-trick",
+      "dst": "technique:hashing-trick",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:compositional-embeddings-quotient-remainder",
+      "dst": "technique:hashing-trick",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:quotient-remainder-trick",
+      "dst": "transferable_idea:bound-high-cardinality-categorical-memory",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:complementary-partition-embeddings",
+      "dst": "technique:rq-vae-semantic-id",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:quotient-remainder-trick",
+      "dst": "pitfall:cqr-categorical-only-no-accuracy-gain",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:compositional-embeddings-quotient-remainder",
+      "dst": "work:dlrm-criteo-ctr-feature-encoding",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "route:timeseries-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "technique:any-variate-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "technique:multi-patch-size-projection",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "technique:temporal-patch-tokenization",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "technique:mixture-distribution-head",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:any-variate-attention",
+      "dst": "route:feature-interaction-selection",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:any-variate-attention",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:any-variate-attention",
+      "dst": "technique:channel-as-token",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "work:itransformer-inverted-transformers",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "work:temporal-fusion-transformer",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "pitfall:quadratic-variates-times-length",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:moirai-unified-universal-forecasting",
+      "dst": "pitfall:no-categorical-or-static-path",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:chronos-time-series-tokenization",
+      "dst": "work:moirai-unified-universal-forecasting",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:hash-embeddings-efficient-word-representations",
+      "dst": "route:recsys-tokenization-transfer",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:hash-embeddings-efficient-word-representations",
+      "dst": "technique:hash-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:hash-embedding",
+      "dst": "technique:hashing-trick",
+      "rel": "extends"
+    },
+    {
+      "src": "technique:hash-embedding",
+      "dst": "technique:hashing-trick",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:hash-embeddings-efficient-word-representations",
+      "dst": "technique:hashing-trick",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:hash-embedding",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:hash-embeddings-efficient-word-representations",
+      "dst": "work:entity-embeddings-categorical-variables",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:hash-embedding",
+      "dst": "route:categorical-high-cardinality",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:hash-embedding",
+      "dst": "route:categorical-high-cardinality",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:hash-embeddings-efficient-word-representations",
+      "dst": "pitfall:first-layer-d1-collision-indistinguishable",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:hash-embeddings-efficient-word-representations",
+      "dst": "pitfall:hashing-only-helps-above-cardinality-threshold",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:hash-embeddings-efficient-word-representations",
+      "dst": "technique:hashing-trick",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "route:timeseries-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "technique:vq-vae-quantization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "technique:instance-normalization-revin",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "technique:channel-independent-tokenization",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:vq-vae-quantization",
+      "dst": "technique:fixed-uniform-value-binning",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "work:itransformer-inverted-transformers",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "work:chronos-time-series-tokenization",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:vq-vae-quantization",
+      "dst": "technique:temporal-patch-tokenization",
+      "rel": "improves_on"
+    },
+    {
+      "src": "technique:vq-vae-quantization",
+      "dst": "route:discretization-vq",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "pitfall:no-heterogeneous-feature-fusion",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:totem-tokenized-time-series-embeddings",
+      "dst": "pitfall:avgwins-count-metric-not-mean-error",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:vq-vae-quantization",
+      "dst": "technique:rq-vae-semantic-id",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "technique:pbld-periodic-numerical-embeddings",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "technique:learnable-diagonal-scaling-layer",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "technique:meta-tuned-default-hyperparameters",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "work:tabm-parameter-efficient-ensembling",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:pbld-periodic-numerical-embeddings",
+      "dst": "technique:learnable-diagonal-scaling-layer",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:learnable-diagonal-scaling-layer",
+      "dst": "route:feature-interaction-selection",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "pitfall:high-cardinality-fixed-8dim-embedding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:realmlp-better-by-default-tabular-mlp",
+      "dst": "pitfall:route-mismatch-no-explicit-feature-interaction",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "route:industrial-feature-systems",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "technique:ordered-target-statistics",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "technique:out-of-fold-target-encoding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "technique:count-frequency-encoding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "technique:empirical-bayes-target-smoothing",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:out-of-fold-target-encoding",
+      "dst": "technique:leave-one-out-target-encoding",
+      "rel": "improves_on"
+    },
+    {
+      "src": "technique:ordered-target-statistics",
+      "dst": "technique:leave-one-out-target-encoding",
+      "rel": "improves_on"
+    },
+    {
+      "src": "technique:target-encoding",
+      "dst": "technique:one-hot-encoding",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:target-encoding",
+      "dst": "technique:entity-embeddings",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "technique:target-encoding",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "technique:scalar-encoding-decoupled-from-cardinality",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "pitfall:target-encoding-label-leakage",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "work:encoding-high-cardinality-string-categoricals",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "work:entity-embeddings-categorical-variables",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:high-cardinality-categorical-encoding-kaggle-writeup",
+      "dst": "work:dlrm-criteo-ctr-feature-encoding",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:timesfm-patch-decoder-foundation",
+      "dst": "route:timeseries-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:timesfm-patch-decoder-foundation",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:timesfm-patch-decoder-foundation",
+      "dst": "work:chronos-time-series-tokenization",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:timesfm-patch-decoder-foundation",
+      "dst": "work:moirai-unified-universal-forecasting",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:timesfm-patch-decoder-foundation",
+      "dst": "transferable_idea:continuous-patch-token-mlp-embed",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:timesfm-patch-decoder-foundation",
+      "dst": "pitfall:timesfm-univariate-no-covariates-and-in-corpus-not-zero-shot",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "route:libraries-and-implementations",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "technique:feature-tokenizer",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "technique:plr-embedding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "technique:piecewise-linear-encoding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "technique:linformer-kv-compression",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "route:numerical-embeddings",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "work:pytorch-frame-stype-library",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:rtdl-research-tabular-dl-library",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "work:tabpfn-v2",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "work:tabpfn-v2",
+      "rel": "extends"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "work:tabarena-living-benchmark",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "work:tabicl-v2-scalable-foundation-model",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "technique:feature-cell-grouping",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:feature-cell-grouping",
+      "dst": "route:tabular-foundation-models",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:feature-cell-grouping",
+      "dst": "transferable_idea:feature-grouping-for-many-columns",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "technique:thinking-rows-attention-sinks",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "technique:tta-feature-transform-svd-augmentation",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "pitfall:proprietary-distillation-engine-noncommercial-license",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabpfn-2-5-foundation-model",
+      "dst": "pitfall:vendor-report-default-xgboost-baseline",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:feature-cell-grouping",
+      "dst": "technique:repeated-feature-grouping",
+      "rel": "extends"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "work:tabpfn-v2",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "work:tabpfn-v2",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "technique:feature-widening-synthetic-prior",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "technique:continued-pretraining-foundation-adaptation",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:feature-widening-synthetic-prior",
+      "dst": "pitfall:hdlss-prior-assumes-low-sample-high-correlation",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:continued-pretraining-foundation-adaptation",
+      "dst": "transferable_idea:prior-engineering-to-extend-feature-ceiling",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "work:tabicl-in-context-large-data",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "work:realmlp-better-by-default-tabular-mlp",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "work:tabarena-living-benchmark",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabpfn-wide-extreme-feature-counts",
+      "dst": "work:tabpfn-2-5-foundation-model",
+      "rel": "contradicts"
+    },
+    {
+      "src": "work:feature-aware-modulation-temporal-tabular",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:feature-aware-modulation-temporal-tabular",
+      "dst": "technique:film-feature-wise-linear-modulation",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:feature-aware-modulation-temporal-tabular",
+      "dst": "technique:yeo-johnson-power-transform",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:feature-aware-modulation-temporal-tabular",
+      "dst": "technique:time-conditioned-feature-modulation",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:time-conditioned-feature-modulation",
+      "dst": "transferable_idea:time-conditioned-per-feature-modulation",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:feature-aware-modulation-temporal-tabular",
+      "dst": "work:tabm-parameter-efficient-ensembling",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:feature-aware-modulation-temporal-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:feature-aware-modulation-temporal-tabular",
+      "dst": "pitfall:incompatible-with-plr-embeddings",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "technique:per-field-quantization-local-vocabulary",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "technique:hierarchical-field-then-sequence-transformer",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "technique:masked-field-modeling-mlm",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:per-field-quantization-local-vocabulary",
+      "dst": "transferable_idea:uniform-quantized-token-interface-for-mixed-fields",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:hierarchical-field-then-sequence-transformer",
+      "dst": "transferable_idea:row-compression-before-temporal-model",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:hierarchical-field-then-sequence-transformer",
+      "dst": "technique:per-feature-token-stream",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:per-field-quantization-local-vocabulary",
+      "dst": "technique:piecewise-linear-encoding",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "work:tabnet-attentive-interpretable-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "pitfall:quantization-discards-numerical-order",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "pitfall:weak-baselines-raw-features-only",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabformer-tabular-transformers-multivariate-time-series",
+      "dst": "pitfall:scaling-untested-beyond-12-fields",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabflex-scaling-tabpfn-linear-attention",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabflex-scaling-tabpfn-linear-attention",
+      "dst": "technique:non-causal-linear-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabflex-scaling-tabpfn-linear-attention",
+      "dst": "technique:sample-as-token-icl",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabflex-scaling-tabpfn-linear-attention",
+      "dst": "work:tabpfn-v2",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:non-causal-linear-attention",
+      "dst": "technique:softmax-self-attention",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:non-causal-linear-attention",
+      "dst": "technique:mamba-ssm",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:non-causal-linear-attention",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:non-causal-linear-attention",
+      "dst": "route:tabular-foundation-models",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabflex-scaling-tabpfn-linear-attention",
+      "dst": "pitfall:random-projection-not-feature-tokenization",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:rqkmeans-semantic-ids-generative-retrieval",
+      "dst": "route:recsys-tokenization-transfer",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:rqkmeans-semantic-ids-generative-retrieval",
+      "dst": "technique:rq-kmeans-residual-quantization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:rq-kmeans-residual-quantization",
+      "dst": "technique:rq-vae-semantic-id",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:rqkmeans-semantic-ids-generative-retrieval",
+      "dst": "work:tiger-rqvae-semantic-ids",
+      "rel": "improves_on"
+    },
+    {
+      "src": "technique:rq-kmeans-residual-quantization",
+      "dst": "transferable_idea:kmeans-on-residuals-codebook-for-high-cardinality",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:rq-kmeans-residual-quantization",
+      "dst": "pitfall:utilization-is-not-downstream-accuracy",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:rqkmeans-semantic-ids-generative-retrieval",
+      "dst": "pitfall:quantizer-sees-one-prefused-embedding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "technique:discriminative-feature-encoding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "technique:context-conditional-masked-modeling",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "technique:two-way-feature-sample-attention",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "work:tabpfn-v2",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "work:tabicl-in-context-large-data",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "work:tabarena-living-benchmark",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "work:tabpfn-v2",
+      "rel": "improves_on"
+    },
+    {
+      "src": "technique:discriminative-feature-encoding",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:limix-large-tabular-foundation-model",
+      "dst": "pitfall:dispatch-title-claims-tabpfn25-headtohead-but-benchmarks-tabpfn-v2",
+      "rel": "has_pitfall"
     }
   ],
-  "updated_at": "2026-06-16T18:00:00Z"
+  "updated_at": "2026-06-16T21:00:00Z"
 }

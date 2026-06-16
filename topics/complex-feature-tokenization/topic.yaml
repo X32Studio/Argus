@@ -56,6 +56,22 @@ execution_routes:
     key: feature-interaction-selection
     description: Methods that make 70+ features tractable — efficient attention, feature gating/selection, importance, and explicit interaction layers.
     anchor_examples: [AutoInt, DCN-V2, feature selection for deep tabular]
+  - name: Time-Series Foundation Models
+    key: timeseries-foundation-models
+    description: Pretrained time-series tokenizers — how they scale, quantize, patch, or bin raw values — applicable to the time-varying half of the feature set.
+    anchor_examples: [Chronos, MOMENT, Moirai, TimesFM, Lag-Llama, TOTEM]
+  - name: Recsys & Semantic-ID Tokenization (transfer)
+    key: recsys-tokenization-transfer
+    description: Recommendation / generative-retrieval tokenization whose machinery transfers — semantic IDs, RQ-VAE/RQ-Kmeans codebooks, hashing, and large-scale multi-field feature handling.
+    anchor_examples: [TIGER semantic IDs, RQ-VAE, generative retrieval, OneRec, DLRM feature handling]
+  - name: Industrial & Production Feature Systems
+    key: industrial-feature-systems
+    description: How heterogeneous features are tokenized/encoded at scale in production — ad-tech/CTR, fraud, finance, feature stores, embedding services, and engineering writeups.
+    anchor_examples: [DLRM, Criteo CTR feature encoding, feature stores, two-tower embedding services, Kaggle tabular winners]
+  - name: Libraries & Reference Implementations
+    key: libraries-and-implementations
+    description: Open-source libraries and reference code that implement feature tokenizers, to ground the build goal in runnable components.
+    anchor_examples: [pytorch-frame, rtdl, pytorch_tabular, AutoGluon-Tabular, TabPFN/TabICL packages]
 
 scope_in:
   - Tokenization/embedding of continuous numerical features (binning, piecewise-linear, periodic, quantile, target-aware)
@@ -67,13 +83,18 @@ scope_in:
   - Vector-quantized / codebook / discretization tokenization for tabular features
   - Methods explicitly addressing scaling to large feature counts (efficiency, interaction)
   - Pretrained / foundation tabular models whose tokenization transfers across tables
+  - Pretrained time-series tokenizers / foundation models (value scaling, quantization, patching) for the temporal half
+  - Recsys / generative-retrieval tokenization machinery that transfers — semantic IDs, RQ-VAE/RQ-Kmeans codebooks, multi-field feature handling
+  - Industrial / production feature-encoding systems and engineering writeups (ad-tech, fraud, finance, feature stores, embedding services)
+  - Open-source libraries and reference implementations of feature tokenizers (to ground the build goal)
+  - Cross-modal / heterogeneous-input tokenization ideas that demonstrably transfer to tabular feature tokens
 
 scope_out:
-  - Pure NLP subword tokenization (BPE/WordPiece/SentencePiece) for natural-language text, except as baseline/contrast
+  - Pure NLP subword tokenization (BPE/WordPiece/SentencePiece) for natural-language text, except as baseline/contrast or transferable idea
   - Image patch tokenization (ViT) except where the idea directly transfers to feature tokens
   - GBDT methods (XGBoost/LightGBM/CatBoost) with no learned tokenization, except as performance baselines
-  - Recommendation-specific semantic-ID systems decoupled from heterogeneous feature tokenization (keep only the transferable idea)
-  - Graph/molecule tokenization unrelated to tabular features
+  - Recommendation *ranking-model architecture* details unrelated to tokenization (keep the tokenization / semantic-ID machinery, drop the ranking-loss/serving specifics)
+  - Graph/molecule tokenization unrelated to tabular or heterogeneous-feature settings
 
 recency_floor: 2018  # confirmed 2026-06-16: center on 2021+ SOTA, keep 2018-2020 foundations (TabNet, TabTransformer, FT-Transformer); seminal pre-2018 anchors (entity embeddings 2016) allowed as cited references.
 

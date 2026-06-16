@@ -78,3 +78,17 @@ So the `recommended-approaches` report section must end in concrete, implementab
 70+ mixed numerical/categorical/temporal features — not only a literature map. Every method we
 deep-read should be scored on "can this be implemented for 70+ heterogeneous features, and what
 would it cost?", and the brief should converge toward a small set of recommended tokenizer recipes.
+
+## Scope expansion (cycle 14, per user directive)
+
+After 13 research cycles + 2 syntheses covered the academic core, scope was deliberately widened to
+find broader sources. Four routes were added: **timeseries-foundation-models** (Chronos / MOMENT /
+Moirai / TimesFM / Lag-Llama — value scaling/quantization/patching for the temporal half),
+**recsys-tokenization-transfer** (semantic IDs, RQ-VAE/RQ-Kmeans codebooks, DLRM-style multi-field
+feature handling — the transferable machinery, not the ranking specifics), **industrial-feature-systems**
+(production/ad-tech/fraud/finance feature encoding, feature stores, embedding services, Kaggle winners),
+and **libraries-and-implementations** (rtdl / pytorch-frame / pytorch_tabular / AutoGluon — runnable
+components to ground the build goal). Source types are explicitly broadened beyond arXiv to include
+repos, libraries, benchmarks, and engineering blog writeups. The remaining structural gap — no single
+work jointly validates 70+ features + high-cardinality categorical inputs + genuine per-row temporal —
+is the user's own setting; the expansion hunts the closest transferable evidence rather than a ready answer.

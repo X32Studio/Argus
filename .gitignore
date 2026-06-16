@@ -14,3 +14,4 @@ asserts/*.mov
 _merge*.py
 collate*.py
 *_merge_*.py
+*collate*.py

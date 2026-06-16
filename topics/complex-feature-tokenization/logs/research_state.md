@@ -1,4 +1,630 @@
+## orchestrator_directive 
+
+USER DIRECTIVE (cycle 14): EXPAND SCOPE + find broader data sources. Four new execution_routes were added and are currently UNEXPLORED (0 works each): timeseries-foundation-models, recsys-tokenization-transfer, industrial-feature-systems, libraries-and-implementations. For the next several cycles the planner SHOULD:
+- Prioritize candidates in these 4 new routes (treat as the "new" slot of iteration_mix).
+- Broaden source TYPES beyond arXiv papers: include OSS repos/libraries (work_type=repo/library), engineering/industrial blog writeups (work_type=blog), benchmarks, and Kaggle/competition writeups.
+- Pull transferable machinery from adjacent fields (time-series foundation models: Chronos/MOMENT/Moirai/TimesFM/Lag-Llama; recsys: TIGER/RQ-VAE/semantic-IDs/DLRM; production feature systems).
+- Keep tying everything to the build goal (a tokenizer for 70+ mixed numerical+high-cardinality-categorical, temporal+static features) and to time-based-split evaluation.
+
+---
+
 # Research state
+
+## technique_dedup cycle 21 — 2026-06-16T21:00:00Z (synthesis pass)
+
+Light, conservative technique-node merge run during the cycle-21 (third) synthesis, executing the deferred
+dedup flagged in the Cycle 16 batch-B note ("Graph dedup note (deferred, not blocking)"). Only CLEAR
+semantic duplicates were merged; merely-related techniques were left intact. For each pair the canonical
+node was kept, all edges from the duplicate were rewired onto the canonical, the resulting triples were
+deduped on `(src, rel, dst)`, any self-loop the merge would create was dropped, and the duplicate node was
+deleted.
+
+Four pairs merged (duplicate → canonical):
+- `technique:vqvae-codebook-tokenization` (TOTEM's learned-codebook tokenizer, 5 edges) →
+  `technique:vq-vae-quantization` (the foundational VQ-VAE codebook+commitment node that RQ-VAE `extends`).
+- `technique:revin-instance-normalization` (TOTEM, 1 edge) → `technique:instance-normalization-revin`
+  (the existing PatchTST-introduced canonical; both works now `uses_technique` the one node).
+- `technique:patch-tokenization-time-series` (1 edge) → `technique:temporal-patch-tokenization`
+  (PatchTST-introduced canonical, used also by TimeXer and Moirai).
+- `technique:rqvae-semantic-ids` (1 edge) → `technique:rq-vae-semantic-id` (TIGER-introduced canonical,
+  the hub of the RQ-VAE/RQ-Kmeans/semantic-ID lineage with 9 pre-existing edges).
+
+Result: 339 → 335 nodes (technique 144 → 140; route 12 / work 54 / transferable_idea 39 / pitfall 90
+unchanged), 571 edges preserved (no triples collided, no self-loops created — the only candidate self-loop,
+`vqvae-codebook-tokenization alternative_to rqvae-semantic-ids`, did not arise because the two endpoints
+merged onto DIFFERENT canonical nodes). `bash .claude/skills/argus/scripts/validate-contract.sh --fix
+complex-feature-tokenization` → **exit 0**, "All topics PASS the contract", no auto-fixes, 54
+belongs_to_route (= 54 work nodes = 54 master_index lines). NOT merged (kept as distinct, related-not-duplicate):
+`scale-and-uniform-quantize-value-tokenization` (Chronos fixed-uniform value bins) vs
+`vq-vae-quantization` (learned codebook) vs `per-field-quantization-local-vocabulary` (TabFormer per-field
+bins) — three genuinely different discretizers; and `rq-kmeans-residual-quantization` vs `rq-vae-semantic-id`
+(k-means-on-residuals vs gradient-learned codebooks — a real `alternative_to`, not a duplicate).
+
+## Cycle 19 — 2026-06-16T12:21:00Z (collation, fanout=3, verify=off)
+
+Three deep records collated this cycle (all `flagged: 0`, all `analysis_depth: deep`). Two land in `tabular-foundation-models`, one in `recsys-tokenization-transfer`.
+
+### New directions explored
+- **tabular-foundation-models** — the *efficiency/scaling* sub-axis (TabFlex) and a current open-weights foundation model (LimiX), pushing past the existing TabPFN-v2 / TabICL / CARTE / XTab anchors.
+- **recsys-tokenization-transfer** — first *learned-codebook* anchor (RQ-Kmeans), complementing the prior fixed-codebook / hashing anchors (Q-R, hash embeddings) and connecting to the existing TIGER/RQ-VAE record.
+
+### Works deeply analyzed (not just collected)
+- **TabFlex** (ICML 2025, arXiv:2506.05584) — replaces TabPFN's quadratic softmax self-attention with **non-causal linear attention** (kernel feature map phi=elu+1), making attention O(N) in the number of SAMPLES while preserving permutation-invariance over context. Per-SAMPLE token granularity (one row = one token); contributes NO new feature tokenizer. Strong negative result worth keeping: CAUSAL sequence models (Mamba/SSM, causal linear attention) are systematically worse for tabular ICL because example order should not matter. Route: tabular-foundation-models.
+- **RQ-Kmeans** (OneRec 2502.18965 / Technical Report 2506.13695) — builds each residual-quantization layer's codebook by running **k-means on the previous layer's residuals** (Lloyd centroids = codebook; nearest-centroid = assignment), training-free, instead of gradient-learned RQ-VAE codebooks. Reported near-perfect codebook utilization, attacking RQ-VAE's codebook-collapse failure mode. The quantizer sees ONE pre-fused multimodal+collaborative embedding, never raw heterogeneous features. Route: recsys-tokenization-transfer.
+- **LimiX** (arXiv:2509.03505, Apache-2.0 open weights) — per-cell tokens + **Discriminative Feature Encoding (DFE)**, a low-rank (rank p/4) additive column-identity code, + **Context-Conditional Masked Modeling (CCMM)**, a masked joint-distribution objective over synthetic SCM/DAG priors, so one model does prediction + imputation + generation. Top-ranked across 11 benchmarks vs TabPFN-v2 / TabICL / AutoGluon / XGBoost; validated envelope <=50k rows, <10k features, <=10 classes (70+ features fits comfortably). Route: tabular-foundation-models.
+
+### Strongest actionable technical ideas added
+- **DFE low-rank additive column-identity code (LimiX)** — the single most reusable mechanism this cycle: gives a permutation-equivariant per-cell tokenizer a cheap way to tell 70+ columns apart with no per-feature positional table and no per-column embedding matrix (parameter count independent of cardinality). Pairs with CCMM to serve prediction + imputation + generation from one tokenizer.
+- **RQ-Kmeans (k-means-on-residuals codebook)** — a cheap, training-free drop-in replacement for RQ-VAE codebooks that empirically avoids codebook collapse; directly attacks the dead-code risk flagged in the TIGER/RQ-VAE record. Transferable hook recorded as `transferable_idea:kmeans-on-residuals-codebook-for-high-cardinality` (bound a high-cardinality field, or a whole 70-feature row embedding, to a short hierarchical code tuple).
+- **Non-causal linear attention backbone (TabFlex)** — the efficient-attention substrate you would pair with a real feature tokenizer for very long contexts; plus the empirical lesson to keep attention non-causal (order-invariant) for tabular ICL.
+
+### Records still shallow / needing deeper reading
+- None new. All three are deep with mechanism + ablations + transfer assessment extracted (honesty gate satisfied). Two carry `confidence: medium` (RQ-Kmeans: ablation cells not re-confirmed; LimiX: self-reported preprint, author-run baselines) — flagged in their pitfalls and route notes.
+
+### Weakest / most misleading directions (pitfalls flagged into the graph)
+- **random-projection-not-feature-tokenization (TabFlex)** — the abstract's "thousands of features" is a random-projection capacity ceiling (d>1000 lossily projected to 1000), NOT faithful per-feature tokenization; "scales to millions" refers to SAMPLES, orthogonal to the 70+-FEATURE goal.
+- **utilization-is-not-downstream-accuracy (RQ-Kmeans)** — better codebook utilization/entropy is a tokenizer-internal metric, not evidence of better downstream tabular accuracy; reported online watch-time gains are whole-system, not tokenizer-isolated.
+- **quantizer-sees-one-prefused-embedding (RQ-Kmeans)** — RQ-Kmeans never touches raw heterogeneous features; the heavy multimodal encoder upstream (miniCPM-V-8B + QFormer + contrastive alignment) does the hard 90%. K-means on residuals is the easy 10%.
+- **dispatch-title-claims-tabpfn25-headtohead-but-benchmarks-tabpfn-v2 (LimiX)** — the dispatch framing "vs TabPFN-2.5 / TabICLv2 at scale" is anachronistic; LimiX (Sep 2025) benchmarks TabPFN-v2 and TabICL(v1) only. Do not cite it as beating TabPFN-2.5 (Nov 2025).
+
+### Graph changes and newly connected concepts
+- Added 3 work nodes (each with a `belongs_to_route` edge): `work:tabflex-scaling-tabpfn-linear-attention` → tabular-foundation-models; `work:rqkmeans-semantic-ids-generative-retrieval` → recsys-tokenization-transfer; `work:limix-large-tabular-foundation-model` → tabular-foundation-models.
+- Added 8 technique nodes (non-causal-linear-attention, sample-as-token-icl, softmax-self-attention, mamba-ssm, rq-kmeans-residual-quantization, discriminative-feature-encoding, context-conditional-masked-modeling, two-way-feature-sample-attention), 1 transferable_idea (kmeans-on-residuals-codebook-for-high-cardinality), 4 pitfall nodes. 16 nodes / 26 edges added total (339 nodes, 571 edges now).
+- Cross-work links: TabFlex `compared_against` TabPFN-v2; RQ-Kmeans `improves_on` TIGER and its technique `alternative_to` the existing `technique:rq-vae-semantic-id` (ties the learned-codebook lineage RQ-VAE → RQ-Kmeans into the discretization-vq/recsys cluster); LimiX `improves_on`/`compared_against` TabPFN-v2 and `compared_against` TabICL + TabArena, tying the new foundation model into the existing foundation-model cluster.
+- **Node-id normalizations during collation** (single-writer remap/drop of subagent-proposed edges that would dangle):
+  - TabFlex `improves_on work:tabpfn` — DROPPED. No `work:tabpfn` node exists (only `work:tabpfn-v2`), and the record explicitly states TabFlex does NOT improve on v2 (v2 is concurrent), so there is no faithful target.
+  - TabFlex `compared_against work:tabpfn` — REMAPPED to `work:tabpfn-v2` (TabPFNv2 is in the paper's baselines; the closest existing lineage node).
+  - RQ-Kmeans `alternative_to technique:rq-vae-semantic-ids` — REMAPPED to the existing `technique:rq-vae-semantic-id` (singular) introduced by the TIGER record, to avoid forking a duplicate technique node.
+  - LimiX DFE `transferable_to topic` — DROPPED. `topic` is not a `<kind>:<slug>` node; the transfer relevance is already carried by the work's `belongs_to_route` edge.
+  - LimiX DFE `enables_scaling feature:high-feature-count` — REMAPPED to `enables_scaling route:feature-interaction-selection` (`feature:` is not an allowed node kind; feature-interaction-selection is the scaling-to-many-features execution route).
+
+### Best next directions for next cycle (iteration_mix: new>=1, deepen>=1, challenge>=1)
+- **new**: MMQ multimodal mixture-of-quantization tokenization (arXiv:2508.15281) or EAGER/RPG/LIGER industrial semantic-ID variants for the recsys-transfer route; OR a real high-cardinality/temporal candidate (TabReD/TabArena-native) since both new foundation models still lack true high-cardinality and temporal paths.
+- **deepen**: isolate LimiX's **DFE low-rank column-identity code** as a drop-in column tokenizer for a *supervised* (non-ICL) wide-table model — the cleanest 70+-feature primitive this cycle; verify against TabICL's shared Set-Transformer column embedder.
+- **challenge**: both new foundation models claim wide-table coverage but TabFlex's win is **confounded** (hard-dataset gains also use more training data) and LimiX's gaps are ~0.01-0.03 AUC with author-run baselines and TabPFN-overlapping benchmark sets. Next cycle should either find topic-native (70+ high-cardinality, temporal-split) evidence or scope these recommendations down. Also: cell-by-cell verify the RQ-Kmeans>RQ-VAE utilization/entropy table (PDF Sec 2.1.2) before citing it as fact.
+
+### Report conclusions strengthened / weakened / redirected
+- No `report/main.md` synthesis change this cycle (synthesis_every_n_cycles = 7). This cycle adds the DFE column-identity primitive, the RQ-Kmeans codebook-collapse fix, and the non-causal-linear-attention scaling lesson to the evidence base for the eventual scaling-and-interaction / categorical-and-high-cardinality / architectures-and-foundation-models sections.
+
+### Flagged claims
+- None this cycle. All three records returned `flagged: 0` with empty verdict lists. Refute-before-write challenges were absorbed into the `pitfalls` fields and the route notes above (claims scoped/confounding-noted, not overturned). Two records carry `confidence: medium` and an explicit "verify before citing" follow-up (RQ-Kmeans ablation cells; LimiX baseline tuning + imputation/generation tables).
+
+## contract_violations  2026-06-16T12:21:00Z
+- None. `validate-contract.sh --fix complex-feature-tokenization` passed clean (exit 0): 339 nodes (12 route / 54 work / 144 technique / 39 transferable_idea / 90 pitfall), 571 edges, 54 belongs_to_route (one per work node). No auto-fixes required; no residual violations. 2 subagent-proposed edges were intentionally dropped during collation (TabFlex `improves_on work:tabpfn` — no faithful node; LimiX DFE `transferable_to topic` — invalid node id) and 3 were remapped to existing/valid nodes (see Cycle 19 graph-changes notes); these were single-writer normalizations, not validator violations.
+
+## Cycle 18 — 2026-06-16T12:15:00Z (collation, fanout=3, verify=off)
+
+Fanout-3 deep-read batch (per-work isolation respected; single-parent collation). All three records
+landed `analysis_depth: deep`, all returned `flagged: 0` — **0 flagged claims this cycle**. Theme:
+all three close the still-thin **temporal-static fusion** gap plus the **wide-feature ceiling** problem —
+a data-side scaling lever for a frozen foundation model (TabPFN-Wide), a FiLM-style time-conditioned
+input transform (Feature-aware Modulation), and the canonical first transformer treatment of tabular
+TIME SERIES that supplies a reusable temporal-static skeleton (TabFormer/TabBERT).
+
+### New / deepened directions explored this cycle
+- **tabpfn-wide-extreme-feature-counts** (arXiv:2510.06162, 2025 → route `tabular-foundation-models`, **new**):
+  continued pre-training + a synthetic **feature-widening prior** (continuous widening + redundant-copy
+  augmentation of the SCM prior) pushes TabPFNv2's ~500-feature ceiling to **30k–70k features WITHOUT any
+  tokenizer/architecture change** — it disables v2's cell-grouping to keep a strict 1:1 token-to-feature
+  map, then only ADAPTS THE WEIGHTS. This is the first work in the memory demonstrating a **data-side
+  (prior-engineering) scaling lever** as opposed to an architecture-side one. Surfaces a direct design
+  tension with TabPFN-2.5's feature-grouping (group-of-3) stance, hence the `contradicts` edge.
+- **feature-aware-modulation-temporal-tabular** (arXiv:2512.03678, 2025 → route `temporal-feature-tokenization`,
+  **new/deepen**): a lightweight FiLM-style hypernetwork ("modulator") consumes a shared temporal embedding
+  ψ(t) (Fourier periodic priors over year/month/day/hour + a trend term) and emits **per-feature**
+  γ/β/λ vectors that drive a time-conditioned **Yeo-Johnson power transform + affine** at the RAW INPUT
+  level, before any tokenizer. Evaluated on TabReD (15-seed, code released). High actionability for the
+  time-varying NUMERICAL half; explicitly flags a conflict with PLR/periodic numerical embeddings (both
+  reshape the numeric input distribution, so gains do not stack).
+- **tabformer-tabular-transformers-multivariate-time-series** (arXiv:2011.01843, 2021 → route
+  `temporal-feature-tokenization`, **deepen** of the temporal skeleton): IBM's TabBERT/TabGPT — the first
+  transformer treatment of tabular TIME SERIES. Per-field **quantization to a local vocabulary** (every
+  column, numeric or categorical, discretized into its own finite vocab + learned per-bin embedding) feeding
+  a **hierarchical field-then-sequence transformer** (a field-transformer compresses a row's N field-tokens
+  to ONE row embedding; a sequence-transformer then runs over rows). This row-compression-before-temporal
+  pattern is the directly reusable temporal-static-fusion skeleton for the 70+-mixed goal.
+
+### Works deeply analyzed (not just collected)
+- All three: mechanism + ablations + transfer assessment extracted (honesty gate satisfied). Each carries
+  scoped transfer claims and a pitfalls block (refute-before-write applied — claims scoped, not overturned).
+
+### Strongest actionable technical ideas added
+- **Prior-engineering to extend a feature ceiling (TabPFN-Wide)**: widen the synthetic pretraining prior +
+  continued pre-training to push a per-feature tokenizer past its feature-count ceiling, with no tokenizer
+  or architecture change. The cheapest known lever to move a frozen foundation model into a new feature
+  regime — but HDLSS-scoped (see pitfalls).
+- **Time-conditioned per-feature modulation (Feature-aware Modulation)**: a cheap, drop-in input-level
+  Yeo-Johnson + affine reparameterization driven by a shared temporal-embedding hypernetwork (FiLM-for-tables)
+  that aligns each numeric feature to a shared temporal basis before tokenization.
+- **Uniform quantized-token interface + row-compression (TabFormer)**: discretize numeric AND categorical
+  fields into per-field vocabularies so one transformer ingests heterogeneous types uniformly, then collapse
+  each row's N field-tokens to one row embedding so the temporal model sees rows, not cells — a clean
+  sequence-length control for wide tables.
+
+### Records still shallow / needing deeper reading
+- None new. All three are deep. Their next-experiments are recorded as route next_angles (compose Yeo-Johnson
+  temporal modulation before a real FT-T/PLR tokenizer; replace TabFormer quantization bins with PLR/AutoDis;
+  widen a TabPFNv2 regressor / TabICL the same way).
+
+### Weakest / most misleading directions (pitfalls flagged into the graph)
+- **hdlss-prior-assumes-low-sample-high-correlation (TabPFN-Wide)**: the feature-widening prior assumes a
+  high-dimension / low-sample-size regime with high feature correlation; transfer to many-row, low-correlation,
+  mixed temporal+static wide tables is unproven. Evidence is strong-for-HDLSS-relative-gains,
+  weak-for-interpretability.
+- **incompatible-with-plr-embeddings (Feature-aware Modulation)**: the time-conditioned input modulation and
+  PLR/periodic numerical embeddings both reshape the numeric input distribution; gains do not stack and may
+  cancel. Absolute margins are thin and the large gains appear only over weak backbones.
+- **quantization-discards-numerical-order / weak-baselines-raw-features-only / scaling-untested-beyond-12-fields
+  (TabFormer)**: per-field quantization loses magnitude/monotonicity (the weakness PLR/AutoDis fix); frozen-feature
+  gains are shown only vs raw features (no GBDT/FT-Transformer/numerical-embedding bar); validated only at 11–12
+  fields on synthetic fraud data — the field-then-sequence hierarchy is untested at 70+ heterogeneous fields.
+
+### Graph changes and newly connected concepts
+- Added **3 work nodes**, each with a `belongs_to_route` edge: `work:tabpfn-wide-extreme-feature-counts` →
+  tabular-foundation-models; `work:feature-aware-modulation-temporal-tabular` and
+  `work:tabformer-tabular-transformers-multivariate-time-series` → temporal-feature-tokenization.
+- Added **9 technique nodes** (feature-widening-synthetic-prior, continued-pretraining-foundation-adaptation,
+  film-feature-wise-linear-modulation, yeo-johnson-power-transform, time-conditioned-feature-modulation,
+  per-field-quantization-local-vocabulary, hierarchical-field-then-sequence-transformer, masked-field-modeling-mlm,
+  per-feature-token-stream), **4 transferable_idea nodes**, and **5 pitfall nodes**. Total 21 new nodes
+  (302 → 323); 33 edges added (512 → 545).
+- Cross-work links: TabPFN-Wide `improves_on`/`uses_technique` TabPFN-v2, `compared_against` TabICL / RealMLP /
+  Grinsztajn (tree-models-outperform-deep-tabular), `uses_technique` TabArena (benchmark), and `contradicts`
+  TabPFN-2.5 — wiring it into the foundation-model + benchmark clusters. Feature-aware Modulation
+  `compared_against` TabM and FT-Transformer. TabFormer `compared_against` TabNet, with PatchTST `alternative_to`
+  TabFormer; its per-field-quantization technique is `alternative_to` PLE.
+- **Dedup / cleanup applied during collation (single-writer):**
+  - `work:tabm` → retargeted to existing `work:tabm-parameter-efficient-ensembling` (slug fragmentation fix).
+  - `work:ft-transformer` → retargeted to existing `work:ft-transformer-revisiting-tabular-dl`.
+  - `technique:piecewise-linear-numerical-embedding` → retargeted to existing `technique:piecewise-linear-encoding`
+    (TabFormer's `alternative_to` edge) to avoid a duplicate PLE node.
+  - **Dropped 1 malformed edge**: `(technique:feature-widening-synthetic-prior, enables_scaling, enables_scaling)`
+    — `dst` was the rel-type token `enables_scaling`, not a node id; it would have created a dangling node.
+    The intended scaling relationship is captured by the work's `belongs_to_route` + the HDLSS pitfall and
+    the prior-engineering transferable_idea.
+
+### Best next directions for next cycle (iteration_mix: new>=1, deepen>=1, challenge>=1)
+- **new**: a temporal-static fusion candidate that actually carries a numeric magnitude-aware encoder (the
+  TabFormer + PLR/AutoDis composition), OR Real-TabPFN / TabFlex / TuneTables as TabPFN-Wide siblings.
+- **deepen**: read the TabReD temporal-embedding origin (Cai & Ye 2025) and the Rubachev TabReD benchmark for
+  per-dataset feature counts/cardinality — needed to ground every "70+ mixed" transfer claim in topic-native data.
+- **challenge**: the implicit recommendation that prior-engineering (TabPFN-Wide) and time-conditioned modulation
+  scale to the 70+-MIXED (temporal+static, high-cardinality, many-row) regime is UNVERIFIED — TabPFN-Wide is
+  HDLSS-only and Feature-aware Modulation is numeric-only. Next cycle should either find topic-native evidence
+  (TabReD/TabArena at 70+ high-card) or scope these recommendations down.
+
+### Report conclusions strengthened / weakened / redirected
+- No `report/main.md` synthesis pass this cycle (synthesis is periodic). This cycle strengthens the
+  temporal-static-fusion evidence base (now: PatchTST / TFT / iTransformer / TimeXer + Feature-aware Modulation +
+  TabFormer) and adds the first data-side feature-ceiling-extension lever (TabPFN-Wide) to the
+  foundation-model cluster.
+
+### Flagged claims
+- None this cycle. All three records returned `flagged: 0` with empty verdict lists. Refute-before-write
+  challenges were absorbed into the `pitfalls` fields (above), which scope the transfer claims rather than
+  overturn them.
+
+## contract_violations  2026-06-16T12:15:00Z
+- None. `validate-contract.sh --fix complex-feature-tokenization` passed clean (exit 0): 323 nodes (12 route / 51 work / 136 technique / 38 transferable_idea / 86 pitfall), 545 edges, 51 belongs_to_route (one per work node). No auto-fixes required; no residual violations. One malformed proposed edge (`technique:feature-widening-synthetic-prior → enables_scaling`, dst was a rel-token not a node) was dropped during collation BEFORE the validator ran, so it never reached the graph.
+
+## Cycle 17 — 2026-06-16T20:00:00Z (collation, fanout=3, verify=off)
+
+Third fanout-3 deep-read batch this session (per-work isolation respected; single-parent collation).
+All three records landed `analysis_depth: deep`, all returned `flagged: 0` — **0 flagged claims this
+cycle**. Theme: three orthogonal pieces of the 70+-mixed-feature build goal — a **continuous
+time-series tokenizer** (TimesFM, the foil to Chronos value-bins), the **runnable numerical-embedding
+reference hub** (rtdl), and the **current SOTA tabular foundation model that finally covers the
+feature-count target** (TabPFN-2.5).
+
+### New / deepened directions explored this cycle
+- **timesfm-patch-decoder-foundation** (Das/Kong/Sen/Zhou, Google Research, ICML 2024, arXiv:2310.10688 →
+  route `timeseries-foundation-models`, **deepen**): a *continuous* patch-as-token tokenizer — RevIN-scale
+  by the FIRST input patch only, cut the context into length-32 patches, embed each with a small MLP
+  residual block (no codebook, no quantization), then a decoder-only causal transformer with the
+  deliberate output_patch_len(128) > input_patch_len(32) asymmetry to cut AR steps. Loss is MSE in value
+  space (ordinality preserved), the exact opposite of Chronos's bin-vocabulary cross-entropy. It is the
+  third contrasting numeric tokenizer in this route (Chronos value-bins / Moirai multi-patch+any-variate /
+  TimesFM continuous-patch), plus TOTEM's learned-VQ option.
+- **rtdl-research-tabular-dl-library** (Gorishniy/Rubachev/Babenko, Yandex Research, 2025 → route
+  `libraries-and-implementations`, **new** for this route's 2nd anchor): the canonical maintained
+  reference impl of the two tokenizers the topic centers on — FT-Transformer's per-feature affine token
+  (rtdl_revisiting_models, Apache-2.0) and PLE/Periodic/**PLR** numerical embeddings
+  (rtdl_num_embeddings, MIT v0.0.12). The cleanest runnable scaffold for the numerical+categorical core;
+  its sole native scaling lever is Linformer kv-compression.
+- **tabpfn-2-5-foundation-model** (Prior Labs, arXiv:2511.08667, 2025 → route
+  `tabular-foundation-models`, **challenge/deepen**): direct successor to TabPFN v2; **feature-cell
+  grouping (group size 3, up from 2)** + a deeper dual-attention stack push the VALIDATED ceiling to
+  50,000 rows x 2,000 features (5x rows, 4x features over v2). This is the first tabular foundation model
+  comfortably covering the topic's 70+-feature target on small/medium tables — it sharpens the
+  foundation-models route's prior caveat that TabPFN-v2/TabICL all sat at/below their <=100-feature
+  pretraining regime.
+
+### Strongest actionable technical ideas added
+- **Continuous patch-as-token (TimesFM)**: RevIN-scale a recent window of a numeric/temporal channel, cut
+  into fixed-length patches (~16–32), embed each with a small MLP residual block → a continuous,
+  ordinality-preserving token at ~1/p the token count of per-point. The h>p long-output-patch trick is a
+  reusable decoding-efficiency lever for long unknown horizons. (transferable_idea:continuous-patch-token-mlp-embed)
+- **Feature-cell grouping (TabPFN-2.5)**: bundling adjacent feature-cells into groups of 3 compresses the
+  feature-axis sequence ~1.5x and is the lever that took the validated feature ceiling 500 → 2,000 at
+  roughly fixed attention cost — a cheap way to extend a permutation-invariant feature tokenizer to many
+  more columns. Plus thinking-rows (attention sinks), TTA-over-feature-transforms+SVD pseudo-features, and
+  a distill-to-MLP/tree deployment path. (transferable_idea:feature-grouping-for-many-columns)
+- **rtdl_num_embeddings as the runnable numerical leg**: drop-in PyTorch PLR/PLE/Periodic modules + a
+  built-in Linformer kv-compression knob — the cleanest starting point for the continuous half of a
+  heterogeneous tokenizer, composable with pytorch-frame's categorical/multicategorical stypes.
+
+### Records still shallow / needing deeper reading
+- None new — all three are `deep`. Their own next-experiments (covariate-aware TimesFM-2.x;
+  rtdl PLR+Linformer at 70+ features under a time split; TabPFN-Wide / distill-to-MLP reproduction) are
+  recorded as route next_angles.
+
+### Weakest / most misleading directions (pitfalls flagged into the graph)
+- **timesfm-univariate-no-covariates-and-in-corpus-not-zero-shot**: TimesFM is strictly univariate — zero
+  machinery for categorical/static/multi-channel fusion (the topic's hard part). Its "zero-shot" headline
+  holds for held-out benchmark families (Monash/Darts/Informer) but Electricity/Traffic/Weather/M4 ARE in
+  the training mix, so those are not zero-shot.
+- **vendor-report-default-xgboost-baseline (TabPFN-2.5)**: a Prior Labs technical report (not
+  peer-reviewed); the 100% win rate is vs DEFAULT (untuned) XGBoost — the genuinely strong claims are the
+  87% rate and the AutoGluon-1.4 match. Confidence on this record kept at **medium** for that reason.
+- **proprietary-distillation-engine-noncommercial-license (TabPFN-2.5)**: the most production-relevant
+  contribution (low-latency distill-to-MLP/tree path) is proprietary and unreleased; weights are under a
+  non-commercial license — blocks production use without a paid enterprise license.
+
+### Graph changes and newly connected concepts
+- Added **12 nodes** (3 work + 4 technique + 2 transferable_idea + 3 pitfall) and **27 edges**.
+- Work nodes each carry a `belongs_to_route` edge: timesfm → timeseries-foundation-models; rtdl →
+  libraries-and-implementations; tabpfn-2-5 → tabular-foundation-models.
+- **Dedup remaps to avoid graph fragmentation** (loop.md dedup gate): three rtdl-proposed technique slugs
+  were retargeted to the existing canonical nodes —
+  `ft-transformer-feature-tokenizer`→`technique:feature-tokenizer`,
+  `plr-periodic-linear-relu-embedding`→`technique:plr-embedding`,
+  `piecewise-linear-encoding-ple`→`technique:piecewise-linear-encoding`. This re-uses, rather than
+  duplicates, the FT-Transformer / PLR / PLE technique nodes already introduced by
+  ft-transformer-revisiting-tabular-dl and on-embeddings-numerical-features.
+- New technique nodes: `linformer-kv-compression` (rtdl's scaling lever), `feature-cell-grouping`,
+  `thinking-rows-attention-sinks`, `tta-feature-transform-svd-augmentation` (TabPFN-2.5).
+- **Bridge edge added during collation**: `technique:feature-cell-grouping --extends-->
+  technique:repeated-feature-grouping` (TabICL-v2's prior grouping idea) so the two grouping techniques
+  cluster instead of fragmenting.
+- Cross-work links now tie the new works into existing clusters: timesfm `improves_on` patchtst,
+  `alternative_to` chronos + moirai; tabpfn-2-5 `improves_on`/`extends` tabpfn-v2, `compared_against`
+  tabarena + tabicl-v2; rtdl `alternative_to` pytorch-frame, `compared_against` ft-transformer,
+  `transferable_to` route:numerical-embeddings.
+
+### Report conclusions strengthened / weakened / redirected
+- No `report/main.md` synthesis written yet (synthesis_every_n_cycles = 7; next synthesis due per
+  orchestrator scheduling). This cycle (a) strengthens the timeseries-foundation-models route's
+  "continuous-patch vs value-bin vs VQ" tokenizer-family map, (b) adds the second runnable
+  libraries-and-implementations anchor, and (c) redirects the foundation-models conclusion: TabPFN-2.5 is
+  the first foundation model whose VALIDATED feature ceiling (2,000) comfortably clears the 70+-feature
+  target — but only on small/medium tables, with temporal + high-cardinality + many-rows still open.
+
+### Best next directions for next cycle (iteration_mix: new>=1, deepen>=1, challenge>=1)
+- **new**: TabPFN-Wide (arXiv:2510.06162) for extreme feature counts via continued pretraining, OR a
+  genuine temporal-static fusion candidate (still the thinnest part of the corpus).
+- **deepen**: benchmark the rtdl PLR/PLE + Linformer kv-compression stack at 70+ features under a
+  time-based split — turn the "Linformer is the one scaling knob, unbenchmarked in-library" caveat into
+  topic-native evidence.
+- **challenge**: TabPFN-2.5's 70+-feature coverage is on small/medium tables and the headline win is vs
+  default XGBoost; next cycle should pressure it on a wide high-cardinality TabReD/TabArena task vs tuned
+  GBDTs, and test whether feature-cell grouping helps a supervised (non-in-context) tokenizer.
+
+### Flagged claims
+- None this cycle. All three records returned `flagged: 0` with empty verdict lists. Refute-before-write
+  challenges were absorbed into each record's `pitfalls` field (above), scoping the transfer claims
+  rather than overturning them.
+
+## contract_violations  2026-06-16T20:00:00Z
+- None. `validate-contract.sh --fix complex-feature-tokenization` passed clean (exit 0): 302 nodes (12 route / 48 work / 127 technique / 34 transferable_idea / 81 pitfall), 512 edges, 48 belongs_to_route (one per work node). No auto-fixes required; no residual violations. master_index.jsonl (48 lines) == works_json/*.json (48) == work nodes (48).
+
+## Cycle 16 (batch B) — 2026-06-16T11:46:00Z (collation, fanout=3, verify=off)
+
+Second fanout-3 deep-read batch of cycle 16 (collated separately from batch A above). Three works
+deep-read in parallel (per-work isolation respected; single-parent collation). All three landed `deep`,
+all `confidence: high`, all `flagged: 0` — **0 flagged claims this batch**. Theme: filling the two
+half-specific tokenizer legs of the 70+-mixed-feature goal — the **time-varying numeric half** (a learned
+VQ time-series tokenizer) and the **high-cardinality categorical half** (production target-encoding
+discipline) — plus a **challenge** to the "attention is required for wide tables" line via a strong
+linear-cost MLP.
+
+**New directions explored / works deeply analyzed:**
+- **totem-tokenized-time-series-embeddings** (Talukder/Yue/Gkioxari, TMLR 12/2024, arXiv 2402.16412 →
+  route `timeseries-foundation-models`): first *learned vector-quantized* TS tokenizer in the corpus. A
+  self-supervised VQVAE (strided 1D-conv encoder, F=4 temporal compression, frozen K=256 / D=64 codebook,
+  RevIN normalization) turns a continuous waveform into a short sequence of distance-aware discrete codes;
+  the same frozen codebook serves imputation/anomaly/forecasting. Direct **tokens-vs-patches ablation**
+  (PatchTOTEM) isolates the gain to the discrete representation for BOTH transformer and MLP heads.
+- **realmlp-better-by-default-tabular-mlp** (Holzmüller/Grinsztajn/Steinwart, NeurIPS 2024, arXiv
+  2407.04491 → route `feature-interaction-selection`): the **challenge** record — a flat-concat MLP with a
+  per-feature embedding/preprocessing "bag of tricks" (robust-scale + smooth-clip, optional PBLD periodic
+  numerical embeddings, a learnable per-feature diagonal scaling layer) plus a meta-tuned-default (TD)
+  training recipe, competitive with CatBoost-TD and beating FT-Transformer/SAINT at *linear* cost and with
+  *no per-dataset HPO*. Strengthens the "attention may be unnecessary for 70+ features" line alongside TabM.
+- **high-cardinality-categorical-encoding-kaggle-writeup** (synthesis of Micci-Barreca 2001 + CatBoost
+  NeurIPS 2018 arXiv 1706.09516 + Pargent et al. arXiv 2104.00629 + Kaggle winners → route
+  `industrial-feature-systems`, cross-linked to `categorical-high-cardinality`): the production recipe for
+  collapsing any-cardinality ID columns to a fixed handful of *target-aware scalar* columns, with
+  mandatory leakage control (out-of-fold / leave-one-out / CatBoost ordered TS) and empirical-Bayes
+  smoothing toward a global prior. Distinct from the existing vocabulary-free string-n-gram encoder
+  (`encoding-high-cardinality-string-categoricals`): this is *supervised* scalar encoding.
+
+**Strongest actionable ideas from this batch:**
+- **Frozen VQ codebook + RevIN as a domain-agnostic numeric tokenizer** (TOTEM): RevIN decouples
+  scale/level from shape (mu/sigma carried as side channels), so one small frozen codebook models only
+  NORMALIZED morphology and is shared across channels — adding numeric features is linear. Learned VQ
+  beats both Chronos fixed bins (`alternative_to`) and PatchTST raw patches (`improves_on`) on these tasks.
+- **Meta-tuned-default (TD) methodology** (RealMLP): tune ONE config on a meta-train suite, freeze it,
+  ship strong out-of-the-box per-feature embeddings + preprocessing so a downstream pipeline needs no
+  per-dataset HPO. The most portable artifact of the paper; the PBLD embedding and learnable diagonal
+  scaling layer are secondary, smaller-magnitude contributions.
+- **Leakage-control discipline** (Kaggle/CatBoost): the durable, model-agnostic lesson is "compute every
+  target-derived feature from data the row never saw" (OOF / LOO / ordered-permutation prefix), shrunk to a
+  global prior by count-dependent smoothing — the cheapest, OOV-robust way to admit ID-like fields into a
+  70+-feature tokenizer.
+
+**Assumptions / risks that limit transfer (refute-before-write held; all recorded as pitfalls):**
+- TOTEM is univariate/channel-independent with **no heterogeneous-feature fusion**
+  (`pitfall:no-heterogeneous-feature-fusion`): no categorical, no static covariates, no native
+  missing-token — exactly the topic's hard part is unaddressed. Its headline AvgWins is a *count-of-best-cells*
+  metric, NOT mean error, and the strong zero-shot numbers are vs a single self-trained GPT2 generalist
+  (`pitfall:avgwins-count-metric-not-mean-error`); K=256 is chosen for downstream parsimony, not
+  reconstruction optimality.
+- RealMLP is filed under `feature-interaction-selection` but models **no explicit feature interaction** —
+  the diagonal scaling layer is per-feature reweighting only (`pitfall:route-mismatch-no-explicit-feature-interaction`);
+  its only tie to the route is linear-cost handling of many features. High-cardinality is a constant 8-dim
+  embedding with no frequency awareness, untested on thousands of categories
+  (`pitfall:high-cardinality-fixed-8dim-embedding`); no missing-numeric and no temporal support — both
+  required by the topic. "Many features" on meta-test is mostly one-hot-expanded width, not a controlled
+  70+-native-field sweep.
+- Target encoding's dominant failure mode is **label leakage** (`pitfall:target-encoding-label-leakage`):
+  naive greedy full-data encoding leaks the row's own label and collapses out-of-sample; OOF/LOO/ordered is
+  mandatory. The scalars are tuned for GBDT inequality splits — the tree-benchmark win does NOT
+  automatically transfer to an attention/MLP tokenizer (it competes with, rather than beats, a learned
+  embedding). Supervised-only, per-target, so unavailable for self-supervised tokenization.
+
+**Graph changes (single-writer collation):** +24 nodes (3 work, 16 technique, 5 pitfall), +41 edges
+(deduped by `(src,dst,rel)`; zero collisions with the 444 pre-existing). All three new `work:` nodes carry
+a `belongs_to_route` edge (TOTEM→timeseries-foundation-models, RealMLP→feature-interaction-selection,
+Kaggle-writeup→industrial-feature-systems). Cross-work links added: TOTEM `compared_against`
+PatchTST/iTransformer and `alternative_to` Chronos; RealMLP `compared_against`
+FT-Transformer/SAINT/Tree-models and `alternative_to` TabM and `uses_technique`→
+work:on-embeddings-numerical-features; Kaggle-writeup `alternative_to`
+encoding-high-cardinality-string-categoricals/entity-embeddings and `compared_against` DLRM. New
+technique→technique lineage: VQVAE-codebook `improves_on` patch-tokenization and `alternative_to`
+fixed-uniform-binning + rqvae-semantic-ids; out-of-fold and ordered target-statistics both `improves_on`
+leave-one-out; target-encoding `alternative_to` one-hot/entity-embeddings.
+
+**Route-index changes:** TOTEM added to `timeseries-foundation-models` (now 3 anchors: Chronos
+value-tokenization vs Moirai patch+any-variate vs TOTEM learned-VQ); evidence_quality=high,
+actionability=medium (reusable for the homogeneous numeric half only). RealMLP added to
+`feature-interaction-selection` with a note flagging the route mismatch (no explicit interaction; scalable
+backbone baseline like TabM). Kaggle-writeup added to `industrial-feature-systems` (now 2 anchors: DLRM
+field-tokens + this target-encoding recipe) and cross-linked under `categorical-high-cardinality`.
+
+**Records still shallow / needing deeper reading:** none from this batch (all deep). Standing gap
+unchanged and now sharper: every tokenizer in the corpus still solves ONE leg (numeric-temporal OR
+high-cardinality-categorical) in isolation — no work yet proves *joint* tokenization + fusion of mixed
+time-varying + static + high-cardinality features at genuine 70+ width.
+
+**Report conclusions touched:** strengthens `temporal-static-fusion` / `numerical-feature-tokenization`
+with a learned-VQ option (TOTEM) distinct from fixed-bin (Chronos) and patch (PatchTST/Moirai);
+strengthens `categorical-and-high-cardinality` with the production target-encoding leg + leakage
+discipline to complement entity embeddings, QR/hash compression, and MinHash string codes; strengthens
+`scaling-and-interaction` / `architectures-and-foundation-models` with RealMLP as evidence that a
+linear-cost MLP can match attention tokenizers at 70+ features. No conclusion overturned. Synthesis still
+pending (synthesis_every_n_cycles=7).
+
+**Best next directions:** (1) head-to-head **TOTEM learned-VQ vs Chronos fixed-bins vs MOMENT patches** as
+the numeric tokenizer for the time-varying half, and probe whether RevIN + shared-codebook transfers to
+per-feature numeric *columns* in a wide tabular setting; (2) test a **target-encoded scalar fed into an
+attention/MLP tokenizer** to settle whether the GBDT target-encoding win transfers to a deep tokenizer
+(time-respecting OOF folds vs CatBoost ordered TS on transaction data); (3) compose RealMLP's
+**PBLD/diagonal-scaling front-end with a high-cardinality target/hash leg and a temporal VQ leg** — the
+first genuine attempt at jointly tokenizing all three feature halves the three records each cover singly.
+
+**Graph dedup note (deferred, not blocking):** four newly-created technique IDs are near-duplicates of
+existing canonical nodes and SHOULD be merged in a future deliberate dedup pass (kept as-proposed this
+cycle to keep the per-work records' edges resolvable under single-writer collation):
+`technique:vqvae-codebook-tokenization` ≈ existing `technique:vq-vae-quantization`;
+`technique:revin-instance-normalization` ≈ existing `technique:instance-normalization-revin`;
+`technique:patch-tokenization-time-series` ≈ existing `technique:temporal-patch-tokenization`;
+`technique:rqvae-semantic-ids` ≈ existing `technique:rq-vae-semantic-id`. The validator does not flag
+semantic technique duplicates (it checks only node-id prefix, `kind`, edge `rel`, and dangling edges), so
+this is a candidate cleanup for a later cycle, not a contract violation.
+
+## contract_violations  2026-06-16T11:46:00Z
+
+`bash .claude/skills/argus/scripts/validate-contract.sh --fix complex-feature-tokenization` → exit 0,
+**no residual violations**. 290 nodes ({route:12, work:45, technique:123, transferable_idea:32,
+pitfall:78}), 485 edges, 45 `belongs_to_route` (= 45 work nodes = 45 master_index lines). No auto-fixes
+required.
+
+## Cycle 16 — 2026-06-16 (mode=RESEARCH, fanout=3, verify=off)
+
+Sixteenth cycle, continuing the cycle-14 USER DIRECTIVE (expand into the new routes / broaden source
+types). Three works deep-read in parallel (per-work isolation respected; single-parent collation). All
+three landed `deep`, all `confidence: high`, all `flagged: 0` — **0 flagged claims this batch**.
+
+**New directions explored / works deeply analyzed:**
+- **compositional-embeddings-quotient-remainder** (Shi et al. 2020, arXiv 1909.02107 → route `recsys-tokenization-transfer`): the quotient-remainder trick — two complementary index maps share an O(sqrt(|S|)) embedding budget; multiple complementary partitions compose into one embedding. First record covering high-cardinality categorical embedding-table *compression* (fixed-codebook complementary partitions), as opposed to learned semantic-ID codebooks (TIGER) or per-id entity-embedding tables. Production-deployed in Meta DLRM.
+- **moirai-unified-universal-forecasting** (Woo et al., ICML 2024 Salesforce, arXiv 2402.02592 → route `timeseries-foundation-models`): any-variate attention (parameter-free binary field-ID bias + RoPE, unbounded variates), a multi-patch-size projection bank {8,16,32,64,128}, and a 4-component mixture output head; pretrained on LOTSA (27.6B obs), sizes 14M/91M/311M, ablations Table 7. Second TS-foundation anchor, contrasting Chronos value-tokenization.
+- **hash-embeddings-efficient-word-representations** (Tito Svenstrup et al., NeurIPS 2017, arXiv 1709.03933 → route `recsys-tokenization-transfer`, cross-linked to `categorical-high-cardinality`): importance-weighted multi-hash into a shared component-vector pool — the canonical *learnable collision-repair* alternative to entity-embedding tables.
+
+**Strongest actionable ideas from this batch:**
+- **Any-variate attention** (Moirai) is a parameter-free, *unbounded* field-provenance encoding (binary field-ID bias + RoPE) — directly reusable to tell a transformer which of 70+ heterogeneous features a token came from, with zero per-feature parameters. Edges: `transferable_to` and `enables_scaling` → `route:feature-interaction-selection`.
+- **Quotient-remainder / complementary-partition embeddings** bound categorical embedding memory to O(sqrt(|S|)) — a tiny standalone reusable layer for million-cardinality ID columns. New `transferable_idea:bound-high-cardinality-categorical-memory`.
+- **Hash embedding** = multi-hash + learned importance weights over a shared pool; the collision-tolerant high-cardinality primitive that `extends`/`improves_on` the plain hashing trick and is an `alternative_to` entity embeddings.
+
+**Assumptions / risks that limit transfer (refute-before-write held; all recorded as pitfalls):**
+- QR/compositional embeddings are a *memory-compression* trick only: they save memory, do NOT improve accuracy, and give no help for numerical features (`pitfall:cqr-categorical-only-no-accuracy-gain`). Evidence is single-dataset (Criteo), non-transformer MLP/cross-net, vs a hashing baseline only.
+- Moirai any-variate attention is quadratic in (variates × sequence length) (`pitfall:quadratic-variates-times-length`) and has no categorical/static pathway — variates are numeric series only (`pitfall:no-categorical-or-static-path`).
+- Hash embeddings degenerate to the plain hashing trick at k=1 (`pitfall:first-layer-d1-collision-indistinguishable`) and only pay off above a cardinality threshold (`pitfall:hashing-only-helps-above-cardinality-threshold`). 2017 is below the 2018 recency_floor — kept `deep` as a foundational anchor alongside entity-embeddings (2016); noted as a historical-anchor exception, not new SOTA.
+
+**Graph changes (single-writer collation):** +17 nodes (3 work, 8 technique, 1 transferable_idea, 5 pitfall), +35 edges. Three node-id normalizations applied during collation to avoid graph fragmentation (see contract_violations note below): proposed `technique:rqvae-semantic-ids` → existing canonical `technique:rq-vae-semantic-id`; proposed `technique:entity-embedding` → existing canonical `technique:entity-embedding-categorical`; proposed `technique:patch-tokenization` → existing canonical `technique:temporal-patch-tokenization`. Moirai subagent returned several bare-slug node ids (`moirai-…`, `patchtst-…`, `itransformer-…`, `temporal-fusion-transformer`, `chronos-…`) which were prefixed with `work:` before merge. All three new `work:` nodes carry a `belongs_to_route` edge. No edge `rel` outside `graph_edge_types` (none dropped).
+
+**Route-index changes:** **opened `recsys-tokenization-transfer` in the route index for the first time** (it was a declared execution_route with a graph node but had no route_index entry) — now seeded with both QR and hash-embeddings as representative works. Added Moirai to `timeseries-foundation-models` (now 2 anchors: Chronos value-tokenization vs Moirai patch+any-variate). Added hash-embeddings as a cross-link representative work under `categorical-high-cardinality`.
+
+**Records still shallow / needing deeper reading:** none from this batch (all deep). Standing gaps unchanged: no work yet proves high-cardinality categorical INPUTS or temporal/static fusion at genuine 70+ heterogeneous width; `industrial-feature-systems` and `libraries-and-implementations` still single-anchor.
+
+**Report conclusions touched:** strengthens the `categorical-and-high-cardinality` section with two concrete bounded-memory primitives (QR compression + hash-embedding collision repair) to complement entity embeddings (closed-vocab) and MinHash (vocabulary-free); strengthens `temporal-static-fusion` / `scaling-and-interaction` with any-variate attention as a parameter-free field-provenance lever. No conclusion overturned.
+
+**Best next directions:** (1) head-to-head QR/compositional vs RQ-VAE semantic IDs vs hashing as high-cardinality compression on a 70+-feature tokenizer; (2) wire any-variate attention's field-ID bias into the FT-Transformer/pytorch-frame tokenizer and stress-test the (variates×length) quadratic cost via variate subsampling; (3) add a categorical/static pathway to Moirai's numeric-only any-variate scheme.
+
+## contract_violations  2026-06-16T11:34:00Z
+
+`bash .claude/skills/argus/scripts/validate-contract.sh --fix complex-feature-tokenization` → exit 0, **no residual violations**. 266 nodes ({route:12, work:42, technique:107, transferable_idea:32, pitfall:73}), 444 edges, 42 `belongs_to_route` (= 42 work nodes = 42 master_index lines). Three node-id normalizations were applied in-collation BEFORE the validator ran (proposed near-duplicate techniques remapped onto existing canonical nodes: `rqvae-semantic-ids`→`rq-vae-semantic-id`, `entity-embedding`→`entity-embedding-categorical`, `patch-tokenization`→`temporal-patch-tokenization`) and bare-slug node ids returned by the Moirai subagent were `work:`-prefixed; the validator therefore needed no auto-fix.
+
+## Cycle 15 — 2026-06-16 (mode=RESEARCH, fanout=3, verify=off)
+
+Fifteenth cycle, and the first to execute the cycle-14 USER DIRECTIVE (expand scope into the four new
+routes / broaden source types). Three works deep-read in parallel (per-work isolation respected;
+single-parent collation). All three landed `deep`, all `confidence: high`, all `flagged: 0` — **0 flagged
+claims this batch**. This batch opens **three of the four new execution_routes in a single cycle** and
+broadens source TYPES beyond arXiv papers (a `library` work_type for the first time): a *new*
+time-series-foundation-model anchor (Chronos, `timeseries-foundation-models`), a *new*
+production/industrial anchor (DLRM, `industrial-feature-systems`), and a *new* runnable build-goal
+reference library (PyTorch Frame, `libraries-and-implementations`). The batch's coherent theme: *the same
+"one fixed-width token per field, in a shared d-dim space" primitive recurs across three very different
+ecosystems — TS foundation models bin a scalar into a fixed codebook; production recsys gives each field
+one learned embedding; the flagship tabular library wraps both behind a swappable per-stype encoder
+registry.*
+
+### New directions explored
+- **new — value-tokenization via scale + uniform-quantize (timeseries-foundation-models):** Chronos
+  (TMLR 2024) mean-scales each scalar by the mean ABSOLUTE value of the context (zeros preserved), then
+  UNIFORMLY quantizes into a fixed ~4094-bin vocabulary over a normalized [-15,+15] range, then trains an
+  off-the-shelf T5-class LM with plain cross-entropy ("regression via classification"). Zero architecture
+  change; the tokenizer IS the contribution. First time-series foundation model in the corpus; anchors the
+  value-tokenization family (vs the patch-based TimesFM/Moirai/MOMENT and VQ-based TOTEM families, still
+  unexplored).
+- **new — production CTR field-token + explicit dot-product interaction (industrial-feature-systems):**
+  DLRM (Facebook AI, 2019; the MLPerf rec benchmark) gives each of 26 categorical fields its own embedding
+  table (one token per field), MLP-projects the entire 13-dim dense block into ONE token, then models
+  second-order interaction by explicit PAIRWISE DOT PRODUCT, with model-parallel embedding-table sharding
+  for web-scale tables. The closest *production* analogue to the 70+-mixed-feature build goal.
+- **new — stype/encoder registry as a runnable tokenizer scaffold (libraries-and-implementations):**
+  PyTorch Frame (PyG team / Kumo.AI, arXiv 2404.00776, lib v0.3.0 Nov 2025, MIT) compiles a DataFrame +
+  per-column semantic-type (stype) map into a TensorFrame + col_stats, then dispatches each column to a
+  swappable per-stype StypeEncoder (numerical / categorical / multicategorical / text+embedding /
+  timestamp) and concatenates into one `[B, num_cols, d]` sequence, with NaN as a first-class index-0
+  token. First `library` work_type and first runnable build-goal reference.
+
+### Works deeply analyzed (not just collected)
+1. **chronos-time-series-tokenization** (2024, TMLR) — mean-abs-scale + uniform 4094-bin quantization +
+   cross-entropy LM training; flexible (multimodal) predictive distribution from the softmax. Strong
+   zero-shot benchmark, but univariate-only and a fixed range that overflows on spikes.
+2. **dlrm-criteo-ctr-feature-encoding** (2019, Facebook AI) — per-field embedding tables + MLP-projected
+   dense token + explicit pairwise dot-product interaction + model-parallel embedding sharding; runnable
+   MLPerf reference. Accuracy comparison is weak (single untuned one-epoch DLRM-vs-DCN run).
+3. **pytorch-frame-stype-library** (2025, PyG) — stype -> StypeEncoder -> concatenate registry,
+   col_stats-driven encoder init, NaN-as-index-0. Engineering infrastructure, not a new tokenization
+   algorithm (bundled encoders — FT affine, PLR periodic, quantile bucket — are prior work re-implemented).
+
+### Strongest actionable technical ideas so far (this cycle's additions)
+- **Scale-then-uniformly-quantize a continuous value into a small fixed codebook + train any transformer
+  with cross-entropy** (Chronos) — a zero-architecture-change numeric tokenizer that turns regression into
+  classification and yields a flexible predictive distribution.
+  `transferable_idea:numeric-value-binning-into-fixed-codebook-for-transformer`. (Caveat: univariate, fixed
+  range; must be re-scoped PER FEATURE for a heterogeneous 70+-feature table.)
+- **One fixed-width-d token per field in a shared space + EXPLICIT pairwise interaction** (DLRM) — make
+  every heterogeneous field emit one d-token, then model interaction explicitly (dot product) rather than
+  relying on a deep MLP to discover it. `transferable_idea:shared-d-field-token-space`. (Caveat: dense
+  features collapsed into ONE token → no per-numerical interaction; pairwise dot product is O(F^2) in
+  fields.)
+- **stype -> swappable per-stype encoder -> concatenate registry** (PyTorch Frame) — decouple WHAT a column
+  means (semantic type) from HOW it is tokenized (a swappable encoder), encode every column into the same
+  d-channel space, stack into one `[B, num_cols, d]` sequence. The cleanest runnable scaffold for the build
+  goal, with NaN first-class. `transferable_idea:stype-encoder-registry-for-heterogeneous-feature-typing`.
+
+### Records still shallow / needing deeper reading
+- None this cycle — all three are `deep`. The persistent structural gap is unchanged and now seen from
+  three NEW angles: none of the three handles the 70+-feature + high-cardinality + genuine-temporal triple.
+  Chronos is univariate (no covariates/static/categoricals) with a fixed range; DLRM collapses all dense
+  features into one token and pays O(F^2) interaction; PyTorch Frame's timestamp stype is calendar-feature
+  encoding (not patch/forecast), has no built-in high-cardinality compression, and no learned missingness
+  mask beyond NaN-as-index-0. The "one token per field" lever now has three more independent instances, but
+  the wide-mixed-temporal stress test remains demonstrated nowhere.
+
+### Weakest / most misleading directions (pitfalls recorded this cycle)
+- **fixed-range-overflow-and-precision-loss** (Chronos): the [-15,+15] quantization range overflows for
+  sparse/spiky series (when 1 > 15/n the spike is unrepresentable) and loses precision for
+  large-dynamic-range values — a hazard when re-scoping to heterogeneous tabular features.
+- **univariate-only-no-covariates-or-categoricals** (Chronos): no covariates, static attributes, or
+  multivariate/categorical modeling — covariate handling is deferred to adapters or LightGBM stacking. Do
+  NOT read Chronos as a mixed-type tokenizer.
+- **dense-features-collapsed-into-one-token** (DLRM): all 13 dense features go through one bottom MLP into a
+  SINGLE token, so individual numerical features cannot interact pairwise — the opposite of per-feature
+  numerical tokenization (PLR/FT).
+- **scaling-claim-conflates-tables-with-interacting-tokens** (DLRM): "scales to large models" addresses
+  web-scale DATA + huge embedding TABLES (via sharding), NOT many interacting feature TOKENS (pairwise dot
+  product stays O(F^2)). Do not cite DLRM as evidence the architecture scales to 70+ interacting fields.
+- **no-learned-missingness-mask** + **timestamp-not-true-temporal-tokenization** +
+  **no-builtin-high-cardinality-compression** (PyTorch Frame): NaN is just index-0 (no learned mask);
+  timestamp is calendar-feature encoding not patch/forecast tokenization; no high-cardinality compression
+  encoder. Cite it as runnable infrastructure, not as a method that solves the topic's hard cases.
+
+### Graph changes and newly connected concepts
+- Added **18 nodes** (3 works, 7 techniques, 3 transferable_ideas, 5 pitfalls) and **36 edges**. Graph now
+  **249 nodes / 409 edges**, **39 belongs_to_route edges (one per work node)**. All three new work nodes
+  carry `belongs_to_route` edges into the three newly-opened routes (timeseries-foundation-models,
+  industrial-feature-systems, libraries-and-implementations).
+- **Node reconciliation during collation (single-writer dedup):** four subagent-proposed endpoints were
+  remapped to existing canonical nodes to avoid graph fragmentation:
+  - Chronos `technique:autodis-numerical-discretization` (an `alternative_to` contrast target) →
+    existing `technique:autodis`.
+  - PyTorch Frame `technique:per-feature-affine-tokenizer` → existing `technique:feature-tokenizer`
+    (FT-Transformer's per-feature affine token; same mechanism, label matches verbatim).
+  - PyTorch Frame `technique:plr-periodic-numerical-embedding` → existing `technique:plr-embedding`
+    (PLR = Periodic+Linear+ReLU).
+  - PyTorch Frame `technique:quantile-bucket-numerical-embedding` → existing
+    `technique:hard-discretization-binning` (the bucket encoder is fixed-bin hard discretization).
+- **`scope:` is not a valid node kind** (the contract allows only route/work/technique/transferable_idea/
+  pitfall). PyTorch Frame proposed two edges into `scope:70-plus-heterogeneous-features`; these were split
+  by rel: the `transferable_to` edge was retargeted to a new
+  `transferable_idea:stype-encoder-registry-for-heterogeneous-feature-typing` node (the natural "transferable
+  to the 70+ setting" semantics), and the `enables_scaling` edge to `route:libraries-and-implementations`
+  (precedent: cycle-11 retargeted the `scaling-interaction` concept-key edge to a route). Semantics
+  preserved; contract satisfied.
+- Cross-route / cross-work bridges established: Chronos `compared_against` PatchTST and TFT (the temporal
+  route's existing anchors); its scale+uniform-quantize technique is `alternative_to` AutoDis (soft
+  discretization) — wiring the value-tokenization family to the discretization-vq route. DLRM
+  `uses_technique` entity-embeddings (the categorical-embedding ancestor), `compared_against` DCN-V2,
+  `alternative_to` AutoInt and TIGER/RQ-VAE (the recsys-tokenization comparisons). PyTorch Frame
+  `uses_technique` six in-corpus works (FT-Transformer, on-embeddings/PLR, ExcelFormer, Trompt, TabNet,
+  TabTransformer) — it is the library that actually bundles the tokenizers this topic has been deep-reading,
+  so it functions as an integration hub linking the tabular-transformer / numerical-embedding clusters to a
+  runnable scaffold.
+
+### Best next directions for next cycle (iteration_mix: new>=1, deepen>=1, challenge>=1)
+- **new:** open the fourth still-empty route, **recsys-tokenization-transfer** (TIGER/RQ-VAE already sit
+  under discretization-vq; add a distinct semantic-ID / generative-retrieval or hashing/compositional-
+  embedding anchor — QR embeddings, Bloom embeddings — to ground high-cardinality compression). OR add a
+  second TS-foundation-model with a DIFFERENT tokenizer family (TimesFM/Moirai patch-based, or TOTEM VQ) to
+  contrast value-tokenization vs patch vs VQ.
+- **deepen:** wire a high-cardinality compression encoder and a patch/forecast temporal stype into the
+  PyTorch Frame registry — the most concrete path to a runnable 70+-mixed-feature tokenizer that closes
+  PyTorch Frame's three recorded gaps.
+- **challenge (highest value):** the still-deferred wide-mixed-temporal stress test, now with three more
+  contenders to disentangle on a genuine 70+-feature high-cardinality TabReD/TabArena task under a
+  time-based split — (a) Chronos-style per-feature value-binning for the numeric leg, (b) DLRM
+  field-token + dot-product interaction, (c) the PyTorch Frame registry as the integration substrate —
+  reporting AUC AND params/latency. Converts three high-confidence-but-narrow claims into demonstrated ones.
+
+### Flagged claims
+- None this cycle. All three records returned `flagged: 0` with empty verdict lists. The refute-before-write
+  challenges were absorbed into the `pitfalls` fields (above), which SCOPE the transfer claims (Chronos's
+  fixed-range overflow + univariate-only; DLRM's dense-token collapse + O(F^2) scaling-claim conflation;
+  PyTorch Frame's NaN-only missingness + calendar-only timestamp + no high-card compression) rather than
+  overturning them.
+
+## contract_violations  2026-06-16T11:25:00Z
+- None. `validate-contract.sh --fix complex-feature-tokenization` passed clean (exit 0): 249 nodes
+  (12 route / 39 work / 99 technique / 31 transferable_idea / 68 pitfall), 409 edges, 39 belongs_to_route
+  (one per work node). No auto-fixes required; no residual violations. The four fragmenting technique
+  endpoints (`autodis-numerical-discretization`, `per-feature-affine-tokenizer`,
+  `plr-periodic-numerical-embedding`, `quantile-bucket-numerical-embedding`) and the invalid
+  `scope:70-plus-heterogeneous-features` endpoint were remapped/split during collation, before the
+  validator ran, so it found nothing to fix.
 
 ## Cycle 14 — 2026-06-16 (mode=SYNTHESIS) — synthesis note
 
