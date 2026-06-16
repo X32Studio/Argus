@@ -44,9 +44,12 @@ mkdir -p "$TARGET/.claude/commands"
 cp -f "$TEMPLATES/claude/loop.md"          "$TARGET/.claude/loop.md"
 cp -f "$TEMPLATES/claude/loop-summary.md"  "$TARGET/.claude/loop-summary.md"
 cp -f "$TEMPLATES/claude/commands/argus.md" "$TARGET/.claude/commands/argus.md"
+mkdir -p "$TARGET/.claude/workflows"
+cp -f "$TEMPLATES/claude/workflows/argus-cycle.js" "$TARGET/.claude/workflows/argus-cycle.js"
 echo "  + .claude/loop.md"
 echo "  + .claude/loop-summary.md"
 echo "  + .claude/commands/argus.md"
+echo "  + .claude/workflows/argus-cycle.js"
 
 # ── app/ source (preserve user's node_modules / dist / public/topics) ────
 mkdir -p "$TARGET/app"
