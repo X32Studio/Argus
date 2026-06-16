@@ -14,3 +14,19 @@
 {"ts":"2026-06-16T13:11:18Z","level":"info","source":"orchestrator","cycle":6,"text":"Cycle 6 starting (mode=RESEARCH, baseline fanout=3, verify=off)."}
 {"ts":"2026-06-16T13:26:02Z","level":"info","source":"orchestrator","cycle":6,"text":"Cycle 6 done: +3 works, 0 flagged. 18 works, 124 nodes. Entering synthesis."}
 {"ts":"2026-06-16T13:26:02Z","level":"info","source":"orchestrator","cycle":7,"text":"Cycle 7 starting (mode=SYNTHESIS): writing the first report/main.md brief."}
+{"ts":"2026-06-16T13:36:46Z","level":"attention","source":"orchestrator","cycle":7,"text":"Cycle 7 SYNTHESIS done: report/main.md written + pushed to origin/main. Not saturated."}
+{"ts":"2026-06-16T13:37:18Z","level":"info","source":"orchestrator","cycle":8,"text":"Cycle 8 starting (mode=RESEARCH, baseline fanout=3, verify=off): chasing 70+-feature-width depth + temporal-static fusion."}
+{"ts":"2026-06-16T13:49:46Z","level":"info","source":"orchestrator","cycle":8,"text":"Cycle 8 done: +3 works (TabNet, T2G-Former, GReaT), 0 flagged. 21 works, 148 nodes."}
+{"ts":"2026-06-16T13:49:46Z","level":"info","source":"orchestrator","cycle":9,"text":"Cycle 9 starting (mode=RESEARCH, baseline fanout=3, verify=off)."}
+{"ts":"2026-06-16T14:01:54Z","level":"attention","source":"orchestrator","cycle":9,"text":"Cycle 9 done: +3 works incl TabReD (wide-table regime-matched evidence). 24 works, 161 nodes."}
+{"ts":"2026-06-16T14:01:54Z","level":"info","source":"orchestrator","cycle":10,"text":"Cycle 10 starting (mode=RESEARCH, baseline fanout=3, verify=off)."}
+{"ts":"2026-06-16T14:15:00Z","level":"info","source":"orchestrator","cycle":10,"text":"Cycle 10 done: +3 works (AutoDis, TabTransformer, TabM), 0 flagged. 27 works, 178 nodes. Context healthy."}
+{"ts":"2026-06-16T14:15:00Z","level":"info","source":"orchestrator","cycle":11,"text":"Cycle 11 starting (mode=RESEARCH, baseline fanout=3, verify=off). Next synthesis at cycle 14."}
+{"ts":"2026-06-16T14:27:48Z","level":"info","source":"orchestrator","cycle":11,"text":"Cycle 11 done: +3 works (ExcelFormer, BatchEnsemble, TabR), 0 flagged. 30 works, 193 nodes."}
+{"ts":"2026-06-16T14:27:48Z","level":"info","source":"orchestrator","cycle":12,"text":"Cycle 12 starting (mode=RESEARCH, baseline fanout=3, verify=off)."}
+{"ts":"2026-06-16T14:39:55Z","level":"info","source":"orchestrator","cycle":12,"text":"Cycle 12 done: +3 works (MIMO, UniTabE, Trompt), 0 flagged. 33 works, 208 nodes."}
+{"ts":"2026-06-16T14:39:55Z","level":"info","source":"orchestrator","cycle":13,"text":"Cycle 13 starting (mode=RESEARCH, baseline fanout=3, verify=off). Synthesis refresh next at cycle 14."}
+{"ts": "2026-06-16T19:00:00Z", "level": "info", "source": "runner", "cycle": 13, "text": "Cycle 13: deep-read complete -- TP-BERTa (RMT+IFA), AMFormer (arithmetic block), TimeXer (role-asymmetric bridge token) merged."}
+{"ts": "2026-06-16T19:00:01Z", "level": "info", "source": "runner", "cycle": 13, "text": "Cycle 13 done: +3 works, 0 flagged. 36 works, 227 nodes / 373 edges. Theme: one-token-per-feature keeps attention linear."}
+{"ts":"2026-06-16T14:54:17Z","level":"info","source":"orchestrator","cycle":13,"text":"Cycle 13 done: +3 works (TP-BERTa, AMFormer, TimeXer), 0 flagged. 36 works, 227 nodes."}
+{"ts":"2026-06-16T14:54:17Z","level":"info","source":"orchestrator","cycle":14,"text":"Cycle 14 starting (mode=SYNTHESIS): refreshing report/main.md with 18 new works since cycle 7."}

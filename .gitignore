@@ -9,3 +9,8 @@ app/public/*
 app/tsconfig.tsbuildinfo
 app/tsconfig.node.tsbuildinfo
 asserts/*.mov
+
+# Argus per-cycle collation scratch files (temp merge scripts; should never be committed)
+_merge*.py
+collate*.py
+*_merge_*.py

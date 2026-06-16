@@ -1,5 +1,51 @@
 # Iteration Log — Complex Feature Tokenization for Deep Tabular Models
 
+## Synthesis iteration — cycle 14 — 2026-06-16 (UTC)
+
+**Mode:** SYNTHESIS (second synthesis pass; REFRESH of the cycle-7 brief; synthesis_every_n_cycles = 7).
+
+**Files read:**
+- Methodology: `.claude/loop-summary.md`.
+- Topic config: `topic.yaml`, `proposal.md`.
+- Indexes/logs: `master_index.jsonl` (36 works), `route_index.json`, `logs/research_state.md` (cycles 1-13, full).
+- Prior report: `report/main.md` (cycle-7 version), `report/reference_index.md`, `report/iteration_log.md`.
+- All 18 NEW per-work records (cycles 8-13) read in full: tabred-benchmark-in-the-wild, tabm-parameter-efficient-ensembling,
+  timexer-exogenous-endogenous-fusion, mimo-independent-subnetworks-robust-prediction, batchensemble-efficient-ensembles,
+  trompt-prompt-tabular, amformer-arithmetic-feature-interaction, excelformer-semi-permeable-attention, tabr-retrieval-tabular,
+  autodis-numerical-discretization, t2g-former-graph-tabular, tabtransformer-contextual-categorical-embeddings,
+  xtab-cross-table-pretraining, unitabe-universal-tabular-encoder, tp-berta-lm-tabular-prediction,
+  lift-language-interfaced-finetuning, great-generative-tabular-llm, tabnet-attentive-interpretable-tabular.
+  Re-read on-embeddings-numerical-features in full to re-verify the PLR citations the new default rests on.
+  Cycle-7's 18 records corroborated against the prior brief + research_state mechanism notes.
+
+**What changed in the main report (vs cycle 7):**
+- **Default recipe SHIFTED.** Cycle 7's default was a per-feature *attention* scaffold (FT-Transformer + PLR). The new
+  regime-matched evidence (TabReD: median 261 features, time-based splits) demotes per-feature attention to runner-up
+  (measured O(features²) cost) and elevates **per-feature PLR/PLE embeddings + parameter-efficient MLP ensemble (TabM)** to
+  the proven default. Recipe A rewritten around this; old attention default kept as Recipe A′ ("adopt only if it beats A").
+- **Ensembling promoted to first-class** (new TabM/BatchEnsemble/MIMO cluster) — tokenizer-agnostic, near-free, linear in
+  feature count.
+- **Temporal-static-fusion** gains TimeXer's role-asymmetric + global-bridge-token recipe (linear in context-feature count),
+  plus the TabReD-forced distinction between snapshot-with-drift (time = split axis) vs genuine per-row series.
+- **scaling-and-interaction** reframed by the TabReD verdict (DCN-V2/Trompt/TabR did NOT transfer); added the
+  one-token-per-feature linear-attention contenders (AMFormer prompt queries, TimeXer bridge, TP-BERTa IFA).
+- **Evaluation discipline** now leads with time-based splits.
+- **open-problems** marks which contradictions the new evidence RESOLVES (attention-vs-MLP-ensemble at width; raw-digit-vs-learned
+  numerics quantified by RMT) vs leaves OPEN (the 70+-features + high-cardinality + genuine-temporal triple).
+
+**Newly promoted Must-Read records:** tabred-benchmark-in-the-wild, tabm-parameter-efficient-ensembling (the two that moved the default).
+
+**Newly identified weak / risky claims (carried as caveats):** TabReD does not isolate high-cardinality categoricals and its
+"temporal" is split-axis-only (so the headline gap is narrowed, not closed); TimeXer's linear cost is role-specific (loses to joint
+attention on richly-interacting features, no categorical pathway); AMFormer's necessity claim is synthetic-favorable + log-ReLU
+unstable; XTab/TP-BERTa transfer backbone/semantics not a reusable wide-feature tokenizer; ExcelFormer/Trompt are not categorical/temporal
+tokenizers.
+
+**Saturation:** saturation_signal = FALSE. The 18 new works did NOT merely confirm cycle 7 — TabReD + the ensembling line
+materially **changed the default recommendation** and converted the quadratic-attention liability from asserted to evidenced;
+TimeXer + TP-BERTa sharpened the temporal and numerical legs. Coverage is saturating (all 8 routes deep, 36 records), but the
+matched-compute 70+-feature comparison and the high-cardinality + genuine-temporal triple remain unevidenced.
+
 ## Synthesis iteration — cycle 7 — 2026-06-16 (UTC)
 
 **Mode:** SYNTHESIS (first synthesis pass; synthesis_every_n_cycles = 7).

@@ -655,6 +655,557 @@
       "label": "TabArena: A Living Benchmark for Machine Learning on Tabular Data",
       "year": 2025,
       "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tabnet-attentive-interpretable-tabular",
+      "kind": "work",
+      "label": "TabNet: Attentive Interpretable Tabular Learning",
+      "year": 2019,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:t2g-former-graph-tabular",
+      "kind": "work",
+      "label": "T2G-Former: Organizing Tabular Features into Relation Graphs",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:great-generative-tabular-llm",
+      "kind": "work",
+      "label": "GReaT: Language Models are Realistic Tabular Data Generators",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:sparsemax-instance-wise-feature-selection",
+      "kind": "technique",
+      "label": "Sparsemax Instance-Wise Feature Selection (TabNet attentive mask)"
+    },
+    {
+      "id": "technique:masked-feature-reconstruction-pretraining",
+      "kind": "technique",
+      "label": "Masked Feature Reconstruction Pretraining (TabNet self-supervised)"
+    },
+    {
+      "id": "technique:per-feature-self-attention-tokenization",
+      "kind": "technique",
+      "label": "Per-Feature Self-Attention Tokenization (FT-Transformer-style, contrast)"
+    },
+    {
+      "id": "transferable_idea:linear-cost-instance-wise-feature-gate",
+      "kind": "transferable_idea",
+      "label": "Linear-cost O(D) instance-wise feature gate (sparsemax) that scales in feature count"
+    },
+    {
+      "id": "transferable_idea:tabular-masked-ssl",
+      "kind": "transferable_idea",
+      "label": "Tabular masked self-supervised pretraining (reconstruct masked features)"
+    },
+    {
+      "id": "pitfall:tabnet-undertuned-baseline-wins",
+      "kind": "pitfall",
+      "label": "TabNet supervised wins likely on under-tuned baselines (not reproduced by later benchmarks)"
+    },
+    {
+      "id": "pitfall:tabnet-impoverished-input-encoding",
+      "kind": "pitfall",
+      "label": "TabNet impoverished input encoding (raw numerics + plain categorical embeddings, no PLR)"
+    },
+    {
+      "id": "technique:fr-graph-feature-relation-graph",
+      "kind": "technique",
+      "label": "FR-Graph: Learned Sparse Feature Relation Graph (T2G-Former)"
+    },
+    {
+      "id": "technique:graph-estimator",
+      "kind": "technique",
+      "label": "Graph Estimator (GE: data-adaptive + static-topology sparse interaction)"
+    },
+    {
+      "id": "technique:dense-self-attention",
+      "kind": "technique",
+      "label": "Dense Self-Attention over feature tokens (all-pairs, baseline)"
+    },
+    {
+      "id": "pitfall:fr-graph-no-compute-saving-quadratic",
+      "kind": "pitfall",
+      "label": "FR-Graph imposes a sparse interaction PRIOR but compute stays O(M^2) (no FLOP saving)"
+    },
+    {
+      "id": "pitfall:t2g-no-temporal-93-feature-ceiling",
+      "kind": "pitfall",
+      "label": "T2G evaluated <=93 features, no temporal; static-topology-freeze training hack"
+    },
+    {
+      "id": "technique:feature-order-permutation",
+      "kind": "technique",
+      "label": "Random Feature-Order Permutation (order-invariance training, GReaT)"
+    },
+    {
+      "id": "technique:text-serialization-name-value",
+      "kind": "technique",
+      "label": "Text Serialization 'COLUMN_NAME is VALUE' (subject-predicate-object clauses)"
+    },
+    {
+      "id": "technique:llm-subword-tokenization",
+      "kind": "technique",
+      "label": "LLM Subword (BPE) Tokenization of serialized rows"
+    },
+    {
+      "id": "technique:ctgan-conditional-gan",
+      "kind": "technique",
+      "label": "CTGAN Conditional GAN (tabular synthesis baseline)"
+    },
+    {
+      "id": "technique:tvae",
+      "kind": "technique",
+      "label": "TVAE (tabular VAE synthesis baseline)"
+    },
+    {
+      "id": "transferable_idea:order-invariant-arbitrary-conditioning-tokenizer",
+      "kind": "transferable_idea",
+      "label": "Order-invariant, arbitrary-conditioning tokenizer via random feature-order permutation"
+    },
+    {
+      "id": "pitfall:feature-count-extrapolation-max-47",
+      "kind": "pitfall",
+      "label": "GReaT eval caps at 47 features; no 70+-feature evidence"
+    },
+    {
+      "id": "pitfall:raw-digit-numerics-no-embedding",
+      "kind": "pitfall",
+      "label": "Raw-digit numerics serialized as text, no numeric embedding (weak numeric leg)"
+    },
+    {
+      "id": "pitfall:serial-autoregressive-sampling-cost",
+      "kind": "pitfall",
+      "label": "Serial autoregressive sampling cost wall (generation-side, not an encoder)"
+    },
+    {
+      "id": "work:tabred-benchmark-in-the-wild",
+      "kind": "work",
+      "label": "TabReD: Analyzing Pitfalls and Filling the Gaps in Tabular Deep Learning Benchmarks",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "pitfall:random-split-temporal-leakage",
+      "kind": "pitfall",
+      "label": "Random splits on temporally-ordered data inflate rankings (time-leakage)"
+    },
+    {
+      "id": "pitfall:retrieval-fails-under-drift",
+      "kind": "pitfall",
+      "label": "Retrieval-augmented DL (TabR/ModernNCA) underperforms under temporal drift (hypothesis-level cause)"
+    },
+    {
+      "id": "transferable_idea:per-numerical-feature-embeddings-scale-to-wide-tables",
+      "kind": "transferable_idea",
+      "label": "Per-numerical-feature (PLR) embeddings keep their benefit on wide (median-261-feature) drifting industrial tables"
+    },
+    {
+      "id": "work:xtab-cross-table-pretraining",
+      "kind": "work",
+      "label": "XTab: Cross-table Pretraining for Tabular Transformers",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:federated-cross-table-backbone-pretraining",
+      "kind": "technique",
+      "label": "Federated Cross-Table Backbone Pretraining (FedAvg over shared transformer blocks)"
+    },
+    {
+      "id": "technique:reconstruction-ssl-feature-corruption",
+      "kind": "technique",
+      "label": "Reconstruction SSL from Feature Corruption (SCARF-style marginal resampling)"
+    },
+    {
+      "id": "transferable_idea:tokenizer-backbone-decoupling-for-cross-table-transfer",
+      "kind": "transferable_idea",
+      "label": "Decouple per-table tokenizer from cross-table interaction backbone (transfer only the interaction prior)"
+    },
+    {
+      "id": "pitfall:cross-table-pretraining-transfers-backbone-not-tokenizer",
+      "kind": "pitfall",
+      "label": "Cross-table pretraining transfers the backbone, NOT the tokenizer (featurizer re-initialized per table)"
+    },
+    {
+      "id": "work:lift-language-interfaced-finetuning",
+      "kind": "work",
+      "label": "LIFT: Language-Interfaced Fine-Tuning for Non-Language ML Tasks",
+      "year": 2022,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:text-serialization-finetuning",
+      "kind": "technique",
+      "label": "Text-Serialization Fine-Tuning (row->NL sentence + ordinary autoregressive LM fine-tune)"
+    },
+    {
+      "id": "technique:lora",
+      "kind": "technique",
+      "label": "LoRA (low-rank parameter-efficient fine-tuning)"
+    },
+    {
+      "id": "pitfall:llm-serialization-context-and-regression-wall",
+      "kind": "pitfall",
+      "label": "LLM-serialization context wall + high-D regression collapse (raw-digit numerics, p>=50 fails)"
+    },
+    {
+      "id": "work:autodis-numerical-discretization",
+      "kind": "work",
+      "label": "AutoDis: An Embedding Learning Framework for Numerical Features in CTR Prediction",
+      "year": 2021,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tabtransformer-contextual-categorical-embeddings",
+      "kind": "work",
+      "label": "TabTransformer: Tabular Data Modeling Using Contextual Embeddings",
+      "year": 2020,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tabm-parameter-efficient-ensembling",
+      "kind": "work",
+      "label": "TabM: Advancing Tabular Deep Learning with Parameter-Efficient Ensembling",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:soft-discretization-meta-embeddings",
+      "kind": "technique",
+      "label": "Soft Discretization over Per-Field Meta-Embeddings (AutoDis: differentiable scorer + temperature softmax + weighted-average over a tiny shared codebook)"
+    },
+    {
+      "id": "technique:hard-discretization-binning",
+      "kind": "technique",
+      "label": "Hard Discretization Binning (EDD/LD/TD fixed bins; non-differentiable, SBD/DBS artefacts)"
+    },
+    {
+      "id": "technique:column-identifier-embedding",
+      "kind": "technique",
+      "label": "Per-Column Identifier Embedding (concatenated shared column id replaces positional encoding so attention knows the source field)"
+    },
+    {
+      "id": "technique:contextual-categorical-embeddings",
+      "kind": "technique",
+      "label": "Contextual Categorical Embeddings (cross-column self-attention turns context-free per-column embeddings into contextual ones)"
+    },
+    {
+      "id": "technique:replaced-token-detection-tabular",
+      "kind": "technique",
+      "label": "Generator-Free Per-Column Replaced-Token-Detection Pretraining (ELECTRA-style RTD for tabular; per-column binary heads, no auxiliary generator)"
+    },
+    {
+      "id": "technique:parameter-efficient-ensembling",
+      "kind": "technique",
+      "label": "Parameter-Efficient Ensembling (TabM: k implicit submodels via shared weights + cheap per-submodel adapters; mean at inference)"
+    },
+    {
+      "id": "technique:batchensemble-adapters",
+      "kind": "technique",
+      "label": "BatchEnsemble Adapters (rank-1 multiplicative/additive per-submodel adapters around shared weights; the first multiplicative adapter R is load-bearing)"
+    },
+    {
+      "id": "transferable_idea:per-column-field-provenance-token",
+      "kind": "transferable_idea",
+      "label": "Per-column field-provenance token: give each feature token a learned column identifier (by concatenation) so attention can disambiguate which field a value came from"
+    },
+    {
+      "id": "transferable_idea:plr-embeddings-into-scalable-mlp-backbone",
+      "kind": "transferable_idea",
+      "label": "Flat-concat per-feature PLE/PLR embeddings into a linear-cost MLP (ensemble) backbone beats attention tokenizers on wide tables without per-token attention"
+    },
+    {
+      "id": "pitfall:temperature-collapse-soft-discretization",
+      "kind": "pitfall",
+      "label": "Soft-discretization temperature is load-bearing: too high -> uniform mixing (loses resolution); too low -> argmax (degenerates to hard binning, reintroduces SBD/DBS). Global optimum varies wildly across datasets."
+    },
+    {
+      "id": "pitfall:scalable-means-param-budget-not-many-features",
+      "kind": "pitfall",
+      "label": "AutoDis 'scalable' = constant per-field parameter budget, NOT demonstrated many-feature / high-attention-cost scaling; do not read as a 70+-feature result."
+    },
+    {
+      "id": "pitfall:numerical-features-bypass-transformer",
+      "kind": "pitfall",
+      "label": "TabTransformer numerical features bypass the Transformer (raw normalized concat, never attended) -> on numerical-heavy 70+ tables most input gets no contextualization; the gap FT-Transformer closes."
+    },
+    {
+      "id": "pitfall:one-hot-categoricals-bad-for-high-cardinality",
+      "kind": "pitfall",
+      "label": "TabM default one-hot categoricals inflate input width / first-layer params linearly with total category count -> wrong primitive for high-cardinality 70+-feature tables; swap in learned/hashing/target encoding."
+    },
+    {
+      "id": "pitfall:not-a-tokenizer-no-explicit-feature-interaction",
+      "kind": "pitfall",
+      "label": "TabM is neither a tokenizer (borrows one-hot+quantile+PLE) nor an explicit feature-interaction/selection method (no cross/attention/gate); its only tie to the route is linear-cost flat-concat MLP scaling."
+    },
+    {
+      "id": "work:excelformer-semi-permeable-attention",
+      "kind": "work",
+      "label": "ExcelFormer: A Neural Network Surpassing GBDTs on Tabular Data",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:batchensemble-efficient-ensembles",
+      "kind": "work",
+      "label": "BatchEnsemble: An Alternative Approach to Efficient Ensemble and Lifelong Learning",
+      "year": 2020,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tabr-retrieval-tabular",
+      "kind": "work",
+      "label": "TabR: Tabular Deep Learning Meets Nearest Neighbors in 2023",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:semi-permeable-attention",
+      "kind": "technique",
+      "label": "Semi-Permeable Attention (SPA: mutual-information mask lets low-importance features attend to high-importance ones but not vice-versa; noise-robustness inductive bias)"
+    },
+    {
+      "id": "technique:feat-mix-hid-mix-importance-weighted-mixup",
+      "kind": "technique",
+      "label": "Feat-Mix / Hid-Mix (importance-weighted tabular Mixup data augmentation; mixes features/hidden units weighted by mutual-information feature importance)"
+    },
+    {
+      "id": "technique:catboost-target-encoding",
+      "kind": "technique",
+      "label": "CatBoost (ordered) Target Encoding (leakage-controlled target encoding used as ExcelFormer's categorical-to-numeric scalarizer)"
+    },
+    {
+      "id": "technique:retrieval-augmented-tabular",
+      "kind": "technique",
+      "label": "Retrieval-Augmented Tabular Prediction (attend over retrieved training instances; an instance-axis alternative to per-feature tokenization)"
+    },
+    {
+      "id": "technique:key-only-l2-retrieval-attention",
+      "kind": "technique",
+      "label": "Key-Only L2 Retrieval Attention (TabR: similarity over keys via L2 distance, value-as-difference; feature-count-invariant attention over the sample axis)"
+    },
+    {
+      "id": "transferable_idea:noise-robust-wide-feature-attention",
+      "kind": "transferable_idea",
+      "label": "Noise-robust wide-feature attention: an importance-masked (semi-permeable) attention prior that protects high-importance features from noisy uninformative ones at large feature width"
+    },
+    {
+      "id": "transferable_idea:tokenizer-agnostic-cheap-ensembling",
+      "kind": "transferable_idea",
+      "label": "Tokenizer-agnostic cheap ensembling: rank-1 BatchEnsemble adapters wrap ANY backbone/tokenizer for near-free accuracy+calibration gains, parameters independent of feature count"
+    },
+    {
+      "id": "transferable_idea:instance-axis-retrieval-feature-count-invariant",
+      "kind": "transferable_idea",
+      "label": "Instance-axis retrieval is feature-count-invariant: attending over training rows (not features) sidesteps the O(k^2)-in-feature-count tokenizer cost on wide tables"
+    },
+    {
+      "id": "pitfall:no-native-categorical-or-temporal-tokenizer",
+      "kind": "pitfall",
+      "label": "ExcelFormer has no native categorical/temporal tokenizer: categoricals are CatBoost-target-encoded into scalars (lossy scalarization), no temporal handling -> SPA/Feat-Mix transfer but the tokenizer itself does not cover mixed types"
+    },
+    {
+      "id": "pitfall:spa-is-not-a-scaling-mechanism",
+      "kind": "pitfall",
+      "label": "SPA is a noise-robustness inductive bias, NOT a scaling mechanism: attention stays O(k^2) in feature count; static mutual-information mask computed once, untested above 54 features"
+    },
+    {
+      "id": "pitfall:rank1-not-full-ensemble-and-not-a-tokenizer",
+      "kind": "pitfall",
+      "label": "BatchEnsemble rank-1 adapters are an efficient-ensemble approximation (not a full deep ensemble) and not a tokenizer; evidence is non-tabular (vision/lifelong), tabular transfer only inferred via TabM"
+    },
+    {
+      "id": "pitfall:train-deploy-retrieval-leakage",
+      "kind": "pitfall",
+      "label": "Train/deploy retrieval leakage: retrieval-augmented tabular models can leak across the train/deploy boundary on temporal+static mixed data (which rows are retrievable at inference vs train differs); acute under temporal drift"
+    },
+    {
+      "id": "work:mimo-independent-subnetworks-robust-prediction",
+      "kind": "work",
+      "label": "Training Independent Subnetworks for Robust Prediction (MIMO)",
+      "year": 2021,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "pitfall:mimo-misfiled-as-tokenizer-capacity-contingent",
+      "kind": "pitfall",
+      "label": "MIMO is neither a tokenizer nor a feature-interaction method, and its 'free' ensembling gain is contingent on backbone over-parameterization (collapses on tightly-fit nets unless input-repetition rho is raised, which trades away diversity); 'for free' is prediction-time only (batch repetition raises training cost)"
+    },
+    {
+      "id": "work:unitabe-universal-tabular-encoder",
+      "kind": "work",
+      "label": "UniTabE: A Universal Pretraining Protocol for Tabular Foundation Model in Data Science",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:tabunit-cell-keyvalue-tokenization",
+      "kind": "technique",
+      "label": "TabUnit Cell Key-Value Tokenization (each cell = (column-name embedding, data-type embedding, value tokens); schema-agnostic per-cell unit admitting any column count / incremental columns)"
+    },
+    {
+      "id": "technique:data-type-embedding-fuse-gate",
+      "kind": "technique",
+      "label": "Data-Type Embedding + Fuse/Linking Gates (explicit numerical/categorical/textual type indicator gated into the column-name vector, then woven into every value token so flat-concat attention recovers field-value binding and type)"
+    },
+    {
+      "id": "technique:multi-cell-masking-pretraining",
+      "kind": "technique",
+      "label": "Multi-Cell Masking + Contrastive Pretraining (mask whole cells, auto-regressively regenerate; missing-value objective == downstream objective; plus row-block InfoNCE contrastive)"
+    },
+    {
+      "id": "transferable_idea:explicit-data-type-embedding-for-feature-typing",
+      "kind": "transferable_idea",
+      "label": "Explicit data-type embedding as the feature-typing primitive: a small type indicator (num/cat/text/missing), gated into each feature token, disambiguates feature types in one schema-agnostic tokenizer"
+    },
+    {
+      "id": "pitfall:numerics-textualized-no-magnitude-embedding",
+      "kind": "pitfall",
+      "label": "UniTabE textualizes numerics: digit/character sub-word tokens through the shared text embedder, magnitude only implicitly recoverable via the type flag; no PLR/periodic/quantile magnitude-aware numerical embedding (the exact weakness the numerical-embeddings route fixes)"
+    },
+    {
+      "id": "pitfall:per-cell-multitoken-sequence-blowup-quadratic-attention",
+      "kind": "pitfall",
+      "label": "Per-cell multi-token expansion: one cell = (1 + q) tokens so a 70+-column table yields a sequence MUCH longer than the column count; O(L^2) attention in total token length, no linear-attention escape hatch ('scales to many features' = schema flexibility, NOT compute efficiency)"
+    },
+    {
+      "id": "pitfall:pretraining-domain-leakage-public-benchmarks",
+      "kind": "pitfall",
+      "label": "13B-Kaggle / 303-domain pretraining may share domains with the 7 public benchmarks (only the 12 Kaggle tasks are guaranteed held out), so the public-benchmark lead could be partly leakage; scratch model already hits 0.81 vs 0.83 finetuned (pretraining lift on public sets is modest, win is mostly TabUnit architecture)"
+    },
+    {
+      "id": "work:trompt-prompt-tabular",
+      "kind": "work",
+      "label": "Trompt: Towards a Better Deep Neural Network for Tabular Data",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:prompt-learning-importance-gate",
+      "kind": "technique",
+      "label": "Prompt-Learning Importance Gate (Trompt: learned input-independent column embeddings + P soft-prompt vectors -> per-sample per-prompt softmax importance over columns via O(P x C) batched matmul, replacing O(C^2) self-attention; interpretable column-level importances)"
+    },
+    {
+      "id": "technique:per-feature-value-tokenizer",
+      "kind": "technique",
+      "label": "Per-Feature Value Tokenizer (FT-Transformer-style: scalar->Dense for numerical, embedding lookup for categorical, one d-dim token per column)"
+    },
+    {
+      "id": "technique:feature-self-attention",
+      "kind": "technique",
+      "label": "Feature Self-Attention (all-pairs O(C^2) attention over feature tokens; the mechanism Trompt's prompt-importance gate replaces)"
+    },
+    {
+      "id": "pitfall:untested-high-cardinality-and-wide-tables",
+      "kind": "pitfall",
+      "label": "Trompt's Grinsztajn45 win is on a benchmark that filters out high-cardinality categoricals and missing values at moderate feature counts; 'narrows the gap to GBDT' is NOT evidence of 70+-heterogeneous (esp. high-card) scaling. Part-3 B x P x C x d expansion materializes a large activation tensor (P=128), so the O(P x C) framing hides a large constant on wide tables; supplementary FT/SAINT tables are un-tuned (not apples-to-apples)"
+    },
+    {
+      "id": "work:tp-berta-lm-tabular-prediction",
+      "kind": "work",
+      "label": "Making Pre-trained Language Models Great on Tabular Prediction (TP-BERTa)",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:amformer-arithmetic-feature-interaction",
+      "kind": "work",
+      "label": "Arithmetic Feature Interaction Is Necessary for Deep Tabular Learning (AMFormer)",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:timexer-exogenous-endogenous-fusion",
+      "kind": "work",
+      "label": "TimeXer: Empowering Transformers for Time Series Forecasting with Exogenous Variables",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:relative-magnitude-tokenization",
+      "kind": "technique",
+      "label": "Relative Magnitude Tokenization (RMT: C4.5 target-aware per-feature bins -> shared, triplet-ordered magnitude-token vocabulary, embedding scaled by raw value)"
+    },
+    {
+      "id": "technique:intra-feature-attention",
+      "kind": "technique",
+      "label": "Intra-Feature Attention (IFA: shared mini-self-attention fuses each feature's name+value sub-tokens into ONE token; sequence length = feature count)"
+    },
+    {
+      "id": "transferable_idea:magnitude-aware-numerical-tokens",
+      "kind": "transferable_idea",
+      "label": "Magnitude-aware numerical tokens: give an LM/transformer a target-aware, order-regularized shared bin-token vocabulary scaled by raw value (decouples name semantics from value magnitude)"
+    },
+    {
+      "id": "transferable_idea:name-value-fusion-to-one-token",
+      "kind": "transferable_idea",
+      "label": "Name+value fusion to one token: a shared mini-attention collapses each feature's column-name and value sub-tokens to a single feature token, making sequence length = feature count"
+    },
+    {
+      "id": "pitfall:tp-berta-target-aware-binning-leakage",
+      "kind": "pitfall",
+      "label": "TP-BERTa RMT bins are built by C4.5 LABEL-guided splits (target-aware); leakage risk unless bin boundaries are constructed out-of-fold (same hazard as PLEt target-aware binning)"
+    },
+    {
+      "id": "pitfall:tp-berta-feature-count-ceiling-32",
+      "kind": "pitfall",
+      "label": "TP-BERTa pretrained/validated at <=32 features (IFA makes sequence length = feature count but pretraining corpus capped low-dim); 70+-feature behavior is untested extrapolation"
+    },
+    {
+      "id": "pitfall:tp-berta-categorical-driven-win",
+      "kind": "pitfall",
+      "label": "TP-BERTa's headline win is categorical/semantic-name-dominated; it loses on all-numerical tables, and the comparison uses default HPs vs tuned baselines (rank-only headline)"
+    },
+    {
+      "id": "technique:multiplicative-attention-log-space",
+      "kind": "technique",
+      "label": "Multiplicative Attention in Log Space (AMFormer: attention over log(ReLU(X)+eps) then exp = learned weighted products, parallel to additive attention; from Neural Arithmetic Logic Units)"
+    },
+    {
+      "id": "technique:prompt-token-query-attention",
+      "kind": "technique",
+      "label": "Prompt-Token Query Attention (AMFormer: learned prompt tokens are the attention queries, making attention cost linear in feature count N and stabilizing data-invariant interaction patterns)"
+    },
+    {
+      "id": "technique:hard-top-k-attention",
+      "kind": "technique",
+      "label": "Hard Top-k Attention (keep the k largest QK^T entries per row, mask the rest to -inf so they vanish after softmax; sparse interaction with k independent of N)"
+    },
+    {
+      "id": "transferable_idea:explicit-multiplicative-feature-interaction",
+      "kind": "transferable_idea",
+      "label": "Explicit multiplicative feature interaction: a log-space attention + exp stream gives a per-feature transformer the ability to synthesize ratio/product features (BMI-style) that additive attention cannot"
+    },
+    {
+      "id": "technique:endogenous-global-bridge-token",
+      "kind": "technique",
+      "label": "Endogenous Global Bridge Token (TimeXer: one learnable [CLS]-style token per target series that aggregates patches AND is the sole QUERY into exogenous variate tokens via 1xC cross-attention)"
+    },
+    {
+      "id": "technique:role-asymmetric-patch-variate-tokenization",
+      "kind": "technique",
+      "label": "Role-Asymmetric Patch+Variate Tokenization (TimeXer: tokenize the target you care about at fine patch granularity, collapse each context feature to ONE coarse variate token)"
+    },
+    {
+      "id": "pitfall:single-global-token-bottleneck-on-many-interacting-features",
+      "kind": "pitfall",
+      "label": "TimeXer single-global-bridge-token bottleneck: funneling all exogenous info through ONE token loses to iTransformer joint attention on high-interaction many-variate sets (e.g. Traffic); numeric/temporal only, no categorical/static pathway"
+    },
+    {
+      "id": "pitfall:multiplicative-stream-instability-log-relu",
+      "kind": "pitfall",
+      "label": "AMFormer multiplicative-stream instability: log(ReLU(X)+eps) zeroes/!undefined for non-positive inputs and is sensitive to eps; signed-log alternative untested; can destabilize training"
+    },
+    {
+      "id": "pitfall:synthetic-favorable-evaluation",
+      "kind": "pitfall",
+      "label": "AMFormer 'arithmetic interaction is necessary' necessity claim leans on synthetic monomial data; real-world breadth is weak (4 datasets, single run); re-validate on in-the-wild TabReD/TabArena"
     }
   ],
   "edges": [
@@ -1517,7 +2068,1012 @@
       "src": "work:tabarena-living-benchmark",
       "dst": "work:tree-models-outperform-deep-tabular",
       "rel": "contradicts"
+    },
+    {
+      "src": "work:tabnet-attentive-interpretable-tabular",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabnet-attentive-interpretable-tabular",
+      "dst": "technique:sparsemax-instance-wise-feature-selection",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:sparsemax-instance-wise-feature-selection",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:sparsemax-instance-wise-feature-selection",
+      "dst": "transferable_idea:linear-cost-instance-wise-feature-gate",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabnet-attentive-interpretable-tabular",
+      "dst": "technique:masked-feature-reconstruction-pretraining",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:masked-feature-reconstruction-pretraining",
+      "dst": "transferable_idea:tabular-masked-ssl",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabnet-attentive-interpretable-tabular",
+      "dst": "technique:per-feature-self-attention-tokenization",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tabnet-attentive-interpretable-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabnet-attentive-interpretable-tabular",
+      "dst": "pitfall:tabnet-undertuned-baseline-wins",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabnet-attentive-interpretable-tabular",
+      "dst": "pitfall:tabnet-impoverished-input-encoding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "technique:fr-graph-feature-relation-graph",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "technique:graph-estimator",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "technique:feature-tokenizer",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "work:autoint-feature-interaction",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "work:dcn-v2-deep-cross-network",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:fr-graph-feature-relation-graph",
+      "dst": "route:feature-interaction-selection",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:fr-graph-feature-relation-graph",
+      "dst": "technique:dense-self-attention",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:fr-graph-feature-relation-graph",
+      "dst": "pitfall:fr-graph-no-compute-saving-quadratic",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:t2g-former-graph-tabular",
+      "dst": "pitfall:t2g-no-temporal-93-feature-ceiling",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "route:llm-tabular-serialization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "technique:feature-order-permutation",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "technique:text-serialization-name-value",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "technique:llm-subword-tokenization",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "work:tabllm-few-shot-llm-serialization",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "technique:ctgan-conditional-gan",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "technique:tvae",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:feature-order-permutation",
+      "dst": "transferable_idea:order-invariant-arbitrary-conditioning-tokenizer",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "pitfall:feature-count-extrapolation-max-47",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "pitfall:raw-digit-numerics-no-embedding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:great-generative-tabular-llm",
+      "dst": "pitfall:serial-autoregressive-sampling-cost",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabred-benchmark-in-the-wild",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabred-benchmark-in-the-wild",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabred-benchmark-in-the-wild",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabred-benchmark-in-the-wild",
+      "dst": "work:tabarena-living-benchmark",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tabred-benchmark-in-the-wild",
+      "dst": "pitfall:random-split-temporal-leakage",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabred-benchmark-in-the-wild",
+      "dst": "pitfall:retrieval-fails-under-drift",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabred-benchmark-in-the-wild",
+      "dst": "transferable_idea:per-numerical-feature-embeddings-scale-to-wide-tables",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "transferable_idea:per-numerical-feature-embeddings-scale-to-wide-tables",
+      "dst": "route:numerical-embeddings",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "technique:federated-cross-table-backbone-pretraining",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "technique:reconstruction-ssl-feature-corruption",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "work:carte-pretraining-transfer-tabular",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "work:tabpfn-v2",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "transferable_idea:tokenizer-backbone-decoupling-for-cross-table-transfer",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:xtab-cross-table-pretraining",
+      "dst": "pitfall:cross-table-pretraining-transfers-backbone-not-tokenizer",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:lift-language-interfaced-finetuning",
+      "dst": "route:llm-tabular-serialization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:lift-language-interfaced-finetuning",
+      "dst": "technique:text-serialization-finetuning",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:lift-language-interfaced-finetuning",
+      "dst": "technique:lora",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:lift-language-interfaced-finetuning",
+      "dst": "work:tabllm-few-shot-llm-serialization",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:lift-language-interfaced-finetuning",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:lift-language-interfaced-finetuning",
+      "dst": "work:tabllm-few-shot-llm-serialization",
+      "rel": "contradicts"
+    },
+    {
+      "src": "work:lift-language-interfaced-finetuning",
+      "dst": "pitfall:llm-serialization-context-and-regression-wall",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:autodis-numerical-discretization",
+      "dst": "route:discretization-vq",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:autodis-numerical-discretization",
+      "dst": "technique:soft-discretization-meta-embeddings",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:autodis-numerical-discretization",
+      "dst": "technique:hard-discretization-binning",
+      "rel": "improves_on"
+    },
+    {
+      "src": "technique:soft-discretization-meta-embeddings",
+      "dst": "technique:plr-embedding",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:autodis-numerical-discretization",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "work:autodis-numerical-discretization",
+      "rel": "improves_on"
+    },
+    {
+      "src": "technique:soft-discretization-meta-embeddings",
+      "dst": "route:numerical-embeddings",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:autodis-numerical-discretization",
+      "dst": "pitfall:temperature-collapse-soft-discretization",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:autodis-numerical-discretization",
+      "dst": "pitfall:scalable-means-param-budget-not-many-features",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:soft-discretization-meta-embeddings",
+      "dst": "technique:rq-vae-semantic-id",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "technique:column-identifier-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "technique:contextual-categorical-embeddings",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "technique:replaced-token-detection-tabular",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "work:entity-embeddings-categorical-variables",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "work:tabtransformer-contextual-categorical-embeddings",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "work:tabtransformer-contextual-categorical-embeddings",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "work:tabnet-attentive-interpretable-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tree-models-outperform-deep-tabular",
+      "dst": "work:tabtransformer-contextual-categorical-embeddings",
+      "rel": "contradicts"
+    },
+    {
+      "src": "technique:column-identifier-embedding",
+      "dst": "transferable_idea:per-column-field-provenance-token",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabtransformer-contextual-categorical-embeddings",
+      "dst": "pitfall:numerical-features-bypass-transformer",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:contextual-categorical-embeddings",
+      "dst": "technique:multi-head-self-attention-interacting-layer",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "technique:parameter-efficient-ensembling",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "technique:batchensemble-adapters",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "technique:piecewise-linear-encoding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:t2g-former-graph-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:tabred-benchmark-in-the-wild",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:parameter-efficient-ensembling",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:parameter-efficient-ensembling",
+      "dst": "transferable_idea:plr-embeddings-into-scalable-mlp-backbone",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "pitfall:one-hot-categoricals-bad-for-high-cardinality",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "pitfall:not-a-tokenizer-no-explicit-feature-interaction",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "technique:semi-permeable-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "technique:feat-mix-hid-mix-importance-weighted-mixup",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:semi-permeable-attention",
+      "dst": "transferable_idea:noise-robust-wide-feature-attention",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "technique:catboost-target-encoding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "pitfall:no-native-categorical-or-temporal-tokenizer",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:excelformer-semi-permeable-attention",
+      "dst": "pitfall:spa-is-not-a-scaling-mechanism",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:batchensemble-efficient-ensembles",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:batchensemble-efficient-ensembles",
+      "dst": "technique:batchensemble-adapters",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:batchensemble-adapters",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:batchensemble-adapters",
+      "dst": "transferable_idea:tokenizer-agnostic-cheap-ensembling",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:batchensemble-efficient-ensembles",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:batchensemble-efficient-ensembles",
+      "dst": "pitfall:rank1-not-full-ensemble-and-not-a-tokenizer",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "technique:retrieval-augmented-tabular",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "technique:key-only-l2-retrieval-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "technique:plr-embedding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "contradicts"
+    },
+    {
+      "src": "work:tabr-retrieval-tabular",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:key-only-l2-retrieval-attention",
+      "dst": "transferable_idea:instance-axis-retrieval-feature-count-invariant",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:retrieval-augmented-tabular",
+      "dst": "pitfall:train-deploy-retrieval-leakage",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:retrieval-augmented-tabular",
+      "dst": "transferable_idea:instance-axis-retrieval-feature-count-invariant",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:mimo-independent-subnetworks-robust-prediction",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabm-parameter-efficient-ensembling",
+      "dst": "work:mimo-independent-subnetworks-robust-prediction",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:mimo-independent-subnetworks-robust-prediction",
+      "dst": "work:batchensemble-efficient-ensembles",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:mimo-independent-subnetworks-robust-prediction",
+      "dst": "work:batchensemble-efficient-ensembles",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:mimo-independent-subnetworks-robust-prediction",
+      "dst": "pitfall:mimo-misfiled-as-tokenizer-capacity-contingent",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "technique:tabunit-cell-keyvalue-tokenization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "technique:data-type-embedding-fuse-gate",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "technique:multi-cell-masking-pretraining",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "work:tabtransformer-contextual-categorical-embeddings",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "work:tabpfn-v2",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "work:autoint-feature-interaction",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "work:xtab-cross-table-pretraining",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:tabunit-cell-keyvalue-tokenization",
+      "dst": "transferable_idea:explicit-data-type-embedding-for-feature-typing",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:data-type-embedding-fuse-gate",
+      "dst": "transferable_idea:explicit-data-type-embedding-for-feature-typing",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "pitfall:numerics-textualized-no-magnitude-embedding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "pitfall:per-cell-multitoken-sequence-blowup-quadratic-attention",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:unitabe-universal-tabular-encoder",
+      "dst": "pitfall:pretraining-domain-leakage-public-benchmarks",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "technique:prompt-learning-importance-gate",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "technique:per-feature-value-tokenizer",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "technique:feature-self-attention",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:prompt-learning-importance-gate",
+      "dst": "route:feature-interaction-selection",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:prompt-learning-importance-gate",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:trompt-prompt-tabular",
+      "dst": "pitfall:untested-high-cardinality-and-wide-tables",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "route:llm-tabular-serialization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "technique:relative-magnitude-tokenization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "technique:intra-feature-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:relative-magnitude-tokenization",
+      "dst": "technique:target-aware-binning",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:relative-magnitude-tokenization",
+      "dst": "technique:feature-tokenizer",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:relative-magnitude-tokenization",
+      "dst": "technique:text-serialization-of-rows",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:great-generative-tabular-llm",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:saint-row-attention-contrastive",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:tabnet-attentive-interpretable-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:autoint-feature-interaction",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:dcn-v2-deep-cross-network",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:xtab-cross-table-pretraining",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:relative-magnitude-tokenization",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "extends"
+    },
+    {
+      "src": "technique:intra-feature-attention",
+      "dst": "route:llm-tabular-serialization",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:relative-magnitude-tokenization",
+      "dst": "transferable_idea:magnitude-aware-numerical-tokens",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:intra-feature-attention",
+      "dst": "transferable_idea:name-value-fusion-to-one-token",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "pitfall:tp-berta-target-aware-binning-leakage",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "pitfall:tp-berta-feature-count-ceiling-32",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tp-berta-lm-tabular-prediction",
+      "dst": "pitfall:tp-berta-categorical-driven-win",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "technique:multiplicative-attention-log-space",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "technique:prompt-token-query-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "technique:hard-top-k-attention",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "work:autoint-feature-interaction",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "work:autoint-feature-interaction",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "work:dcn-v2-deep-cross-network",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:multiplicative-attention-log-space",
+      "dst": "transferable_idea:explicit-multiplicative-feature-interaction",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:prompt-token-query-attention",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "pitfall:multiplicative-stream-instability-log-relu",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:amformer-arithmetic-feature-interaction",
+      "dst": "pitfall:synthetic-favorable-evaluation",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "technique:endogenous-global-bridge-token",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "technique:role-asymmetric-patch-variate-tokenization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "technique:temporal-patch-tokenization",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "technique:variate-as-token-inverted-embedding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "work:itransformer-inverted-transformers",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "work:temporal-fusion-transformer",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:endogenous-global-bridge-token",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:role-asymmetric-patch-variate-tokenization",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:timexer-exogenous-endogenous-fusion",
+      "dst": "pitfall:single-global-token-bottleneck-on-many-interacting-features",
+      "rel": "has_pitfall"
     }
   ],
-  "updated_at": "2026-06-16T14:30:00Z"
+  "updated_at": "2026-06-16T18:00:00Z"
 }
