@@ -83,8 +83,9 @@ If any of these files or `${TOPIC_DIR}/report/` does not exist, create them.
 4. Separate evidence from speculation.
 5. Explicitly mark shallow records and unresolved questions.
 6. Every important claim in the report must point back to one or more JSON records.
-7. Use the logs to recover research intent, turning points, dead ends, and upgrades in understanding.
-8. If the JSON record is not sufficient to support a serious claim, verify the detail from `${TOPIC_DIR}/sources/` or fetch/download it before finalizing.
+7. **Completeness self-check (hard).** For every `[Ref: …]` you write, confirm the cited record actually supports the sentence it backs — open the record if unsure. If a sentence has no record that genuinely supports it, either find one, weaken the sentence to what the evidence allows, or mark it explicitly as unverified. Do not let a citation imply support the record does not provide.
+8. Use the logs to recover research intent, turning points, dead ends, and upgrades in understanding.
+9. If the JSON record is not sufficient to support a serious claim, verify the detail from `${TOPIC_DIR}/sources/` or fetch/download it before finalizing.
 
 ## Reference Rules
 
