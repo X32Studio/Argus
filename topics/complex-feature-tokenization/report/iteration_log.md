@@ -64,7 +64,7 @@ overturn any conclusion, and the residual headline gap (joint high-cardinality +
 many rows) is inherently the user's own unpublished setting. Diminishing returns — most new works are variants or
 adjacent-domain transfers of established mechanisms.
 
-**Published:** <commit SHA recorded after push>.
+**Published:** committed and pushed to origin/main as `97df827` (c2b8c73..97df827).
 
 ## Synthesis iteration — cycle 14 — 2026-06-16 (UTC)
 
