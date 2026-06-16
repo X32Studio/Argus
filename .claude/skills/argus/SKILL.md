@@ -129,8 +129,7 @@ notice() {
 | Immediately after `/argus init` succeeds | per-topic | `attention` | "Topic <slug> ready. Loop options waiting in CC." |
 | Right before "how to run the loop" AskUserQuestion | per-topic | `blocked` | "Waiting on you in CC: pick a loop mode" |
 | At each cycle start (Flow A step 8a) | per-topic | `info` | "Cycle <N> starting (mode=<RESEARCH\|SYNTHESIS>)" |
-| After parsing runner return (step 8d/e) | per-topic | `info` | "Cycle <N> done: +<new_works> works, +<depth_upgrades> upgrades" |
-| Runner unnotified after watchdog (step 8d) | per-topic | `attention` | "Cycle <N> runner: no response after 7m. Continuing." |
+| After parsing cycle return (step 8g) | per-topic | `info` | "Cycle <N> done: +<new_works> works, +<depth_upgrades> upgrades" |
 | STOP_SATURATED / STOP_CONTEXT / STOP_BLOCKER | per-topic | `blocked` | "Stopped: <reason>. Action needed in CC." |
 
 Runner subagents emit their own `source:"runner"` lines directly (per `.claude/loop.md` "Notice Emission" section). You do not need to forward those.
@@ -159,7 +158,7 @@ User signals fresh start ("track X", "set up research on Y", "build a dossier on
    > "Topic ready. How should I run the research loop?"
 
    Options:
-   - `Run it here in this session (recommended)` — skill orchestrates, no further typing needed; loop dies when you close Claude Code, but state persists on disk and you can resume any time by re-triggering this skill
+   - `Run it here in this session — workflow engine (recommended)` — skill orchestrates via the per-cycle Workflow (`.claude/workflows/argus-cycle.js`), no further typing needed. Each research cycle fans out deep-reads and (when you set a token budget) adversarial claim verification. Loop dies when you close Claude Code, but state persists on disk and you can resume any time by re-triggering this skill. Tip: prefix your request with a token budget like `+800k` to scale fan-out depth and enable verification.
    - `Hand off to cron via /argus loop` — survives Claude Code restart; you'll type `/argus loop <slug>` manually
    - `Just finish topic creation, no loop yet`
 
@@ -171,49 +170,34 @@ User signals fresh start ("track X", "set up research on Y", "build a dossier on
 
    **Loop body — repeat until a stop condition (step 9) fires:**
 
-   a. Read `topics/<slug>/logs/cycle.txt` (single integer N). Compute `next_cycle = N + 1`. Read `topic.yaml.iteration_mix.synthesis_every_n_cycles` (default 7). Decide `mode = (next_cycle % synthesis_every_n_cycles == 0 && next_cycle > 0) ? "SYNTHESIS" : "RESEARCH"`. **Emit notice:** `info`, "Cycle <next_cycle> starting (mode=<mode>)".
+   a. Read `topics/<slug>/logs/cycle.txt` once at loop entry into an in-memory `N` (single integer). Each pass: `next_cycle = N + 1`. Read `topic.yaml.iteration_mix.synthesis_every_n_cycles` (default 7). Decide `mode = (next_cycle % synthesis_every_n_cycles == 0 && next_cycle > 0) ? "SYNTHESIS" : "RESEARCH"`. **Emit notice:** `info`, "Cycle <next_cycle> starting (mode=<mode>)".
 
-   b. **Dispatch ONE iteration runner subagent.** Use the `Agent` tool — `subagent_type: "general-purpose"`, `run_in_background: true`, `description: "Argus iteration #<next_cycle> (<mode>) for <slug>"`. The `prompt` field MUST be self-contained — runner cannot see this skill's context. Include:
-      - Literal `TOPIC_SLUG` and `TOPIC_DIR` values
-      - `mode = <RESEARCH|SYNTHESIS>` and `next_cycle = <N>` (so runner doesn't recompute)
-      - Instruction: "Read `.claude/loop.md` (if RESEARCH) or `.claude/loop-summary.md` (if SYNTHESIS) and execute exactly ONE iteration in that mode."
-      - Hard rule: "Do NOT touch `${TOPIC_DIR}/logs/cycle.txt` — the orchestrating parent manages it. You are forbidden from writing that file."
-      - The full per-work isolation rule (copy verbatim from `.claude/loop.md` "Parallel Deep-Read" section). Runner may itself dispatch sub-subagents for parallel paper reading per that section.
-      - Return-format schema (runner must return this):
-        ```json
-        {
-          "mode": "...",
-          "cycle": <N>,
-          "candidates_processed": <int>,
-          "new_works_added": <int>,
-          "depth_upgrades": <int>,
-          "saturation_signal": <bool>,
-          "narrative": "<~3 sentence summary of this iteration>"
-        }
-        ```
+   b. **Run the cycle.**
 
-   c. **Watchdog:** call `Bash` with `command: "sleep 420"`, `run_in_background: false`, `timeout: 450000`. Foreground 7-min block. While the parent is blocked, the runner's completion notification (if any) queues into parent context.
+      - **RESEARCH** → call the **Workflow** tool with `scriptPath: ".claude/workflows/argus-cycle.js"` and `args: { "slug": "<slug>", "dir": "topics/<slug>", "cycle": <next_cycle>, "today": "<YYYY-MM-DD>" }`. The workflow runs plan → parallel deep-read → (budget-gated) adversarial verify → single-writer collate → `validate-contract.sh --fix`, and returns a structured summary: `{mode, cycle, candidates_processed, new_works_added, depth_upgrades, flagged_claims, saturation_signal, narrative}`. Do NOT pass a fan-out count — the workflow derives it from the turn's token budget (`+Nk` directive). The Workflow tool returns when every agent has joined or failed; you do not poll or sleep.
 
-   d. After `sleep` returns, parse the runner's return value. If notification arrived, you have the summary; if not, append a line under `## iteration_runner_unnotified` heading in `${TOPIC_DIR}/logs/research_state.md` (with timestamp + task_id + presumed_hung), and emit notice: `attention`, "Cycle <N> runner: no response after 7m. Continuing." Otherwise emit `info`, "Cycle <N> done: +<new_works_added> works, +<depth_upgrades> upgrades".
+      - **SYNTHESIS** → dispatch ONE synthesis agent with the `Agent` tool (`subagent_type: "general-purpose"`, `run_in_background: true`). Synthesis is single-threaded — do NOT use the workflow here. The prompt MUST be self-contained: literal `TOPIC_SLUG`/`TOPIC_DIR`, `mode = SYNTHESIS`, `next_cycle = <N>`, the instruction "Read `.claude/loop-summary.md` and execute exactly ONE synthesis iteration", the hard rule "Do NOT touch `topics/<slug>/logs/cycle.txt`", and this return schema: `{mode, cycle, saturation_signal, narrative}`.
 
-   e. **Parent updates `cycle.txt`** (the ONE shared file the orchestrator writes directly): overwrite with `next_cycle` + newline. Runner is forbidden from this file.
+   c. **Collect the result.** For RESEARCH, the Workflow tool result is the structured summary. For SYNTHESIS, parse the agent's returned summary. There is no watchdog and no inter-cycle sleep — the workflow/agent has fully completed (all sub-agents joined; collation and file writes are done) before control returns to you.
 
-   f. **Append orchestrator log** to `${TOPIC_DIR}/logs/orchestrator.jsonl`:
+   d. **Parent updates `cycle.txt`** (the ONE shared file the orchestrator writes directly): overwrite with `next_cycle` + newline, then set in-memory `N = next_cycle`. Runner/synthesis agents are forbidden from this file. Only advance `cycle.txt` on a successful return; if the cycle errored (see step 9 STOP_BLOCKER), leave it so a re-fire is idempotent.
+
+   e. **Append orchestrator log** to `topics/<slug>/logs/orchestrator.jsonl` (create if missing):
       ```json
-      {"ts": "<ISO>", "cycle": <N>, "mode": "...", "runner_returned": <bool>, "summary": "<brief>"}
+      {"ts": "<ISO>", "cycle": <next_cycle>, "mode": "...", "summary": "<narrative>", "new_works": <int>, "flagged_claims": <int>}
       ```
-      Create the file if missing.
 
-   g. **Saturation counter** (in-memory only, no disk):
-      - If `mode == SYNTHESIS` and `saturation_signal == true`: `saturation_count++`
-      - Else if `mode == RESEARCH` and `new_works_added > 0`: `saturation_count = 0`
-      - If `saturation_count >= 3`: trigger STOP_SATURATED (see step 9).
+   f. **Counters** (in-memory only):
+      - RESEARCH & `new_works_added == 0` → `dry_rounds++`. If `dry_rounds >= 2` → trigger STOP_SATURATED.
+      - RESEARCH & `new_works_added > 0` → `dry_rounds = 0`.
+      - SYNTHESIS & `saturation_signal == true` → `saturation_count++`. If `saturation_count >= 3` → trigger STOP_SATURATED.
+      - SYNTHESIS & `saturation_signal == false` → `saturation_count = 0`.
 
-   h. **Inter-iteration pause:** `Bash sleep 30` (foreground), lets filesystem caches settle and any trailing background notification land.
+   g. **Emit notice:** `info`, "Cycle <next_cycle> done: +<new_works_added> works, +<depth_upgrades> upgrades, <flagged_claims> flagged".
 
-   i. **Context-exhaustion self-check** (every ~10 iterations): if your own context appears to be approaching ~80% of capacity (heuristic: orchestrator log already past ~5000 tokens of iteration summaries), trigger STOP_CONTEXT.
+   h. **Context-exhaustion self-check** (every ~10 cycles): the orchestrator now holds only per-cycle summaries (the fan-out context lives inside each workflow, not here), so the ceiling is high — but if your own context still approaches ~80% of capacity, trigger STOP_CONTEXT.
 
-   j. Loop back to step (a) for the next iteration.
+   i. Loop back to step (a) for the next cycle.
 
 9. **Stop conditions:** for each, emit `blocked` notice "Stopped: <reason>. Action needed in CC." before printing the message in CC.
    - **STOP_USER**: user explicitly says "stop" / interrupts / closes the session → loop dies naturally; state on disk is current.
@@ -249,9 +233,9 @@ If they ask "what is this?", "how does it work?", or "how do I install Argus on 
 
 - Do not write `topic.yaml`, `proposal.md`, loop stubs, or empty stubs directly. `/argus init` (now in the bootstrapped `.claude/commands/argus.md`) does all that.
 - Do not invoke `/argus loop` (cron path) autonomously — that's a user choice in Flow A step 5. **In-session loop is the default once the user explicitly picks it** in that AskUserQuestion; that explicit consent is what authorizes the skill to drive iterations directly.
-- Do not write `${TOPIC_DIR}/logs/cycle.txt` from any place except the orchestrator parent's loop body (step 8e). Runner subagents are forbidden from this file.
+- Do not write `${TOPIC_DIR}/logs/cycle.txt` from any place except the orchestrator parent's loop body (step 8d). Runner subagents are forbidden from this file.
 - Do not kill an existing dev server on port 5173. If the port is busy, leave it alone and just print the URL — never `kill <pid>` to make room.
-- Do not kill iteration runner subagents. There's no Agent kill primitive; the watchdog is the `Bash sleep` budget, not active termination. Hung runners die with the Claude Code session.
+- Do not hand-roll subagent watchdogs. The RESEARCH cycle runs as a Workflow (`.claude/workflows/argus-cycle.js`), which joins or fails its agents natively — no `Bash sleep` budget, no manual "presumed hung" bookkeeping. The SYNTHESIS cycle is a single `Agent` dispatch.
 - Do not `git commit` or `git push`. The synthesis loop methodology handles that internally if a git repo is detected.
 - Do not trigger on single-shot questions. Step 1 catches ambiguous intent.
 - Do not re-bootstrap a directory that already has live engine files unless the user explicitly asks to upgrade (in which case offer to re-run `bootstrap.sh`, noting it will overwrite engine prompts but preserve `topics/` and `.claude/loops/`).
