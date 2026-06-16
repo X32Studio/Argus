@@ -47,3 +47,5 @@
 but substance is NOT — the central engineering question (matched-compute 70+-feature comparison) and the
 temporal-static-fusion-at-width regime remain entirely unevidenced. saturation_signal = false: more depth
 at width would still add real substance.
+
+**Published:** committed and pushed to origin/main as `a510a8f` (2c0f57c..a510a8f).
