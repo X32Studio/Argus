@@ -141,6 +141,10 @@ For each important work, attempt to fill every field declared in `topic.yaml.rec
 
 `analysis_depth` must always be `shallow` / `medium` / `deep`. If you only have title/abstract/README-level understanding, mark `shallow` and explicitly note what still needs to be read. Never pretend shallow understanding is deep understanding.
 
+**Refute-before-write (hard).** Before you keep any *transfer* or *mechanism* claim in a record, state — to yourself — the strongest reason it could be wrong or overstated for THIS topic's `scope_in`. Keep the claim only if it survives that challenge; otherwise weaken it, scope it, or drop it. A record that quietly inflates reusability is worse than one that honestly marks a claim as unverified.
+
+**Honesty gate on `analysis_depth` (hard).** Do not write `deep` unless you actually extracted the mechanism, the ablations/evidence, AND the transfer assessment. If any of those is missing, the record is at most `medium`. Surface the strongest 3-5 `key_claims` (mechanism / transfer / evidence) so a downstream skeptic can check them.
+
 ## Collection Rules
 
 For useful works, collect papers, repos, and blogs when available.
@@ -160,6 +164,8 @@ For blogs or technical articles:
 - store the content or a concise summary in `${TOPIC_DIR}/sources/blogs/` when possible
 
 ## Parallel Deep-Read via Subagents
+
+> **Path note.** The mechanics in this section (manual subagent dispatch, the `Bash sleep` parent watchdog, and the parent post-collation phase) are how the **cron `/argus loop` path** runs a multi-work iteration inside a single plain session. The **in-session path supersedes them** with `.claude/workflows/argus-cycle.js`, which expresses the same plan → parallel-read → collate shape using the Workflow tool's native `parallel()`/`pipeline()` (no `Bash sleep`, no "presumed hung" bookkeeping). The per-work isolation rule and the single-writer collation rule below apply identically to BOTH paths — only the dispatch/watchdog plumbing differs.
 
 When this iteration's planned mix includes **two or more candidate works to deep-read**, dispatch the per-work reading in parallel via the `Agent` tool. This gives the iteration a 3-5x speedup without changing the cron cadence (cron schedules iterations; subagents accelerate inside one).
 
