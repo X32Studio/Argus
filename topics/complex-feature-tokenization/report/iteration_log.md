@@ -46,6 +46,8 @@ materially **changed the default recommendation** and converted the quadratic-at
 TimeXer + TP-BERTa sharpened the temporal and numerical legs. Coverage is saturating (all 8 routes deep, 36 records), but the
 matched-compute 70+-feature comparison and the high-cardinality + genuine-temporal triple remain unevidenced.
 
+**Published:** committed and pushed to origin/main as `9aa669f` (004ddf1..9aa669f).
+
 ## Synthesis iteration — cycle 7 — 2026-06-16 (UTC)
 
 **Mode:** SYNTHESIS (first synthesis pass; synthesis_every_n_cycles = 7).
