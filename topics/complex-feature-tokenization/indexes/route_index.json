@@ -1,0 +1,164 @@
+{
+  "numerical-embeddings": {
+    "direction": "numerical-embeddings",
+    "status": "active",
+    "search_count": 1,
+    "last_searched_at": "2026-06-16T08:20:00Z",
+    "representative_works": [
+      "on-embeddings-numerical-features"
+    ],
+    "next_angles": [
+      "wire PLR/periodic numerical branch into FT-Transformer feature tokenizer (cross-link to tabular-transformers)",
+      "control target-aware (PLEt) bin leakage with out-of-fold bin construction",
+      "stress-test per-feature numerical embeddings at 70+ numerical features for param-blowup / sequence-length cost",
+      "compare PLR vs AutoDis vs raw-scalar across heterogeneous feature distributions"
+    ],
+    "novelty_remaining": "medium — canonical numerical recipe (PLR/PLE) established; open questions in scaling, leakage control, and per-feature functional-form heterogeneity",
+    "evidence_quality": "high (NeurIPS 2022, 11-dataset benchmark, full ablations)",
+    "actionability_for_the_topic": "high — defines the continuous-feature half of a 70+-mixed-feature tokenizer"
+  },
+  "tabular-transformers": {
+    "direction": "tabular-transformers",
+    "status": "active",
+    "search_count": 3,
+    "last_searched_at": "2026-06-16T14:30:00Z",
+    "representative_works": [
+      "ft-transformer-revisiting-tabular-dl",
+      "tree-models-outperform-deep-tabular",
+      "saint-row-attention-contrastive",
+      "tabarena-living-benchmark"
+    ],
+    "next_angles": [
+      "swap numerical branch for PLR/periodic embeddings (link to numerical-embeddings route)",
+      "efficient/linear attention to break the O(k^2) feature-count wall",
+      "high-cardinality compression for the categorical branch (the Grinsztajn open question)",
+      "large-data regime where the tree-vs-DL gap narrows (TabPFN v2 / foundation models)",
+      "does the rotation-invariance failure persist once high-cardinality + temporal channels are present",
+      "use LeoGrin/tabular-benchmark harness as a fixed-budget yardstick for our own tokenizer"
+    ],
+    "novelty_remaining": "medium — FT-Transformer anchor is well-understood; the benchmark adds the inductive-bias 'why' (rotation invariance, irregular targets, uninformative-feature fragility) and a fixed-budget yardstick, but leaves high-card/temporal/large-data open",
+    "evidence_quality": "high (NeurIPS 2022 D&B, 45 datasets, ~20k compute-hrs random search, raw results released)",
+    "actionability_for_the_topic": "high as motivation/rules-of-the-game (per-feature tokens, high-frequency numerical embeddings, feature selection at scale); explicitly does NOT cover high-cardinality / missing / temporal features"
+  },
+  "categorical-high-cardinality": {
+    "direction": "categorical-high-cardinality",
+    "status": "active",
+    "search_count": 2,
+    "last_searched_at": "2026-06-16T14:30:00Z",
+    "representative_works": [
+      "entity-embeddings-categorical-variables",
+      "encoding-high-cardinality-string-categoricals"
+    ],
+    "next_angles": [
+      "stress-test per-field embeddings at 70+ features vs attention tokenizers",
+      "out-of-fold leakage-controlled embedding transfer vs CatBoost/target encoding",
+      "discretize-then-embed continuous features (paper's future work)",
+      "add OOV/cold-start bucket",
+      "empirically test MinHash-into-transformer projection vs entity-embedding+OOV",
+      "compare lexical (n-gram) vs semantic (text-embedding) similarity for dirty categoricals",
+      "many-feature cost ablation: 20+ MinHash-encoded string columns in a transformer tokenizer"
+    ],
+    "novelty_remaining": "medium — route now has the foundational entity-embedding anchor PLUS the first vocabulary-free/stateless string encoder (MinHash/Gamma-Poisson); open: MinHash-into-transformer projection, lexical-vs-semantic similarity, and many-feature cost",
+    "evidence_quality": "high (peer-reviewed TKDE, 17+ real datasets, productionized in skrub/dirty_cat); the 2016 entity-embedding anchor remains single-dataset",
+    "actionability_for_the_topic": "high — vocabulary-free OOV-robust fixed-width MinHash encoder is the missing high-cardinality primitive complementing entity embeddings (closed-vocab) and target encoding (label-leaking)"
+  },
+  "tabular-foundation-models": {
+    "direction": "tabular-foundation-models",
+    "status": "active",
+    "search_count": 3,
+    "last_searched_at": "2026-06-16T13:20:00Z",
+    "representative_works": [
+      "tabpfn-v2",
+      "carte-pretraining-transfer-tabular",
+      "tabicl-in-context-large-data",
+      "tabicl-v2-scalable-foundation-model"
+    ],
+    "next_angles": [
+      "Lift TabICL's shared Set-Transformer column embedder (ISAB hypernetwork emitting per-cell W,B, zero per-feature params) into a supervised wide-table tokenizer — the most reusable 70+-feature primitive found so far",
+      "Test TAE (target-aware embedding, TabICLv2) vs target/CatBoost encoding inside a supervised FT-Transformer over 70+ features — TAE only works where labeled context exists at inference (ICL), so adapting it to non-ICL supervised is open work",
+      "Probe the n*m^2 feature-count ceiling 100->1000 features (TabICLv2 still quadratic in m); both TabICL variants are pretrained <=100 features so 70+ sits at/above the training ceiling",
+      "Deep-read RealTabPFN-2.5 / TabPFN-2.5 as the dethroned baselines TabICLv2 surpasses; verify the 'without tuning' headline net of 8-shuffle ensembling cost",
+      "Compare CARTE (real-knowledge LM prior) vs TabPFN-v2/TabICL (synthetic-SCM prior) vs XTab as transfer paradigms; none yet proven at 70+ features with high-cardinality categorical INPUTS",
+      "Investigate whether RoPE-over-feature-axis (TabICL) or repeated-feature-grouping (TabICLv2) is the cleaner fix for representation collapse among identically-distributed features"
+    ],
+    "novelty_remaining": "medium — route now has four paradigms: TabPFN-v2 (per-cell two-way attention, synthetic SCM), CARTE (LM-on-colnames graphlet, real-knowledge prior), TabICL v1 (shared Set-Transformer column embedder + column-collapse-to-row-token + RoPE, O(m^2 n + n^2)), TabICL v2 (target-aware embedding + column-then-row attention + repeated-feature-grouping + QASSMax, current open SOTA). Open: high-cardinality categorical INPUTS, temporal fusion, and behavior strictly above the <=100-feature pretraining regime",
+    "evidence_quality": "TabPFN-v2: medium-high (Nature, secondhand numbers). CARTE: high small-scale, unproven at 70+/large-n. TabICL v1: high (ICML 2025, TALENT 200 datasets, surpasses TabPFNv2+CatBoost on >10K-sample sets; full ablations, code+weights). TabICL v2: medium (arXiv 2026, surpasses RealTabPFN-2.5 on TabArena/TALENT, 10x faster; but pretraining code unreleased and gains depend on 8-estimator ensembling)",
+    "actionability_for_the_topic": "high as transferable-ideas source — the shared distribution-aware column embedder + column-collapse-to-row-token (TabICL) is the cleanest 'ingest N heterogeneous features with zero per-feature params and pay sample-axis attention once' recipe; TAE is a cheap label-conditioning trick. BUT none solves high-cardinality categorical INPUTS or temporal fusion, and all sit at the edge of their <=100-feature training regime"
+  },
+  "llm-tabular-serialization": {
+    "direction": "llm-tabular-serialization",
+    "status": "active",
+    "search_count": 1,
+    "last_searched_at": "2026-06-16T13:20:00Z",
+    "representative_works": [
+      "tabllm-few-shot-llm-serialization"
+    ],
+    "next_angles": [
+      "LIFT / GReaT as the other serialization paradigms (GReaT = generative row synthesis; LIFT = no-template fine-tune) to contrast against TabLLM's manual Text Template",
+      "Reconcile TabLLM (column names matter in very-few-shot) vs LIFT/Dinh-2022 (could NOT confirm column-name importance at fractional data) — sample-efficiency is task/LLM-dependent",
+      "Bolt a numeric-specific embedding (Gorishniy-2022 PLR) onto serialized numerics instead of raw digit strings (authors' own future work)",
+      "Quantify the token-budget wall: at what feature count / verbosity does serialization force lossy truncation, and how does that compare to per-feature-token sequence length",
+      "Use the permuted-names / only-values ablation protocol as a general test that ANY tokenizer actually uses feature names + fine-grained values"
+    ],
+    "novelty_remaining": "medium-high — route now has its canonical anchor (TabLLM: serialize row -> NL sentence -> LLM subword tokens, T-Few PEFT). Open: LIFT/GReaT paradigms, the numeric-encoding upgrade, and whether the very-few-shot column-name advantage generalizes (LIFT contradicts it)",
+    "evidence_quality": "high for TabLLM mechanism (AISTATS 2023, 9 public + 3 private datasets, 5 seeds, full serialization + permutation ablations); but the topic-relevant scaling evidence is NEGATIVE (capped <=30 columns by design; 106-feature case needed lossy concept-selection + List Short<=10)",
+    "actionability_for_the_topic": "low as a 70+-feature recipe (hard 1024-token ceiling, raw-digit numerics, heavy compute), high as a cautionary anchor + as the source of the column-name-semantics idea (shared with CARTE) and the permutation ablation protocol"
+  },
+  "temporal-feature-tokenization": {
+    "direction": "temporal-feature-tokenization",
+    "status": "active",
+    "search_count": 3,
+    "last_searched_at": "2026-06-16T13:10:00Z",
+    "representative_works": [
+      "patchtst-time-series-64-words",
+      "temporal-fusion-transformer",
+      "itransformer-inverted-transformers"
+    ],
+    "next_angles": [
+      "Pair iTransformer joint-variate attention with PatchTST patch tokens (or PLR/periodic per-value embeddings) for finer temporal structure",
+      "Add a categorical/static token pathway to the inverted (variate-as-token) scheme for genuine mixed-type fusion",
+      "Test variate subsampling per batch at 70+ mixed features to keep O(N^2) attention affordable",
+      "graft VSN static-context gating onto FT-Transformer/PatchTST for missing static-fusion + feature-selection",
+      "stress-test VSN / variate-as-token at genuine 70+ heterogeneous feature width"
+    ],
+    "novelty_remaining": "medium — three anchors now recorded: patching (PatchTST channel-independent), variable-selection/static-fusion (TFT), and variate-as-token joint attention (iTransformer). Open: mixed-type (categorical/static) fusion and per-value temporal numeric encoding at 70+ width",
+    "evidence_quality": "high for mechanism (iTransformer SOTA on Traffic 862 / ECL 321 / PEMS 883 — concrete many-variate evidence); low for genuine mixed-type 70+-feature scaling (variates are all numeric)",
+    "actionability_for_the_topic": "high — variate-as-token is the cleanest unification blueprint (each feature -> one token by a type-appropriate encoder -> one joint attention); plus two scaling/heterogeneity tools (per-token LayerNorm/RevIN, variate subsampling). Pitfall: 'variates' are numeric, not literal mixed-type heterogeneity"
+  },
+  "discretization-vq": {
+    "direction": "discretization-vq",
+    "status": "active",
+    "search_count": 1,
+    "last_searched_at": "2026-06-16T13:10:00Z",
+    "representative_works": [
+      "tiger-rqvae-semantic-ids"
+    ],
+    "next_angles": [
+      "Strip RQ-VAE from the recsys seq2seq; quantize a per-row or per-field-group tabular embedding into a few semantic-ID tokens",
+      "Use RQ-VAE shared codebooks to bound high-cardinality categorical vocabulary with graceful OOV (vs entity-embedding tables / hashing)",
+      "Codebook-collapse mitigation (k-means init, balanced assignment) at high cardinality",
+      "Decide what embedding to quantize (per-row? per-field-group? per-temporal-patch?) — TIGER gives no guidance, this is the real design work"
+    ],
+    "novelty_remaining": "high — route now has its first anchor (RQ-VAE semantic IDs) but only as a recsys-native demonstration; the tabular-feature application of residual quantization is entirely open",
+    "evidence_quality": "medium — strong RQ-VAE mechanism + ablations (NeurIPS 2023) but all results are recsys retrieval on Amazon subsets; NO tabular-prediction evidence (scope-trap pitfall recorded)",
+    "actionability_for_the_topic": "medium — transferable kernel (bounded shared codebook + hierarchical codes + content-derived cold-start) is reusable for high-cardinality compression; the generative-retrieval machinery is out of scope and must be stripped"
+  },
+  "feature-interaction-selection": {
+    "direction": "feature-interaction-selection",
+    "status": "active",
+    "search_count": 2,
+    "last_searched_at": "2026-06-16T08:34:00Z",
+    "representative_works": [
+      "autoint-feature-interaction",
+      "dcn-v2-deep-cross-network"
+    ],
+    "next_angles": [
+      "head-to-head DCN-V2 cross vs AutoInt attention on same 70-feature tokenizer at matched params (accuracy + wall-clock)",
+      "combine PLR/FT-Transformer numeric embeddings with low-rank cross layers on a dense 70-feature target",
+      "field-count scaling curve (10->120 fields) for full vs low-rank vs DCN-Mix to calibrate the low-rank-mandatory threshold"
+    ],
+    "novelty_remaining": "medium — both the attention (AutoInt) and the cross-operator (DCN-V2) explicit-interaction primitives are now recorded; open work is the matched-compute scaling comparison at 70+ fields",
+    "evidence_quality": "high (AutoInt CIKM 2019 + DCN-V2 WWW 2021, both with ablations); but all evidence is CTR/recsys, none at 70+ general-tabular features",
+    "actionability_for_the_topic": "high — DCN-V2 is the field-count-scalable alternative to AutoInt: Hadamard cross with cost in embedding-dim d (O(d^2 L_c), low-rank O(d r K L_c)), no O(M^2) attention. Pair with numerical-embeddings route for the numeric half; no temporal/missing handling."
+  }
+}

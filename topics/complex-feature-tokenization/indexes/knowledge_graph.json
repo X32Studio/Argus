@@ -1,0 +1,1523 @@
+{
+  "nodes": [
+    {
+      "id": "route:numerical-embeddings",
+      "kind": "route",
+      "label": "Numerical Feature Embeddings"
+    },
+    {
+      "id": "route:tabular-transformers",
+      "kind": "route",
+      "label": "Tabular Transformer Architectures"
+    },
+    {
+      "id": "route:categorical-high-cardinality",
+      "kind": "route",
+      "label": "Categorical & High-Cardinality Encoding"
+    },
+    {
+      "id": "route:tabular-foundation-models",
+      "kind": "route",
+      "label": "Tabular Foundation & Pretrained Models"
+    },
+    {
+      "id": "route:llm-tabular-serialization",
+      "kind": "route",
+      "label": "LLM & Text-Serialization of Tables"
+    },
+    {
+      "id": "route:temporal-feature-tokenization",
+      "kind": "route",
+      "label": "Temporal / Time-Series Tokenization"
+    },
+    {
+      "id": "route:discretization-vq",
+      "kind": "route",
+      "label": "Discretization & Vector-Quantized Tokens"
+    },
+    {
+      "id": "route:feature-interaction-selection",
+      "kind": "route",
+      "label": "Feature Interaction & Selection at Scale"
+    },
+    {
+      "id": "work:on-embeddings-numerical-features",
+      "kind": "work",
+      "label": "On Embeddings for Numerical Features in Tabular Deep Learning",
+      "year": 2022,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:ft-transformer-revisiting-tabular-dl",
+      "kind": "work",
+      "label": "Revisiting Deep Learning Models for Tabular Data (FT-Transformer)",
+      "year": 2021,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:entity-embeddings-categorical-variables",
+      "kind": "work",
+      "label": "Entity Embeddings of Categorical Variables",
+      "year": 2016,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:piecewise-linear-encoding",
+      "kind": "technique",
+      "label": "Piecewise Linear Encoding (PLE)"
+    },
+    {
+      "id": "technique:periodic-numerical-embedding",
+      "kind": "technique",
+      "label": "Periodic Numerical Embedding"
+    },
+    {
+      "id": "technique:plr-embedding",
+      "kind": "technique",
+      "label": "PLR Embedding (Periodic+Linear+ReLU)"
+    },
+    {
+      "id": "technique:target-aware-binning",
+      "kind": "technique",
+      "label": "Target-Aware Binning (tree-based bins)"
+    },
+    {
+      "id": "technique:autodis",
+      "kind": "technique",
+      "label": "AutoDis (automatic discretization, CTR)"
+    },
+    {
+      "id": "technique:feature-tokenizer",
+      "kind": "technique",
+      "label": "Feature Tokenizer (per-feature affine token)"
+    },
+    {
+      "id": "technique:per-feature-bias-embedding",
+      "kind": "technique",
+      "label": "Per-Feature Bias Embedding"
+    },
+    {
+      "id": "technique:cls-token-readout",
+      "kind": "technique",
+      "label": "[CLS] Token Readout"
+    },
+    {
+      "id": "technique:entity-embedding-categorical",
+      "kind": "technique",
+      "label": "Entity Embedding for Categoricals"
+    },
+    {
+      "id": "technique:autoint",
+      "kind": "technique",
+      "label": "AutoInt (attention feature interaction)"
+    },
+    {
+      "id": "technique:gbdt-baseline",
+      "kind": "technique",
+      "label": "GBDT Baseline (XGBoost/CatBoost)"
+    },
+    {
+      "id": "technique:learned-per-field-entity-embedding",
+      "kind": "technique",
+      "label": "Learned Per-Field Entity Embedding"
+    },
+    {
+      "id": "technique:one-hot-encoding",
+      "kind": "technique",
+      "label": "One-Hot Encoding"
+    },
+    {
+      "id": "technique:gradient-boosted-trees",
+      "kind": "technique",
+      "label": "Gradient-Boosted Trees (integer-coded)"
+    },
+    {
+      "id": "transferable_idea:token-granularity",
+      "kind": "transferable_idea",
+      "label": "Per-feature token granularity (PLR transfers across token granularities)"
+    },
+    {
+      "id": "transferable_idea:unified-per-feature-affine-token",
+      "kind": "transferable_idea",
+      "label": "Unified per-feature affine token for mixed types"
+    },
+    {
+      "id": "transferable_idea:tunable-per-field-embedding-dimension",
+      "kind": "transferable_idea",
+      "label": "Tunable per-field embedding dimension"
+    },
+    {
+      "id": "pitfall:per-feature-param-blowup",
+      "kind": "pitfall",
+      "label": "Per-feature non-shared embedding parameter blowup"
+    },
+    {
+      "id": "pitfall:target-aware-bin-leakage",
+      "kind": "pitfall",
+      "label": "Target-aware bin construction leakage"
+    },
+    {
+      "id": "pitfall:quadratic-attention-feature-count",
+      "kind": "pitfall",
+      "label": "O(k^2) attention cost in feature count"
+    },
+    {
+      "id": "pitfall:naive-scalar-numerical-embedding",
+      "kind": "pitfall",
+      "label": "Naive scalar*vector numerical embedding"
+    },
+    {
+      "id": "pitfall:linear-growth-categorical-table",
+      "kind": "pitfall",
+      "label": "Categorical embedding table grows linearly with cardinality"
+    },
+    {
+      "id": "pitfall:supervised-embedding-transfer-leakage",
+      "kind": "pitfall",
+      "label": "Supervised embedding transfer leakage across models"
+    },
+    {
+      "id": "pitfall:concat-then-mlp-implicit-interaction-unscaled",
+      "kind": "pitfall",
+      "label": "Concat-then-MLP implicit interaction does not scale"
+    },
+    {
+      "id": "work:patchtst-time-series-64-words",
+      "kind": "work",
+      "label": "A Time Series is Worth 64 Words (PatchTST)",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:autoint-feature-interaction",
+      "kind": "work",
+      "label": "AutoInt: Automatic Feature Interaction via Self-Attentive Networks",
+      "year": 2019,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tree-models-outperform-deep-tabular",
+      "kind": "work",
+      "label": "Why do tree-based models still outperform deep learning on tabular data?",
+      "year": 2022,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:temporal-patch-tokenization",
+      "kind": "technique",
+      "label": "Temporal Patch Tokenization (subseries patching)"
+    },
+    {
+      "id": "technique:channel-independence",
+      "kind": "technique",
+      "label": "Channel-Independence (shared-weight univariate)"
+    },
+    {
+      "id": "technique:masked-patch-pretraining",
+      "kind": "technique",
+      "label": "Masked Patch Pretraining (MAE-style)"
+    },
+    {
+      "id": "technique:pointwise-temporal-token",
+      "kind": "technique",
+      "label": "Point-wise Temporal Token (per-timestep)"
+    },
+    {
+      "id": "technique:multi-head-self-attention-interacting-layer",
+      "kind": "technique",
+      "label": "Multi-Head Self-Attention Interacting Layer (AutoInt)"
+    },
+    {
+      "id": "technique:per-field-embedding-tokenizer",
+      "kind": "technique",
+      "label": "Per-Field Embedding Tokenizer"
+    },
+    {
+      "id": "technique:residual-connection",
+      "kind": "technique",
+      "label": "Residual Connection"
+    },
+    {
+      "id": "technique:field-shared-attention-m-independent-params",
+      "kind": "technique",
+      "label": "Field-Shared Attention (params independent of feature count)"
+    },
+    {
+      "id": "technique:factorization-machines",
+      "kind": "technique",
+      "label": "Factorization Machines (FM)"
+    },
+    {
+      "id": "technique:instance-normalization-revin",
+      "kind": "technique",
+      "label": "Instance Normalization (RevIN-style)"
+    },
+    {
+      "id": "transferable_idea:per-feature-embedding-breaks-rotation-invariance",
+      "kind": "transferable_idea",
+      "label": "Per-feature embedding breaks rotation invariance"
+    },
+    {
+      "id": "transferable_idea:field-shared-attention-m-independent-params",
+      "kind": "transferable_idea",
+      "label": "Field-shared interaction layer: zero attention params added per feature"
+    },
+    {
+      "id": "transferable_idea:patching-controls-sequence-length",
+      "kind": "transferable_idea",
+      "label": "Patching collapses long per-feature time axis to control sequence length"
+    },
+    {
+      "id": "pitfall:channel-independence-drops-feature-interaction",
+      "kind": "pitfall",
+      "label": "Channel-independence deliberately drops cross-feature interaction"
+    },
+    {
+      "id": "pitfall:autoint-quadratic-attention-in-feature-count",
+      "kind": "pitfall",
+      "label": "AutoInt attention compute is O(M^2) in feature count"
+    },
+    {
+      "id": "pitfall:autoint-rank1-numerical-embedding",
+      "kind": "pitfall",
+      "label": "AutoInt numerical embedding is rank-1 scalar*vector (weak)"
+    },
+    {
+      "id": "pitfall:rotation-invariance-hurts-mlp",
+      "kind": "pitfall",
+      "label": "Rotation-invariant MLPs destroy meaningful per-feature basis"
+    },
+    {
+      "id": "pitfall:benchmark-excludes-highcard-missing-temporal",
+      "kind": "pitfall",
+      "label": "Grinsztajn benchmark excludes high-cardinality / missing / temporal"
+    },
+    {
+      "id": "work:tabpfn-v2",
+      "kind": "work",
+      "label": "TabPFN v2: tabular foundation model (Nature 2025)",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:temporal-fusion-transformer",
+      "kind": "work",
+      "label": "Temporal Fusion Transformer (TFT)",
+      "year": 2021,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:dcn-v2-deep-cross-network",
+      "kind": "work",
+      "label": "DCN V2: Improved Deep & Cross Network",
+      "year": 2020,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:per-cell-two-way-attention-tokenization",
+      "kind": "technique",
+      "label": "Per-Cell Two-Way (Feature+Sample) Attention Tokenization (TabPFN v2)"
+    },
+    {
+      "id": "technique:prior-data-fitted-network-synthetic-scm-pretraining",
+      "kind": "technique",
+      "label": "Prior-Data Fitted Network: synthetic-SCM in-context pretraining"
+    },
+    {
+      "id": "technique:variable-selection-network",
+      "kind": "technique",
+      "label": "Variable Selection Network (VSN, instance-wise soft feature gating)"
+    },
+    {
+      "id": "technique:full-matrix-hadamard-cross-layer",
+      "kind": "technique",
+      "label": "Full-Matrix Hadamard Cross Layer (DCN-V2)"
+    },
+    {
+      "id": "technique:low-rank-mixture-of-experts-cross",
+      "kind": "technique",
+      "label": "Low-Rank Mixture-of-Experts Cross (DCN-Mix)"
+    },
+    {
+      "id": "technique:crossnet-rank1-cross",
+      "kind": "technique",
+      "label": "CrossNet Rank-1 Cross Layer (DCN-V1)"
+    },
+    {
+      "id": "transferable_idea:feature-axis-attention-for-many-heterogeneous-features",
+      "kind": "transferable_idea",
+      "label": "Feature-axis attention to mix many heterogeneous features (no O(features^2)-over-sequence cost)"
+    },
+    {
+      "id": "transferable_idea:synthetic-prior-pretrained-tokenizer",
+      "kind": "transferable_idea",
+      "label": "Synthetic-SCM-prior pretrained tokenizer that generalizes across schemas"
+    },
+    {
+      "id": "transferable_idea:variable-selection-as-feature-tokenizer",
+      "kind": "transferable_idea",
+      "label": "Variable selection as a learned per-feature soft-gating tokenizer over mixed types"
+    },
+    {
+      "id": "transferable_idea:field-count-independent-explicit-interaction-operator",
+      "kind": "transferable_idea",
+      "label": "Explicit interaction operator with cost in embedding-dim d, independent of field count M"
+    },
+    {
+      "id": "pitfall:foundation-model-not-wide-table-scale",
+      "kind": "pitfall",
+      "label": "'Foundation model' does NOT mean wide-table scale (v2 capped ~500 feat / ~10k samp)"
+    },
+    {
+      "id": "pitfall:query-set-coupling-predictions-not-row-independent",
+      "kind": "pitfall",
+      "label": "Query-set coupling: predictions depend on batch composition (not row-independent)"
+    },
+    {
+      "id": "pitfall:feature-count-inflation-entities-vs-features",
+      "kind": "pitfall",
+      "label": "Feature-count inflation: TFT's 370/440 are ENTITIES not features; VSN untested at 70+ features"
+    },
+    {
+      "id": "pitfall:cross-cost-quadratic-in-flattened-dim-d",
+      "kind": "pitfall",
+      "label": "Cross cost is O(d^2) in flattened input dim d; low-rank/MoE mandatory at width"
+    },
+    {
+      "id": "pitfall:raw-scalar-numeric-input-no-numeric-embedding",
+      "kind": "pitfall",
+      "label": "Raw-scalar numeric input, no learned numeric embedding (weak numeric leg)"
+    },
+    {
+      "id": "pitfall:small-absolute-auc-gain-recsys-only",
+      "kind": "pitfall",
+      "label": "Headline AUC gain is small in absolute terms and recsys-only (CTR/LTR)"
+    },
+    {
+      "id": "work:carte-pretraining-transfer-tabular",
+      "kind": "work",
+      "label": "CARTE: Pretraining and Transfer for Tabular Learning",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tiger-rqvae-semantic-ids",
+      "kind": "work",
+      "label": "Recommender Systems with Generative Retrieval (TIGER / RQ-VAE Semantic IDs)",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:itransformer-inverted-transformers",
+      "kind": "work",
+      "label": "iTransformer: Inverted Transformers Are Effective for Time Series Forecasting",
+      "year": 2024,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:column-name-lm-embedding-as-relation",
+      "kind": "technique",
+      "label": "Column-Name LM Embedding as Relation (CARTE edge feature)"
+    },
+    {
+      "id": "technique:graphlet-row-tokenization",
+      "kind": "technique",
+      "label": "Graphlet Row Tokenization (row as star graph of value/colname pairs)"
+    },
+    {
+      "id": "technique:fasttext-string-embedding",
+      "kind": "technique",
+      "label": "FastText String Embedding (open-vocabulary cell/colname encoder)"
+    },
+    {
+      "id": "technique:contrastive-pretraining-edge-dropout",
+      "kind": "technique",
+      "label": "Contrastive Pretraining with Edge Dropout (YAGO graphlets, InfoNCE)"
+    },
+    {
+      "id": "transferable_idea:open-vocabulary-colname-value-tokenizer",
+      "kind": "transferable_idea",
+      "label": "Open-vocabulary (column-name-embedding, value) tokenizer for cross-schema transfer"
+    },
+    {
+      "id": "pitfall:scaling-claim-without-70-feature-evidence",
+      "kind": "pitfall",
+      "label": "Scaling claim without 70+-feature evidence (CARTE: <=2048 rows, ~15-relation graphlets)"
+    },
+    {
+      "id": "pitfall:weak-numerical-encoder",
+      "kind": "pitfall",
+      "label": "Weak numerical encoder (scalar*colname-vector, no PLR/periodic)"
+    },
+    {
+      "id": "pitfall:benchmark-composition-string-heavy",
+      "kind": "pitfall",
+      "label": "Benchmark composition string-heavy / high-cardinality (advantage shrinks on numeric tables)"
+    },
+    {
+      "id": "technique:rq-vae-semantic-id",
+      "kind": "technique",
+      "label": "RQ-VAE Semantic ID (residual-quantized hierarchical discrete codes)"
+    },
+    {
+      "id": "technique:vq-vae-quantization",
+      "kind": "technique",
+      "label": "VQ-VAE Quantization (codebook + commitment loss)"
+    },
+    {
+      "id": "technique:lsh-semantic-id",
+      "kind": "technique",
+      "label": "LSH Semantic ID (locality-sensitive-hashing codes)"
+    },
+    {
+      "id": "pitfall:recsys-machinery-wholesale-import",
+      "kind": "pitfall",
+      "label": "Recsys generative-retrieval machinery imported wholesale (only RQ-VAE part transfers)"
+    },
+    {
+      "id": "technique:variate-as-token-inverted-embedding",
+      "kind": "technique",
+      "label": "Variate-as-Token Inverted Embedding (whole series -> one token, attention over variates)"
+    },
+    {
+      "id": "transferable_idea:feature-as-token-joint-attention-shared-weights",
+      "kind": "transferable_idea",
+      "label": "Feature-as-token over joint attention with shared per-token weights (scales to many features via subsampling)"
+    },
+    {
+      "id": "transferable_idea:variate-token-bridges-temporal-static-fusion",
+      "kind": "transferable_idea",
+      "label": "Per-feature variate token unifies time-varying + static features into one joint-attention sequence"
+    },
+    {
+      "id": "pitfall:variate-not-mixed-type-heterogeneity",
+      "kind": "pitfall",
+      "label": "'Variates' are numeric series, not mixed numeric+categorical+static heterogeneity"
+    },
+    {
+      "id": "pitfall:tie-with-patchtst-on-low-dimensional-data",
+      "kind": "pitfall",
+      "label": "iTransformer ties PatchTST on low-dimensional data; edge is only on many-correlated-variate sets"
+    },
+    {
+      "id": "work:tabllm-few-shot-llm-serialization",
+      "kind": "work",
+      "label": "TabLLM: Few-shot Classification of Tabular Data with LLMs",
+      "year": 2023,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tabicl-in-context-large-data",
+      "kind": "work",
+      "label": "TabICL: A Tabular Foundation Model for In-Context Learning on Large Data",
+      "year": 2025,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "work:tabicl-v2-scalable-foundation-model",
+      "kind": "work",
+      "label": "TabICLv2: A better, faster, scalable, open tabular foundation model",
+      "year": 2026,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:text-serialization-of-rows",
+      "kind": "technique",
+      "label": "Text Serialization of Rows (row->NL sentence + LLM subword tokenizer)"
+    },
+    {
+      "id": "technique:tfew-peft",
+      "kind": "technique",
+      "label": "T-Few Parameter-Efficient Fine-Tuning ((IA)^3 scaling vectors)"
+    },
+    {
+      "id": "pitfall:token-budget-scaling-wall",
+      "kind": "pitfall",
+      "label": "Token-budget scaling wall (1024-token cap; <=30 columns; lossy truncation at 70+ features)"
+    },
+    {
+      "id": "technique:shared-set-transformer-column-embedder",
+      "kind": "technique",
+      "label": "Shared Set-Transformer Column Embedder (ISAB hypernetwork emits per-cell W,B; no per-feature params)"
+    },
+    {
+      "id": "technique:column-collapse-row-token",
+      "kind": "technique",
+      "label": "Column-Collapse to Per-Row Token (CLS pool feature embeddings -> one row token before ICL)"
+    },
+    {
+      "id": "technique:rope-feature-axis",
+      "kind": "technique",
+      "label": "RoPE over the Feature Axis (de-collapse identically-distributed features)"
+    },
+    {
+      "id": "pitfall:rope-breaks-column-permutation-invariance",
+      "kind": "pitfall",
+      "label": "RoPE breaks column-permutation invariance (only restored by 32-shuffle ensemble; 32x inference tax)"
+    },
+    {
+      "id": "pitfall:feature-count-is-extrapolation",
+      "kind": "pitfall",
+      "label": "Wide-table (>100 feat) behavior is inference-extrapolation, not the <=100-feature pretraining regime"
+    },
+    {
+      "id": "technique:target-aware-embedding",
+      "kind": "technique",
+      "label": "Target-Aware Embedding (TAE: add EmbedTAE(y) into context-row feature embeddings)"
+    },
+    {
+      "id": "technique:column-then-row-attention",
+      "kind": "technique",
+      "label": "Column-then-Row(-then-Dataset) Attention (TF_col -> TF_row CLS pool -> TF_icl)"
+    },
+    {
+      "id": "technique:qassmax-scalable-softmax",
+      "kind": "technique",
+      "label": "QASSMax (scalable softmax attention variant)"
+    },
+    {
+      "id": "technique:repeated-feature-grouping",
+      "kind": "technique",
+      "label": "Repeated Feature Grouping (each token bundles 3 circularly-shifted columns)"
+    },
+    {
+      "id": "work:saint-row-attention-contrastive",
+      "kind": "work",
+      "label": "SAINT: Improved Neural Networks for Tabular Data via Row Attention and Contrastive Pre-Training",
+      "year": 2021,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:intersample-row-attention",
+      "kind": "technique",
+      "label": "Intersample (Row) Attention (row-as-token, learned soft-kNN over the batch)"
+    },
+    {
+      "id": "technique:contrastive-cutmix-mixup-pretraining",
+      "kind": "technique",
+      "label": "Contrastive CutMix+Mixup Self-Supervised Pretraining (SAINT)"
+    },
+    {
+      "id": "technique:per-feature-token-embedding",
+      "kind": "technique",
+      "label": "Per-Feature Token Embedding (single ReLU continuous embedding + categorical token)"
+    },
+    {
+      "id": "technique:tabtransformer",
+      "kind": "technique",
+      "label": "TabTransformer (contextual categorical embeddings; baseline architecture)"
+    },
+    {
+      "id": "transferable_idea:intersample-row-attention-as-soft-knn",
+      "kind": "transferable_idea",
+      "label": "Intersample/row attention as a learned soft-kNN — transferable to scaling/interaction at width"
+    },
+    {
+      "id": "pitfall:quadratic-row-attention-cost",
+      "kind": "pitfall",
+      "label": "Intersample attention is quadratic in (n*d): projection matrices (n*d)x(n*d) blow up with feature count"
+    },
+    {
+      "id": "pitfall:non-iid-batch-dependent-predictions",
+      "kind": "pitfall",
+      "label": "Row attention makes predictions batch-composition-dependent (non-i.i.d. per-row inference)"
+    },
+    {
+      "id": "work:encoding-high-cardinality-string-categoricals",
+      "kind": "work",
+      "label": "Encoding High-Cardinality String Categorical Variables",
+      "year": 2020,
+      "analysis_depth": "deep"
+    },
+    {
+      "id": "technique:minhash-ngram-encoder",
+      "kind": "technique",
+      "label": "MinHash n-gram Encoder (stateless, vocabulary-free fixed-width string encoder)"
+    },
+    {
+      "id": "technique:gamma-poisson-ngram-factorization",
+      "kind": "technique",
+      "label": "Gamma-Poisson n-gram Matrix Factorization (interpretable latent categories)"
+    },
+    {
+      "id": "technique:target-encoding",
+      "kind": "technique",
+      "label": "Target Encoding (label-conditioned categorical encoding)"
+    },
+    {
+      "id": "pitfall:minhash-coords-not-metric-for-attention",
+      "kind": "pitfall",
+      "label": "MinHash coordinates are not a metric space — raw codes not directly meaningful for attention/distance"
+    },
+    {
+      "id": "work:tabarena-living-benchmark",
+      "kind": "work",
+      "label": "TabArena: A Living Benchmark for Machine Learning on Tabular Data",
+      "year": 2025,
+      "analysis_depth": "deep"
+    }
+  ],
+  "edges": [
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "route:numerical-embeddings",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "technique:piecewise-linear-encoding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "technique:periodic-numerical-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "technique:plr-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "technique:target-aware-binning",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "technique:autodis",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:plr-embedding",
+      "dst": "transferable_idea:token-granularity",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "pitfall:per-feature-param-blowup",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:on-embeddings-numerical-features",
+      "dst": "pitfall:target-aware-bin-leakage",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "technique:feature-tokenizer",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "technique:per-feature-bias-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "technique:cls-token-readout",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:feature-tokenizer",
+      "dst": "transferable_idea:unified-per-feature-affine-token",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "technique:autoint",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "technique:autoint",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "technique:gbdt-baseline",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "pitfall:quadratic-attention-feature-count",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "pitfall:naive-scalar-numerical-embedding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:ft-transformer-revisiting-tabular-dl",
+      "dst": "pitfall:linear-growth-categorical-table",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:entity-embeddings-categorical-variables",
+      "dst": "route:categorical-high-cardinality",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:entity-embeddings-categorical-variables",
+      "dst": "technique:learned-per-field-entity-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:learned-per-field-entity-embedding",
+      "dst": "technique:one-hot-encoding",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:entity-embeddings-categorical-variables",
+      "dst": "technique:one-hot-encoding",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:entity-embeddings-categorical-variables",
+      "dst": "technique:gradient-boosted-trees",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:learned-per-field-entity-embedding",
+      "dst": "transferable_idea:tunable-per-field-embedding-dimension",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:entity-embeddings-categorical-variables",
+      "dst": "pitfall:supervised-embedding-transfer-leakage",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:entity-embeddings-categorical-variables",
+      "dst": "pitfall:concat-then-mlp-implicit-interaction-unscaled",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "technique:temporal-patch-tokenization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "technique:channel-independence",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "technique:masked-patch-pretraining",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "technique:instance-normalization-revin",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:temporal-patch-tokenization",
+      "dst": "technique:pointwise-temporal-token",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:temporal-patch-tokenization",
+      "dst": "transferable_idea:patching-controls-sequence-length",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "transferable_idea:patching-controls-sequence-length",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:patchtst-time-series-64-words",
+      "dst": "pitfall:channel-independence-drops-feature-interaction",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "technique:multi-head-self-attention-interacting-layer",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "technique:autoint",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "technique:per-field-embedding-tokenizer",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "technique:residual-connection",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:multi-head-self-attention-interacting-layer",
+      "dst": "transferable_idea:field-shared-attention-m-independent-params",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:field-shared-attention-m-independent-params",
+      "dst": "transferable_idea:field-shared-attention-m-independent-params",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:per-field-embedding-tokenizer",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "extends"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "technique:factorization-machines",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "pitfall:autoint-quadratic-attention-in-feature-count",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:autoint-feature-interaction",
+      "dst": "pitfall:autoint-rank1-numerical-embedding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tree-models-outperform-deep-tabular",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tree-models-outperform-deep-tabular",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tree-models-outperform-deep-tabular",
+      "dst": "pitfall:rotation-invariance-hurts-mlp",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tree-models-outperform-deep-tabular",
+      "dst": "pitfall:benchmark-excludes-highcard-missing-temporal",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "transferable_idea:per-feature-embedding-breaks-rotation-invariance",
+      "dst": "route:tabular-transformers",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tree-models-outperform-deep-tabular",
+      "dst": "transferable_idea:per-feature-embedding-breaks-rotation-invariance",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabpfn-v2",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabpfn-v2",
+      "dst": "technique:per-cell-two-way-attention-tokenization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabpfn-v2",
+      "dst": "technique:prior-data-fitted-network-synthetic-scm-pretraining",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:per-cell-two-way-attention-tokenization",
+      "dst": "technique:feature-tokenizer",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:per-cell-two-way-attention-tokenization",
+      "dst": "transferable_idea:feature-axis-attention-for-many-heterogeneous-features",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:prior-data-fitted-network-synthetic-scm-pretraining",
+      "dst": "transferable_idea:synthetic-prior-pretrained-tokenizer",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabpfn-v2",
+      "dst": "pitfall:foundation-model-not-wide-table-scale",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabpfn-v2",
+      "dst": "pitfall:query-set-coupling-predictions-not-row-independent",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:temporal-fusion-transformer",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:temporal-fusion-transformer",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:temporal-fusion-transformer",
+      "dst": "technique:variable-selection-network",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:variable-selection-network",
+      "dst": "transferable_idea:variable-selection-as-feature-tokenizer",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:temporal-fusion-transformer",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:temporal-fusion-transformer",
+      "dst": "pitfall:feature-count-inflation-entities-vs-features",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "route:feature-interaction-selection",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "technique:full-matrix-hadamard-cross-layer",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "technique:low-rank-mixture-of-experts-cross",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:full-matrix-hadamard-cross-layer",
+      "dst": "technique:crossnet-rank1-cross",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "work:autoint-feature-interaction",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:full-matrix-hadamard-cross-layer",
+      "dst": "technique:multi-head-self-attention-interacting-layer",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:full-matrix-hadamard-cross-layer",
+      "dst": "transferable_idea:field-count-independent-explicit-interaction-operator",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:low-rank-mixture-of-experts-cross",
+      "dst": "transferable_idea:field-count-independent-explicit-interaction-operator",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "pitfall:cross-cost-quadratic-in-flattened-dim-d",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "pitfall:raw-scalar-numeric-input-no-numeric-embedding",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "pitfall:small-absolute-auc-gain-recsys-only",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:dcn-v2-deep-cross-network",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "technique:column-name-lm-embedding-as-relation",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "technique:graphlet-row-tokenization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "technique:fasttext-string-embedding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "technique:contrastive-pretraining-edge-dropout",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:column-name-lm-embedding-as-relation",
+      "dst": "transferable_idea:open-vocabulary-colname-value-tokenizer",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:column-name-lm-embedding-as-relation",
+      "dst": "transferable_idea:open-vocabulary-colname-value-tokenizer",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "work:tabpfn-v2",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "work:entity-embeddings-categorical-variables",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:graphlet-row-tokenization",
+      "dst": "technique:feature-tokenizer",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "pitfall:scaling-claim-without-70-feature-evidence",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "pitfall:weak-numerical-encoder",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:carte-pretraining-transfer-tabular",
+      "dst": "pitfall:benchmark-composition-string-heavy",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tiger-rqvae-semantic-ids",
+      "dst": "route:discretization-vq",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tiger-rqvae-semantic-ids",
+      "dst": "technique:rq-vae-semantic-id",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:rq-vae-semantic-id",
+      "dst": "technique:vq-vae-quantization",
+      "rel": "extends"
+    },
+    {
+      "src": "technique:rq-vae-semantic-id",
+      "dst": "route:categorical-high-cardinality",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:rq-vae-semantic-id",
+      "dst": "route:discretization-vq",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:rq-vae-semantic-id",
+      "dst": "technique:lsh-semantic-id",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tiger-rqvae-semantic-ids",
+      "dst": "technique:lsh-semantic-id",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:rq-vae-semantic-id",
+      "dst": "technique:entity-embedding-categorical",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:tiger-rqvae-semantic-ids",
+      "dst": "pitfall:recsys-machinery-wholesale-import",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:itransformer-inverted-transformers",
+      "dst": "route:temporal-feature-tokenization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:itransformer-inverted-transformers",
+      "dst": "technique:variate-as-token-inverted-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:itransformer-inverted-transformers",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:itransformer-inverted-transformers",
+      "dst": "work:patchtst-time-series-64-words",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:variate-as-token-inverted-embedding",
+      "dst": "technique:feature-tokenizer",
+      "rel": "extends"
+    },
+    {
+      "src": "work:itransformer-inverted-transformers",
+      "dst": "technique:feature-tokenizer",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "technique:variate-as-token-inverted-embedding",
+      "dst": "transferable_idea:feature-as-token-joint-attention-shared-weights",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:variate-as-token-inverted-embedding",
+      "dst": "transferable_idea:variate-token-bridges-temporal-static-fusion",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:itransformer-inverted-transformers",
+      "dst": "pitfall:variate-not-mixed-type-heterogeneity",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:itransformer-inverted-transformers",
+      "dst": "pitfall:tie-with-patchtst-on-low-dimensional-data",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "route:llm-tabular-serialization",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "technique:text-serialization-of-rows",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "technique:tfew-peft",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "work:tabpfn-v2",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "work:carte-pretraining-transfer-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "pitfall:token-budget-scaling-wall",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabllm-few-shot-llm-serialization",
+      "dst": "work:on-embeddings-numerical-features",
+      "rel": "contradicts"
+    },
+    {
+      "src": "technique:text-serialization-of-rows",
+      "dst": "technique:column-name-lm-embedding-as-relation",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:text-serialization-of-rows",
+      "dst": "transferable_idea:token-granularity",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "work:tabpfn-v2",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "work:tabpfn-v2",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "technique:shared-set-transformer-column-embedder",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "technique:column-collapse-row-token",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "technique:column-collapse-row-token",
+      "dst": "route:tabular-foundation-models",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:shared-set-transformer-column-embedder",
+      "dst": "route:feature-interaction-selection",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "technique:rope-feature-axis",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "pitfall:rope-breaks-column-permutation-invariance",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabicl-in-context-large-data",
+      "dst": "pitfall:feature-count-is-extrapolation",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabicl-v2-scalable-foundation-model",
+      "dst": "route:tabular-foundation-models",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabicl-v2-scalable-foundation-model",
+      "dst": "technique:target-aware-embedding",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabicl-v2-scalable-foundation-model",
+      "dst": "technique:column-then-row-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabicl-v2-scalable-foundation-model",
+      "dst": "technique:qassmax-scalable-softmax",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabicl-v2-scalable-foundation-model",
+      "dst": "technique:repeated-feature-grouping",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:tabicl-v2-scalable-foundation-model",
+      "dst": "work:tabicl-in-context-large-data",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:tabicl-v2-scalable-foundation-model",
+      "dst": "work:tabicl-in-context-large-data",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:column-then-row-attention",
+      "dst": "route:feature-interaction-selection",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "technique:target-aware-embedding",
+      "dst": "route:tabular-foundation-models",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "technique:intersample-row-attention",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "technique:contrastive-cutmix-mixup-pretraining",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "technique:per-feature-token-embedding",
+      "rel": "uses_technique"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "technique:tabtransformer",
+      "rel": "improves_on"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "technique:tabtransformer",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "work:saint-row-attention-contrastive",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "contradicts"
+    },
+    {
+      "src": "technique:intersample-row-attention",
+      "dst": "transferable_idea:intersample-row-attention-as-soft-knn",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:intersample-row-attention",
+      "dst": "pitfall:quadratic-row-attention-cost",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "technique:intersample-row-attention",
+      "dst": "pitfall:non-iid-batch-dependent-predictions",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:encoding-high-cardinality-string-categoricals",
+      "dst": "route:categorical-high-cardinality",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:encoding-high-cardinality-string-categoricals",
+      "dst": "technique:minhash-ngram-encoder",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:encoding-high-cardinality-string-categoricals",
+      "dst": "technique:gamma-poisson-ngram-factorization",
+      "rel": "introduces_technique"
+    },
+    {
+      "src": "work:encoding-high-cardinality-string-categoricals",
+      "dst": "technique:one-hot-encoding",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:encoding-high-cardinality-string-categoricals",
+      "dst": "technique:target-encoding",
+      "rel": "compared_against"
+    },
+    {
+      "src": "technique:minhash-ngram-encoder",
+      "dst": "work:entity-embeddings-categorical-variables",
+      "rel": "alternative_to"
+    },
+    {
+      "src": "technique:minhash-ngram-encoder",
+      "dst": "route:categorical-high-cardinality",
+      "rel": "transferable_to"
+    },
+    {
+      "src": "technique:minhash-ngram-encoder",
+      "dst": "route:categorical-high-cardinality",
+      "rel": "enables_scaling"
+    },
+    {
+      "src": "work:encoding-high-cardinality-string-categoricals",
+      "dst": "pitfall:minhash-coords-not-metric-for-attention",
+      "rel": "has_pitfall"
+    },
+    {
+      "src": "work:tabarena-living-benchmark",
+      "dst": "route:tabular-transformers",
+      "rel": "belongs_to_route"
+    },
+    {
+      "src": "work:tabarena-living-benchmark",
+      "dst": "work:ft-transformer-revisiting-tabular-dl",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabarena-living-benchmark",
+      "dst": "work:tabpfn-v2",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabarena-living-benchmark",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "compared_against"
+    },
+    {
+      "src": "work:tabarena-living-benchmark",
+      "dst": "work:tree-models-outperform-deep-tabular",
+      "rel": "contradicts"
+    }
+  ],
+  "updated_at": "2026-06-16T14:30:00Z"
+}

@@ -1,0 +1,5 @@
+{"ts":"2026-06-16T11:48:40Z","level":"info","source":"orchestrator","cycle":null,"text":"Argus is starting. Gathering your topic details next."}
+{"ts":"2026-06-16T11:49:59Z","level":"blocked","source":"orchestrator","cycle":null,"text":"Waiting on you in CC: what kind of features + downstream model, and feature structure."}
+{"ts":"2026-06-16T11:52:22Z","level":"info","source":"orchestrator","cycle":null,"text":"Got it (tabular DL, mixed temporal+static features). Continuing."}
+{"ts":"2026-06-16T11:59:35Z","level":"blocked","source":"orchestrator","cycle":null,"text":"Waiting on you in CC: confirm recency floor + end goal, then accept."}
+{"ts":"2026-06-16T12:03:20Z","level":"info","source":"orchestrator","cycle":null,"text":"Got it (2018 floor, goal=build tokenizer). Continuing."}

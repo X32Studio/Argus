@@ -1,0 +1,200 @@
+meta:
+  slug: complex-feature-tokenization
+  name: Complex Feature Tokenization for Deep Tabular Models
+  description: "Tokenization/embedding methods that scale to 70+ heterogeneous tabular features (numerical + high-cardinality categorical, partly time-varying + partly static) feeding deep tabular/transformer models — where classic NLP-style or naive tokenizers handle only a few basic features."
+  status: accepted
+  created_at: 2026-06-16
+  accepted_at: 2026-06-16
+
+concept_layers:
+  - name: Feature Typing & Heterogeneity
+    key: feature-typing
+    description: How a method distinguishes and treats numerical vs categorical vs temporal vs missing values within one feature set.
+  - name: Token Granularity & Representation
+    key: token-granularity
+    description: What a single token represents — a whole feature, a value, a field-value pair, a bin, a temporal patch, or a learned code.
+  - name: Scaling & Feature Interaction
+    key: scaling-interaction
+    description: How the method copes with many features at once — sequence length, attention cost, and explicit vs implicit feature-interaction modeling.
+  - name: Learning Signal & Supervision
+    key: learning-signal
+    description: What shapes the tokens — supervised end-to-end, target-aware encoding, self-supervised pretraining, or transfer from a tabular foundation model.
+  - name: Temporal-Static Fusion
+    key: temporal-static-fusion
+    description: How time-varying signals and static attributes are unified into one representation when both coexist.
+
+execution_routes:
+  - name: Numerical Feature Embeddings
+    key: numerical-embeddings
+    description: Encoding continuous features — piecewise-linear, periodic/Fourier, quantile binning, target-aware binning — beyond raw scalars.
+    anchor_examples: [On Embeddings for Numerical Features in Tabular Deep Learning, PLR embeddings, T2G-Former]
+  - name: Tabular Transformer Architectures
+    key: tabular-transformers
+    description: Architectures whose feature tokenizer is the core contribution — FT-Transformer, TabTransformer, SAINT, TabNet, AutoInt.
+    anchor_examples: [FT-Transformer, TabTransformer, SAINT, TabNet, AutoInt]
+  - name: Categorical & High-Cardinality Encoding
+    key: categorical-high-cardinality
+    description: Representing categorical fields, especially high-cardinality ones — entity embeddings, hashing, target/CatBoost encoding, learned category tokens.
+    anchor_examples: [Entity Embeddings of Categorical Variables, hashing trick, target encoding]
+  - name: Tabular Foundation & Pretrained Models
+    key: tabular-foundation-models
+    description: Pretrained / in-context tabular models whose tokenization transfers across datasets — TabPFN(v2), CARTE, TabuLa, XTab.
+    anchor_examples: [TabPFN, TabPFN v2, CARTE, XTab, TabuLa]
+  - name: LLM & Text-Serialization of Tables
+    key: llm-tabular-serialization
+    description: Serializing rows to text/templates and tokenizing with an LLM tokenizer — TabLLM, LIFT, GReaT, table-to-text.
+    anchor_examples: [TabLLM, LIFT, GReaT, TableGPT]
+  - name: Temporal / Time-Series Tokenization
+    key: temporal-feature-tokenization
+    description: Tokenizing time-varying features — patching, channel-as-token, irregular sampling — and fusing them with static covariates.
+    anchor_examples: [PatchTST, iTransformer, Temporal Fusion Transformer, Time-LLM]
+  - name: Discretization & Vector-Quantized Tokens
+    key: discretization-vq
+    description: Turning features into discrete codes — VQ/RQ-VAE codebooks, learned bins, and semantic-ID-style tokens applied to tabular features.
+    anchor_examples: [RQ-VAE semantic IDs, VQ-VAE, learned discretization]
+  - name: Feature Interaction & Selection at Scale
+    key: feature-interaction-selection
+    description: Methods that make 70+ features tractable — efficient attention, feature gating/selection, importance, and explicit interaction layers.
+    anchor_examples: [AutoInt, DCN-V2, feature selection for deep tabular]
+
+scope_in:
+  - Tokenization/embedding of continuous numerical features (binning, piecewise-linear, periodic, quantile, target-aware)
+  - Tokenization/embedding of categorical features including high-cardinality fields
+  - Per-feature, field-value, or patch tokenization for transformers over tabular data
+  - Unifying many heterogeneous features (dozens to hundreds) into a token sequence
+  - Representing and fusing mixed time-varying + static feature sets
+  - Self-supervised / target-aware objectives that shape feature tokens
+  - Vector-quantized / codebook / discretization tokenization for tabular features
+  - Methods explicitly addressing scaling to large feature counts (efficiency, interaction)
+  - Pretrained / foundation tabular models whose tokenization transfers across tables
+
+scope_out:
+  - Pure NLP subword tokenization (BPE/WordPiece/SentencePiece) for natural-language text, except as baseline/contrast
+  - Image patch tokenization (ViT) except where the idea directly transfers to feature tokens
+  - GBDT methods (XGBoost/LightGBM/CatBoost) with no learned tokenization, except as performance baselines
+  - Recommendation-specific semantic-ID systems decoupled from heterogeneous feature tokenization (keep only the transferable idea)
+  - Graph/molecule tokenization unrelated to tabular features
+
+recency_floor: 2018  # confirmed 2026-06-16: center on 2021+ SOTA, keep 2018-2020 foundations (TabNet, TabTransformer, FT-Transformer); seminal pre-2018 anchors (entity embeddings 2016) allowed as cited references.
+
+record_fields:
+  - required: true
+    key: title
+    description: Title of the paper, repo, blog post, or benchmark.
+  - required: false
+    key: authors
+    description: Authors or maintaining organization.
+  - required: true
+    key: year
+    description: Publication or last-major-update year.
+  - required: false
+    key: venue
+    description: Venue or source (conference, journal, arXiv, GitHub, blog).
+  - required: true
+    key: url
+    description: Canonical link — arXiv/DOI/repo/blog URL.
+  - required: true
+    key: work_type
+    description: One of paper | repo | blog | benchmark | library | survey.
+  - required: true
+    key: primary_route
+    description: The execution_routes[].key this work primarily belongs to.
+  - required: true
+    key: tokenization_method
+    description: The core tokenization/embedding mechanism the work proposes or uses.
+  - required: true
+    key: feature_types_handled
+    description: Which feature types it handles — numerical, categorical, temporal, missing, mixed.
+  - required: false
+    key: token_granularity
+    description: What one token represents — per-feature, per-value, field-value pair, bin, temporal patch, learned code.
+  - required: false
+    key: numerical_strategy
+    description: How continuous features are encoded (piecewise-linear, periodic, quantile bins, raw scalar, target-aware).
+  - required: false
+    key: categorical_strategy
+    description: How categorical features are encoded (learned embedding, hashing, target encoding, learned token).
+  - required: false
+    key: high_cardinality_handling
+    description: Specific treatment for high-cardinality categoricals, if any.
+  - required: false
+    key: temporal_handling
+    description: How time-varying features are handled (patching, recurrence, channel-token, none).
+  - required: false
+    key: scales_to_many_features
+    description: Evidence or claims about scaling to dozens-to-hundreds of features (and cost).
+  - required: false
+    key: downstream_model
+    description: Model that consumes the tokens (transformer, MLP, GBDT-hybrid, LLM).
+  - required: false
+    key: pretraining_objective
+    description: Self-supervised / target-aware / transfer objective, or none.
+  - required: false
+    key: key_results
+    description: Headline empirical results — datasets, metrics, comparison outcome.
+  - required: false
+    key: baselines_compared
+    description: What it is benchmarked against (GBDT, FT-Transformer, MLP, etc.).
+  - required: false
+    key: transferable_idea
+    description: The single idea most reusable for tokenizing 70+ heterogeneous features.
+  - required: false
+    key: limitations
+    description: Stated limitations or failure modes.
+  - required: false
+    key: pitfalls
+    description: Gotchas, contradicted claims, or reproducibility caveats noticed during deep-read.
+  - required: false
+    key: relevance_to_topic
+    description: One line on why it matters for the 70+-mixed-feature setting.
+  - required: false
+    key: code_available
+    description: Whether a usable implementation exists (yes/no/link).
+  - required: true
+    key: analysis_depth
+    description: Depth of our read — deep | medium | shallow (mirrors the graph node field).
+  - required: false
+    key: confidence
+    description: Our confidence in the extracted claims — high | medium | low.
+
+graph_edge_types:
+  - description: Connects a work to its primary execution route (work to route).
+    key: belongs_to_route
+  - description: Work introduces or originates a technique node.
+    key: introduces_technique
+  - description: Work employs an existing technique.
+    key: uses_technique
+  - description: Work or technique improves on a prior work/technique.
+    key: improves_on
+  - description: Technique extends or generalizes another technique.
+    key: extends
+  - description: Technique is a competing alternative to another for the same role.
+    key: alternative_to
+  - description: Work benchmarks itself against a baseline work/technique.
+    key: compared_against
+  - description: Work or finding contradicts a claim made elsewhere.
+    key: contradicts
+  - description: Technique/idea is flagged as transferable to the 70+-heterogeneous-feature setting.
+    key: transferable_to
+  - description: Technique specifically addresses scaling to many features.
+    key: enables_scaling
+  - description: Work or technique is associated with a recorded pitfall.
+    key: has_pitfall
+
+report_sections:
+  - executive-summary
+  - problem-framing
+  - numerical-feature-tokenization
+  - categorical-and-high-cardinality
+  - temporal-static-fusion
+  - scaling-and-interaction
+  - architectures-and-foundation-models
+  - recommended-approaches
+  - open-problems-and-contradictions
+  - reading-guide
+
+iteration_mix:
+  new_min: 1
+  deepen_min: 1
+  challenge_min: 1
+  synthesis_every_n_cycles: 7
