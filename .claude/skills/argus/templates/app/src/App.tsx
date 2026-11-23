@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 
 import { ActivityRail } from "./components/ActivityRail";
+import { DecisionBoard } from "./components/DecisionBoard";
 import { EmptyTopicView } from "./components/EmptyTopicView";
 import { GraphCanvas } from "./components/GraphCanvas";
 import { Hero } from "./components/Hero";
@@ -28,6 +29,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<TopicPicker />} />
         <Route path="/t/:slug" element={<TopicDashboard />} />
+        <Route path="/t/:slug/decisions" element={<TopicDecisions />} />
         <Route path="/t/:slug/report" element={<TopicReport />} />
         <Route path="*" element={<TopicPicker />} />
       </Routes>
@@ -35,7 +37,7 @@ export default function App() {
   );
 }
 
-function TopicNav({ slug, current }: { slug: string; current: "dashboard" | "report" }) {
+function TopicNav({ slug, current }: { slug: string; current: "dashboard" | "decisions" | "report" }) {
   return (
     <nav className="topic-nav">
       <Link to="/" className="topic-nav-back">
@@ -49,7 +51,13 @@ function TopicNav({ slug, current }: { slug: string; current: "dashboard" | "rep
         to={`/t/${slug}`}
         className={`topic-nav-link ${current === "dashboard" ? "is-active" : ""}`}
       >
-        Dashboard
+        Graph
+      </Link>
+      <Link
+        to={`/t/${slug}/decisions`}
+        className={`topic-nav-link ${current === "decisions" ? "is-active" : ""}`}
+      >
+        Decision Board
       </Link>
       <Link
         to={`/t/${slug}/report`}
@@ -68,6 +76,17 @@ function TopicDashboard() {
     <TopicProvider slug={slug}>
       <TopicNav slug={slug} current="dashboard" />
       <DashboardApp />
+    </TopicProvider>
+  );
+}
+
+function TopicDecisions() {
+  const { slug } = useParams<{ slug: string }>();
+  if (!slug) return <TopicPicker />;
+  return (
+    <TopicProvider slug={slug}>
+      <TopicNav slug={slug} current="decisions" />
+      <DecisionBoard />
     </TopicProvider>
   );
 }

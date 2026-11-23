@@ -7,6 +7,8 @@ type TopicMeta = {
   slug: string;
   name: string;
   description: string;
+  archetype?: string;
+  engine_mode?: string;
   status: string;
   created_at: string;
   accepted_at: string;
@@ -54,7 +56,7 @@ export function TopicPicker() {
           <em>Argus</em>
         </h1>
         <p className="topic-picker-sub">
-          Topic-driven research engine. A hundred eyes, never asleep. Pick a topic to enter its dashboard.
+          Universal persistent deep-exploration &amp; decision-intelligence engine — needle hunts, competitive intelligence, JEV decision boards, and long-horizon research trees.
         </p>
       </header>
 
@@ -90,6 +92,8 @@ export function TopicPicker() {
                   <h3 className="topic-card-name">{topic.name}</h3>
                   <p className="topic-card-slug">
                     <code>{topic.slug}</code>
+                    {topic.archetype && <span className="decision-chip is-cyan"> {topic.archetype.toUpperCase()}</span>}
+                    {topic.engine_mode && <span className="decision-chip is-accent"> {topic.engine_mode.toUpperCase()}</span>}
                   </p>
                   {topic.description && <p className="topic-card-desc">{topic.description}</p>}
                   <p className="topic-card-meta">

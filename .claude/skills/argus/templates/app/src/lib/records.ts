@@ -23,3 +23,7 @@ export function reportPath(topicSlug: string, doc: ReportDoc) {
 export function topicYamlPath(topicSlug: string) {
   return `/topics/${topicSlug}/topic.yaml`;
 }
+
+export function decisionBoardPath(topicSlug: string) {
+  return `/topics/${topicSlug}/decisions/decision_board.json`;
+}

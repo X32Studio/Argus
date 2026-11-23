@@ -1,0 +1,18 @@
+{
+  "nodes": [
+    { "id": "route:thin-protocol-gates", "kind": "route", "label": "Thin Protocol & Hard Gates", "degree": 2 },
+    { "id": "route:stateful-frameworks", "kind": "route", "label": "Stateful Multi-Agent Frameworks", "degree": 1 },
+    { "id": "work:self-loop-v0410", "kind": "work", "label": "self-loop v0.4.10 — Autonomous Delivery Protocol", "recency": "2026-11", "degree": 3 },
+    { "id": "work:outis-jev-routing", "kind": "work", "label": "Outis Two-Layer JEV Decision Routing", "recency": "2026-11", "degree": 2 },
+    { "id": "work:openhands-swe-landscape", "kind": "work", "label": "OpenHands & SWE-Agent Orchestration Benchmarks", "recency": "2026-10", "degree": 2 }
+  ],
+  "edges": [
+    { "src": "work:self-loop-v0410", "dst": "route:thin-protocol-gates", "rel": "informs" },
+    { "src": "work:outis-jev-routing", "dst": "route:thin-protocol-gates", "rel": "informs" },
+    { "src": "work:openhands-swe-landscape", "dst": "route:stateful-frameworks", "rel": "informs" },
+    { "src": "work:self-loop-v0410", "dst": "work:openhands-swe-landscape", "rel": "compares_against" },
+    { "src": "work:outis-jev-routing", "dst": "work:self-loop-v0410", "rel": "informs" }
+  ],
+  "updated_at": "2026-11-23T09:50:00Z",
+  "iteration": 3
+}

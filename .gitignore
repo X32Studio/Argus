@@ -15,3 +15,6 @@ _merge*.py
 collate*.py
 *_merge_*.py
 *collate*.py
+
+app/vite.config.d.ts
+app/vite.config.js

@@ -2308,3 +2308,221 @@ body::before {
 .activity-rail-item.is-blocked .activity-rail-text {
   color: var(--cream);
 }
+
+/* ── Argus 2.0 Decision Board & JEV Telemetry ─────────────────────────── */
+.decision-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.decision-header {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.decision-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.decision-chip {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.decision-chip.is-cyan,
+.decision-chip.status-leading,
+.decision-chip.verdict-supported {
+  border-color: #0284c7;
+  color: #0369a1;
+  background: rgba(2, 132, 199, 0.1);
+}
+
+.decision-chip.is-accent {
+  border-color: #6366f1;
+  color: #4338ca;
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.decision-chip.is-ok {
+  border-color: #059669;
+  color: #047857;
+  background: rgba(5, 150, 105, 0.1);
+}
+
+.decision-chip.is-warn,
+.decision-chip.status-contested,
+.decision-chip.verdict-contested {
+  border-color: #d97706;
+  color: #b45309;
+  background: rgba(217, 119, 6, 0.12);
+}
+
+.decision-chip.verdict-refuted,
+.decision-chip.status-weak {
+  border-color: #dc2626;
+  color: #b91c1c;
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.decision-question {
+  font-size: 1.65rem;
+  line-height: 1.25;
+  margin: 0 0 1.25rem;
+}
+
+.decision-telemetry {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.decision-telemetry > div {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.decision-telemetry span {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+}
+
+.decision-telemetry strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.15rem;
+}
+
+.decision-section {
+  margin-bottom: 2.25rem;
+}
+
+.decision-section h2 {
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.decision-options,
+.decision-claims,
+.probe-list {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.decision-card,
+.claim-row,
+.probe-item,
+.decision-empty {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 4px;
+  padding: 1.1rem 1.2rem;
+}
+
+.decision-card.status-leading {
+  border-left: 4px solid #0284c7;
+}
+
+.decision-card.status-contested,
+.claim-row.verdict-contested {
+  border-left: 4px solid #d97706;
+}
+
+.decision-card-top,
+.claim-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.decision-card-top h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.decision-bar-track {
+  height: 7px;
+  border-radius: 2px;
+  background: rgba(148, 163, 184, 0.22);
+  margin: 0.75rem 0;
+  overflow: hidden;
+}
+
+.decision-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #6366f1);
+}
+
+.decision-summary,
+.claim-reason,
+.probe-item p {
+  font-size: 0.92rem;
+  opacity: 0.85;
+  margin: 0.4rem 0 0;
+}
+
+.decision-triggers {
+  margin-top: 0.8rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(148, 163, 184, 0.3);
+  font-size: 0.86rem;
+}
+
+.decision-label {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.72;
+  margin-bottom: 0.35rem;
+}
+
+.decision-triggers ul {
+  margin: 0;
+  padding-left: 1.15rem;
+}
+
+.claim-text {
+  font-weight: 600;
+  margin: 0.55rem 0 0.25rem;
+}
+
+.claim-refs {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  opacity: 0.75;
+}
+
+.probe-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}

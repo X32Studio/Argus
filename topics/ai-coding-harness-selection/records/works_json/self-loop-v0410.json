@@ -1,0 +1,13 @@
+{
+  "slug": "self-loop-v0410",
+  "title": "self-loop v0.4.10 — Autonomous Delivery Protocol",
+  "url": "https://github.com/X32Studio/self-loop",
+  "primary_route": "thin-protocol-gates",
+  "analysis_depth": "deep",
+  "one_liner": "Turns chaotic coding-agent mobs into a trustworthy delivery organization via Frame Review, cross-vendor Critic/Actor/Judge, premise-attack gates (exit 7), and exact-tree CI receipts.",
+  "tags": ["thin-protocol", "cross-vendor-judge", "git-gates", "L-0002"],
+  "key_claims": [
+    { "id": "SL-1", "kind": "evidence", "text": "Deleted an 865-line v0.2 state-machine orchestrator (L-0002) after independent audits caught subtle false verdicts." },
+    { "id": "SL-2", "kind": "mechanism", "text": "Exact-tree suite-green + live ci-green + gated-push prevent stale-test pushes mechanically." }
+  ]
+}

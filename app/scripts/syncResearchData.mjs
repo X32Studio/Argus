@@ -48,6 +48,8 @@ for (const slug of topicDirs) {
     slug: meta.slug ?? slug,
     name: meta.name ?? slug,
     description: meta.description ?? "",
+    archetype: meta.archetype ?? "research",
+    engine_mode: meta.engine_mode ?? "llm",
     status: meta.status ?? "draft",
     created_at: meta.created_at ?? "",
     accepted_at: meta.accepted_at ?? "",

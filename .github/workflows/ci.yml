@@ -1,0 +1,29 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run Argus 2.0 engine tests & offline demo
+        run: |
+          npm run test:engine
+          npm run demo
+      - name: Run skill harness & bootstrap tests
+        run: npm run test:skill
+      - name: Install, test & build React dashboard
+        working-directory: app
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - name: Validate topic contracts
+        run: bash .claude/skills/argus/scripts/validate-contract.sh

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  decisionBoardPath,
   graphPath,
   reportPath,
   workMarkdownPath,
@@ -42,4 +43,10 @@ describe("work record helpers", () => {
       "/topics/example-topic/report/iteration_log.md",
     );
   });
+});
+
+it("builds decision board path", () => {
+  expect(decisionBoardPath("ai-coding-harness-selection")).toBe(
+    "/topics/ai-coding-harness-selection/decisions/decision_board.json",
+  );
 });

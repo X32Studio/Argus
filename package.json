@@ -1,0 +1,26 @@
+{
+  "name": "x32-argus",
+  "version": "2.0.0",
+  "description": "Universal persistent deep-exploration & decision-intelligence engine with JEV two-layer routing, conflict preservation, and gather/search agent context.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "author": "Ruiyuan Kang <kang@x32studio.com>",
+  "homepage": "https://x32studio.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/X32Studio/Argus.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "demo": "node engine/demo.mjs",
+    "query": "node engine/cli.mjs query",
+    "test:engine": "node --test engine/*.test.mjs",
+    "test:skill": "bash .claude/skills/argus/test/run.sh",
+    "test:app": "npm --prefix app test",
+    "build:app": "npm --prefix app run build",
+    "test": "npm run test:engine && npm run test:skill && npm run test:app"
+  }
+}

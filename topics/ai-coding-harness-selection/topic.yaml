@@ -1,0 +1,55 @@
+meta:
+  slug: ai-coding-harness-selection
+  name: AI Coding Agent Harnesses — Competitive & Architecture Decision
+  description: Competitive intelligence and decision analysis across autonomous coding agent harnesses, orchestration patterns, and cross-vendor verification protocols.
+  archetype: decision
+  engine_mode: jev-hybrid
+  status: accepted
+  created_at: 2026-11-23
+  accepted_at: 2026-11-23
+
+scope_in:
+  - Autonomous coding agent harnesses (Claude Code, Codex CLI, OpenHands, SWE-agent, self-loop)
+  - Verification protocols, git/CI landing gates, and JEV decision-model routing
+scope_out:
+  - Consumer chat wrappers without repository execution or verification loops
+
+execution_routes:
+  - name: Thin Protocol & Hard Gates
+    key: thin-protocol-gates
+    description: Harness-agnostic delivery protocols enforcing role isolation and deterministic Git/CI gates.
+  - name: Stateful Multi-Agent Frameworks
+    key: stateful-frameworks
+    description: Custom multi-agent state-machine orchestrators and workflow engines.
+
+concept_layers:
+  - name: Verification & Governance
+    key: verification_governance
+  - name: Context & Routing
+    key: context_routing
+
+graph_edge_types:
+  - name: compares_against
+    key: compares_against
+  - name: informs
+    key: informs
+  - name: refutes
+    key: refutes
+
+record_fields:
+  - name: title
+    key: title
+  - name: url
+    key: url
+  - name: primary_route
+    key: primary_route
+  - name: analysis_depth
+    key: analysis_depth
+  - name: one_liner
+    key: one_liner
+
+iteration_mix:
+  new_pct: 35
+  deepen_pct: 30
+  challenge_pct: 35
+  synthesis_every_n_cycles: 4

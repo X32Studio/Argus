@@ -1,0 +1,13 @@
+{
+  "slug": "openhands-swe-landscape",
+  "title": "OpenHands & SWE-Agent Orchestration Benchmarks",
+  "url": "https://github.com/OpenHands/OpenHands",
+  "primary_route": "stateful-frameworks",
+  "analysis_depth": "medium",
+  "one_liner": "Competitive benchmark landscape for stateful coding-agent orchestrators showing strong single-issue SWE-bench scores alongside rising multi-round governance complexity.",
+  "tags": ["competitive-intel", "stateful-orchestrator", "benchmarks"],
+  "key_claims": [
+    { "id": "OH-1", "kind": "evidence", "text": "Stateful sandboxes standardize single-ticket evaluation and tool dispatch." },
+    { "id": "OH-2", "kind": "transfer", "text": "Single-vendor retry loops lack independent cross-vendor adjudication on multi-round architecture changes." }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schema": "argus-decision-board/v1",
+  "slug": "ai-coding-harness-selection",
+  "archetype": "decision",
+  "engine_mode": "jev-hybrid",
+  "updated_at": "2026-11-23T09:50:00Z",
+  "question": "Which architecture should an AI engineering organization standardize on to turn coding-agent swarms into trustworthy, directly-delivering teams?",
+  "overall_status": "exploration_needed",
+  "pass_floor": 0.7,
+  "jev_telemetry": {
+    "model": "d3-mini (System One / offline-compatible)",
+    "route_drop_below": 0.35,
+    "candidates_screened": 48,
+    "candidates_kept": 14,
+    "candidates_dropped": 34,
+    "ambiguous_preserved": 5,
+    "estimated_llm_tokens_saved": 612000
+  },
+  "options": [
+    {
+      "id": "thin-protocol-hard-gates",
+      "name": "Thin Protocol + Cross-Vendor Judge + Hard Git/CI Gates",
+      "probability": 0.74,
+      "status": "leading",
+      "summary": "Keep execution on native coding harnesses (Claude Code / Codex / Antigravity) while enforcing deterministic Git-tree receipts, premise-attack exit gates, and cross-vendor Critic/Actor/Judge separation.",
+      "pros": [
+        "Zero lock-in as native coding harnesses evolve weekly",
+        "Deterministic exit-code gates prevent stale-test pushes and self-grading bias",
+        "Protects human attention by batching strategic decisions"
+      ],
+      "cons": [
+        "Requires disciplined record schema and cross-vendor model availability"
+      ],
+      "flip_triggers": [
+        "A single vendor natively ships verifiable cross-model adversarial judging with exact-tree CI locks",
+        "Overhead of cross-vendor verification exceeds 30% of human review time on routine tickets"
+      ],
+      "evidence_refs": ["work:self-loop-v0410", "work:outis-jev-routing"]
+    },
+    {
+      "id": "custom-state-machine",
+      "name": "Custom Multi-Agent State-Machine Orchestrator",
+      "probability": 0.16,
+      "status": "contested",
+      "summary": "Build and maintain a bespoke stateful orchestrator that programmatically decides convergence, retries, and branch merges.",
+      "pros": [
+        "Fine-grained central control over every state transition"
+      ],
+      "cons": [
+        "Edge-case branch explosion and subtle false verdicts (Lesson L-0002)",
+        "Constant maintenance drag chasing native CLI harness updates"
+      ],
+      "flip_triggers": [
+        "Formal verification proves <1% false-verdict rate across 50+ real multi-round deliveries"
+      ],
+      "evidence_refs": ["work:self-loop-v0410", "work:openhands-swe-landscape"]
+    },
+    {
+      "id": "naive-single-vendor-loop",
+      "name": "Single-Vendor Retry Loop (while true + unit tests)",
+      "probability": 0.10,
+      "status": "weak",
+      "summary": "Run one coding agent in a retry loop until local tests return exit 0.",
+      "pros": [
+        "Fastest setup for small toy tasks and single-file scripts"
+      ],
+      "cons": [
+        "High test-gaming risk and blind premise-drift retries",
+        "Drags human owners back into continuous terminal babysitting"
+      ],
+      "flip_triggers": [
+        "Zero-shot model reliability eliminates silent compromise and premise drift on multi-file repos"
+      ],
+      "evidence_refs": ["work:openhands-swe-landscape"]
+    }
+  ],
+  "claims": [
+    {
+      "id": "CL-01",
+      "option_ids": ["thin-protocol-hard-gates"],
+      "text": "Cross-vendor Critic/Actor/Judge separation + exact-tree CI gates catch regressions missed by same-model retries.",
+      "verdict": "supported",
+      "confidence": 0.89,
+      "conflict": false,
+      "supporting_refs": ["work:self-loop-v0410", "work:outis-jev-routing"],
+      "refuting_refs": [],
+      "reason": "Verified across production loops and independent cross-vendor audits."
+    },
+    {
+      "id": "CL-02",
+      "option_ids": ["thin-protocol-hard-gates"],
+      "text": "Two-layer JEV decision-model routing cuts LLM deep-read token cost by >60% without dropping conflicting signals.",
+      "verdict": "supported",
+      "confidence": 0.84,
+      "conflict": false,
+      "supporting_refs": ["work:outis-jev-routing"],
+      "refuting_refs": [],
+      "reason": "Layer-1 noul screening with ROUTE_DROP_BELOW=0.35 preserves ambiguous conflicts while dropping clear noise."
+    },
+    {
+      "id": "CL-03",
+      "option_ids": ["custom-state-machine"],
+      "text": "Centralized custom orchestrators outperform thin protocols on long-horizon multi-repo engineering teams.",
+      "verdict": "contested",
+      "confidence": 0.5,
+      "conflict": true,
+      "supporting_refs": ["work:openhands-swe-landscape"],
+      "refuting_refs": ["work:self-loop-v0410"],
+      "reason": "Direct conflict: OpenHands/workflow benchmarks show structured dispatch gains, while L-0002 documented false verdicts and orchestrator bloat."
+    }
+  ],
+  "next_probes": [
+    {
+      "claim_id": "CL-03",
+      "priority": "high",
+      "reason": "Direct conflict between centralized orchestration benchmarks and L-0002 false-verdict post-mortem.",
+      "probe": "Collect head-to-head multi-round false-verdict & human-attention-minutes benchmarks comparing thin protocols vs stateful orchestrators."
+    }
+  ]
+}

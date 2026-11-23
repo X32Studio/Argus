@@ -1,227 +1,86 @@
 <div align="center">
 
-<img src="asserts/logo/logo.png" alt="Argus 吉祥物" width="220" />
+<img src="asserts/logo/logo.png" alt="Argus mascot" width="200" />
 
-# Argus
+# Argus 2.0
 
-### 让庞杂领域长出一棵研究树
+### 通用深度探索与 JEV 决策情报引擎——从稀缺资源针尖猎寻，到大规模竞品分析与不确定性下的决策裁决。
 
 <p>
-  <b>中文</b> · <a href="README.md">English</a>
+  <b>中文</b> · <a href="README.md">English</a> · <a href="https://x32studio.com">X32 Studio</a> · <a href="https://github.com/X32Studio/self-loop">self-loop</a>
 </p>
 
-<sub>by X32 Studio</sub>
+<sub>作者：<a href="https://github.com/k-r33">Ruiyuan Kang (k-r33)</a> @ <a href="https://x32studio.com">X32 Studio</a>（Kang 和他的 Agent 团队） · MIT 协议</sub>
 
 </div>
 
 ---
 
-有些问题不是问一次就能结束，也不是读几篇材料就能看清。
+> **一切深度搜索的底层第一性需求只有两件事：在不确定性下拿到能改变决策的关键证据，并为下游 Agent 组织沉淀可检索的活上下文——同时保护人最稀缺的 Attention。**
 
-你可能在写综述、看一个开源生态、判断一个行业方向、跟踪政策变化，或者想弄清楚某家公司 / 某类技术到底发生了什么。越往下挖，分支越多：论文、项目、产品、人物、公司、法规、观点、反例，全都缠在一起。最麻烦的不是“再搜一次”，而是：
+市面上的一次性 Deep Research 工具只擅长生成 30 页看似工整的长文，却天然倾向于把矛盾信息“圆滑写平”。在真实世界里，无论你是**寻找一个极度稀缺的一手资源**、**整合几十个竞品做全景分析**，还是**拍板一项高风险技术/战略决策**，Argus 2.0 都能持续生长一棵**保留冲突、带置信度与翻转条件的证据决策树**，并通过 **`gather` / `search`** 双入口直接喂给 [`self-loop`](https://github.com/X32Studio/self-loop) 或任何编码/战略 Agent。
 
-- 之前看过什么？
-- 哪些结论比较可靠？
-- 哪些线索互相矛盾？
-- 哪些地方还没查清楚？
-- 下一轮应该沿着哪条分支继续挖？
+**百眼常睁，永不沉睡。**
 
-Argus 做的事很简单：你给它一个庞杂主题，它会一轮一轮往下挖，把找到的资料、线索、判断和疑问不断接到同一棵研究树上。
+---
 
-下次回来时，你不用重新开一个聊天、重新解释背景、重新找资料。你会看到这棵树已经长出了哪些分支、每个分支下面有哪些资料、现在能得出什么判断、还有哪些枝杈值得继续深入。
+## 四大通用深度探索模式（Archetypes）
 
-这一整套流程都被封装成**一个 Claude Code skill**。只要你有 Claude Code，就可以在一个窗口里让 Argus 带你完成设置、启动网页看板、开始研究循环，并持续更新报告。
+| 模式 | 适用场景 | 核心交付物 |
+| --- | --- | --- |
+| **`hunt`（稀缺猎寻）** | 找极其稀缺的一手资料、冷门仓库、精确 Benchmark、监管条文或隐蔽根因 | 经验证的一手命中 + 溯源链 |
+| **`intel`（竞品与全景情报）** | 批量扫荡几十个竞品、定价、架构、更新日志与一线反馈，做系统整合 | 结构化竞品档案 + 全景关系图 |
+| **`decision`（决策推演）** | 在不确定性下做技术选型、产品立项或投资判断 | 校准后的选项概率条 + **翻转条件（Flip Triggers）** |
+| **`research`（持久研究树）** | 跨周持续追踪前沿论文、技术演进与长周期领域知识 | 不断复利的知识树 + 演化简报 |
 
-**Many eyes. Never asleep.**
+---
 
-## 认识 Argus
+## JEV 决策模型模式（`jev-hybrid` + 零依赖离线基线）
 
-<div align="center">
-  <img src="asserts/comic/comic.png" alt="Argus 吉祥物漫画，展示长期研究循环" />
-</div>
+借鉴 Outis 验证过的两层 System One（`d3-mini` / `/v1/systemone`）决策模型架构，Argus 2.0 把「**低成本疏导与裁决**」从「**重型 LLM 精读**」里彻底拆开：
 
-## 你会看到什么
+1. **Layer 1 · JEV 快速路由与粗筛（`type: "noul"`, `output_tokens == 0`）**：在重型 LLM 精读前先毫秒级打分。只剔除明确无关噪音（`< 0.35`），**所有模糊/边缘信号（`0.35–0.70`）全部保留**，绝不静默误杀稀缺线索或潜在反例。
+2. **Layer 2 · 概率聚合与冲突保留（`type: "choice"`, `PASS_FLOOR = 0.70`）**：在 `{support, refute, unknown}` 上输出归一化概率。只要权威信源存在直接矛盾，Argus **严禁伪造共识**——强制标记为 `contested`，并自动为下一轮探索生成高优先级消歧探针。
+3. **Layer 3 · `gather` / `search` 双入口上下文协议**：同一套持久 Topic 资产，对外提供 `search`（精准猎寻）与 `gather`（面向下游 Agent 任务的紧凑上下文组装，附带精确路径、SHA-256 与冲突告警）。
 
-Argus 不只是一个提示词。它会真正跑起来，也会给你一个能反复查看的研究工作台。
+> **开箱即用：** 默认自带确定性**离线基线（Offline Baseline）**，无需 GPU 或 API Key 即可 5 秒跑通 Demo 与全套测试；如本机部署了 JEV（如 Spark `:8001` 上的 `d3-mini`），只需配置 `ARGUS_JEV_ENDPOINT`、`ARGUS_JEV_MODEL_ID` 与 `ARGUS_JEV_KEY_FILE` 即可无缝切换真 JEV 推理。
 
-<table>
-  <tr>
-    <td width="33%" align="center">
-      <img src="asserts/showcase/start.png" alt="Argus 在 Claude Code 中启动 topic 的流程" />
-      <br />
-      <sub><b>从一条指令开始。</b><br />输入 <code>/argus init "&lt;主题&gt;"</code>，Argus 会问几个问题，然后建好第一棵研究树。</sub>
-    </td>
-    <td width="33%" align="center">
-      <img src="asserts/showcase/dashborad.png" alt="Argus dashboard 知识图谱界面" />
-      <br />
-      <sub><b>看着研究树慢慢长出来。</b><br />资料不再是一堆链接，而是逐渐分出主题、路线、来源和关系。</sub>
-    </td>
-    <td width="33%" align="center">
-      <img src="asserts/showcase/report.png" alt="Argus 生成的深度研究报告" />
-      <br />
-      <sub><b>阅读持续更新的深度报告。</b><br />每轮深入之后，报告会继续变厚、变准，并保留可以回查的引用。</sub>
-    </td>
-  </tr>
-</table>
+---
 
-当你面对的不是一个小问题，而是一片需要反复进入、反复下钻的复杂领域时，用 Argus。
-
-## 用大白话说
-
-- Argus 会持续帮你找这个领域下有用的资料。
-- 它会把发现留下来，而不是让信息消失在聊天记录里。
-- 它会把重要想法、项目、来源和关系接到同一棵研究树上。
-- 它会写一份解释当前情况的报告，并告诉你每个判断来自哪里。
-- 它会发现报告里还不够扎实的地方，并把这些地方变成下一轮深入的方向。
-
-## 快速开始
-
-你不需要自己拼爬虫、数据库、向量库、定时任务和前端页面。安装一次 Argus 之后，它会在 Claude Code 里带你跑完整个流程。
-
-### 你需要准备什么
-
-- 已安装并登录的 **Claude Code**。
-- **Git**，用来下载这个仓库。
-- **Node.js / npm**，用来打开本地网页看板。需要时 Argus 会帮你执行 `npm install`。
-
-### 第 1 步：只安装一次 Argus
-
-在普通系统终端里运行：
+## 5 秒快速体验（无需 API Key）
 
 ```bash
-git clone https://github.com/X32Studio/Argus.git argus
-mkdir -p ~/.claude/skills
-cp -r argus/.claude/skills/argus ~/.claude/skills/argus
+git clone https://github.com/X32Studio/Argus.git
+cd Argus
+npm run demo
 ```
 
-安装后，你机器上的任何 Claude Code 窗口都能识别 Argus。
-
-### 第 2 步：给一个研究主题建文件夹
-
-建议每个长期研究主题都放在一个独立文件夹里。先创建文件夹，再在里面打开 Claude Code：
+体验内置的「AI Coding Agent 竞品分析与架构决策」双入口上下文查询：
 
 ```bash
-mkdir my-watch
-cd my-watch
-claude
+# 为下游 Agent（如 self-loop）组装任务上下文（gather 模式）
+node engine/cli.mjs query --topic ai-coding-harness-selection \
+  --task "cross-vendor coding agent verification gates" --mode gather --format md
+
+# 精准检索稀缺线索（search 模式）
+node engine/cli.mjs query --topic ai-coding-harness-selection \
+  --task "L-0002 state machine false verdicts" --mode search
 ```
 
-### 第 3 步：启动一个研究主题
-
-下面这条命令是在 **Claude Code 聊天窗口**里输入，不是在系统终端里输入：
-
-```text
-/argus init "open-source agent frameworks"
-```
-
-Argus 会问几个简单问题，创建主题文件，启动网页看板，然后问你要怎么运行研究循环。
-
-如果你不知道选哪个，就在 Claude Code 里选择这个选项：
-
-```text
-Run it here in this session
-```
-
-这是 Claude Code 里的选项，不是系统终端命令。它是新手路径。保持这个 Claude Code 窗口开着，Argus 就会持续跑研究迭代。你可以在浏览器里打开网页看板：
-
-```text
-http://localhost:5173/t/<slug>
-```
-
-`<slug>` 是 Argus 自动生成的主题短名，比如 `open-source-agent-frameworks`。
-
-例如：
-
-```text
-http://localhost:5173/t/open-source-agent-frameworks
-```
-
-### 可选：另开一个终端跑循环
-
-只有当你想让循环单独待在另一个 Claude Code 窗口里，比如过夜运行时，才需要这个方式。
-
-在第一个 Claude Code 窗口里，选择下面其中一个选项：
-
-```text
-Hand off to cron via /argus loop
-```
-
-或者：
-
-```text
-Just finish topic creation
-```
-
-然后在同一个研究文件夹里另开一个终端：
+启动交互式控制台（知识图谱 + **Decision Board 决策面板** + 演化简报）：
 
 ```bash
-cd my-watch
-claude
+cd app && npm install && npm run dev
+# 打开 http://localhost:5173/t/ai-coding-harness-selection/decisions
 ```
 
-在第二个 Claude Code 聊天窗口里输入：
+---
 
-```text
-/argus loop <slug>
-```
+## X32 Agentic 工程栈成员
 
-如果这个文件夹里只有一个已接受的主题，也可以直接输入：
+由 **[Ruiyuan Kang (`k-r33`)](https://github.com/k-r33)** @ **[X32 Studio](https://x32studio.com)**（Kang 和他的 Agent 团队）公开构建：
 
-```text
-/argus loop
-```
-
-停止循环：
-
-```text
-/argus loop stop
-```
-
-## 工作原理（看不懂也没关系）
-
-```text
-Skill orchestrator
-  -> Iteration Runner subagent
-    -> Paper Reader sub-subagents
-  -> validator
-  -> dashboard refresh
-```
-
-每一轮结束后，Argus 都会检查自己写出的文件格式。能自动修的就自动修；不能自动修的问题会写进日志，留给下一轮继续处理。
-
-每个研究主题的输出都在普通文件夹里：
-
-```text
-topics/<slug>/
-├── topic.yaml
-├── proposal.md
-├── records/{works_json, works_md}/
-├── indexes/knowledge_graph.json
-├── logs/{search_log.jsonl, research_state.md, cycle.txt, orchestrator.jsonl}
-└── report/{main.md, reference_index.md, iteration_log.md}
-```
-
-## 仓库结构
-
-```text
-.claude/skills/argus/          # canonical engine source
-├── SKILL.md                   # front door + orchestration loop
-├── docs/                      # schema contract and plans
-├── scripts/                   # bootstrap, refresh, validation
-└── templates/                 # source templates copied into a watch directory
-
-app/                           # dashboard source
-asserts/                       # README images, prompt notes, demo video
-```
-
-如果你想改 Argus 引擎本身，优先修改 `.claude/skills/argus/templates/`，然后运行 `bash .claude/skills/argus/scripts/bootstrap.sh` 同步到运行目录。
-
-## 状态
-
-目前适合个人长期研究和信息跟踪使用。Argus 不绑定具体领域；仓库里的示例只是展示，不是重点。
-
-维护者：**k-x32**。Fork 之后运行 `/argus init "<your topic>"` 就可以开始。
-
-<div align="center">
-  <sub>A hundred eyes. Never asleep.</sub>
-</div>
+- **L1 · [`self-loop`](https://github.com/X32Studio/self-loop)** — 把混乱的 Agent 乌合之众整编为可信赖、能直接交付的 Agent 组织
+- **L2 · [`best-practice-for-skills-system`](https://github.com/X32Studio/best-practice-for-skills-system)** — 多 Skill 系统工程架构规范
+- **L3 · `Argus`（本仓库）** — 通用深度探索、JEV 决策情报与 `gather`/`search` 上下文引擎
+- **L4 · [`agent-dao-public`](https://github.com/X32Studio/agent-dao-public)** — 第一性原理专题长文《Agent 的过去、未来与宿命》
