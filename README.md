@@ -214,7 +214,9 @@ Edit engine files in `.claude/skills/argus/templates/`, then run `bash .claude/s
 
 Stable for personal long-running watches. The engine is domain-agnostic; the included examples are showcases, not the point.
 
-Maintained by **k-x32**. Fork the repo and run `/argus init "<your topic>"`.
+Maintained by **[Ruiyuan Kang (`k-r33`)](https://github.com/k-r33)** @ **[X32 Studio](https://x32studio.com)** (Kang & his Agent Team). Fork the repo and run `/argus init "<your topic>"`.
+
+Part of the **X32 Agentic Stack**: [`self-loop`](https://github.com/X32Studio/self-loop) (autonomous delivery loop) · [`System of Skills`](https://github.com/X32Studio/best-practice-for-skills-system) (skill architecture) · [`Argus`](https://github.com/X32Studio/Argus) (deep research) · [`Agent DAO`](https://github.com/X32Studio/agent-dao-public) (monograph).
 
 <div align="center">
   <sub>A hundred eyes. Never asleep.</sub>
