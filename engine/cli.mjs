@@ -13,6 +13,8 @@ import { listArchetypes } from "./archetypes.mjs";
 import { createSystemOneClient } from "./jev.mjs";
 import { formatBundleMarkdown, queryTopic } from "./query.mjs";
 
+const VALUE_FLAGS = new Set(["topic", "task", "mode", "format", "limit"]);
+
 function parseArgs(argv) {
   const out = { _: [] };
   for (let i = 0; i < argv.length; i += 1) {
@@ -20,7 +22,13 @@ function parseArgs(argv) {
     if (arg.startsWith("--")) {
       const key = arg.slice(2);
       const next = argv[i + 1];
-      if (!next || next.startsWith("--")) {
+      if (VALUE_FLAGS.has(key)) {
+        if (next === undefined || next.startsWith("--")) {
+          throw new Error(`--${key} requires a value`);
+        }
+        out[key] = next;
+        i += 1;
+      } else if (!next || next.startsWith("--")) {
         out[key] = true;
       } else {
         out[key] = next;
@@ -42,13 +50,27 @@ function maybeSystemOneClient() {
 }
 
 function resolveTopicDir(topicArg) {
-  if (!topicArg) throw new Error("--topic <slug-or-path> is required");
+  if (!topicArg || typeof topicArg !== "string") {
+    throw new Error("--topic <slug-or-path> is required");
+  }
   if (fs.existsSync(topicArg) && fs.statSync(topicArg).isDirectory()) {
     return path.resolve(topicArg);
   }
   const underTopics = path.resolve(process.cwd(), "topics", topicArg);
   if (fs.existsSync(underTopics)) return underTopics;
   throw new Error(`topic not found: ${topicArg}`);
+}
+
+function parsePositiveInt(raw, name) {
+  if (raw === undefined) return undefined;
+  if (typeof raw !== "string" || !/^\d+$/.test(raw.trim())) {
+    throw new Error(`--${name} must be a positive integer >= 1, got "${String(raw)}"`);
+  }
+  const n = Number(raw.trim());
+  if (!Number.isSafeInteger(n) || n < 1) {
+    throw new Error(`--${name} must be a positive integer >= 1, got "${String(raw)}"`);
+  }
+  return n;
 }
 
 async function main() {
@@ -82,8 +104,18 @@ async function main() {
 
   if (cmd === "query") {
     const topicDir = resolveTopicDir(args.topic);
-    const mode = args.mode === "search" ? "search" : "gather";
-    const limit = args.limit ? Number(args.limit) : undefined;
+    if (typeof args.task !== "string" || !args.task.trim()) {
+      throw new Error('--task "<question>" is required');
+    }
+    const mode = args.mode ?? "gather";
+    if (mode !== "gather" && mode !== "search") {
+      throw new Error(`--mode must be "gather" or "search", got "${String(mode)}"`);
+    }
+    const format = args.format ?? "json";
+    if (format !== "json" && format !== "md") {
+      throw new Error(`--format must be "json" or "md", got "${String(format)}"`);
+    }
+    const limit = parsePositiveInt(args.limit, "limit");
     const client = maybeSystemOneClient();
     const bundle = await queryTopic({
       topicDir,
@@ -92,7 +124,7 @@ async function main() {
       limit,
       client,
     });
-    if (args.format === "md") {
+    if (format === "md") {
       process.stdout.write(formatBundleMarkdown(bundle));
     } else {
       process.stdout.write(JSON.stringify(bundle, null, 2) + "\n");

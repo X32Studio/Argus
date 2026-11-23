@@ -195,3 +195,67 @@ test("dual-entry queryTopic supports gather & search with SHA-256 provenance and
   assert.match(md, /Active Conflicts/);
   assert.match(md, /Cross-Vendor Judge Architecture/);
 });
+
+test("System One routeCandidates automatically batches large candidate lists within 16KB budget", async (t) => {
+  let requestCount = 0;
+  let maxObservedBytes = 0;
+
+  const server = http.createServer((req, res) => {
+    const chunks = [];
+    req.on("data", (c) => chunks.push(c));
+    req.on("end", () => {
+      requestCount += 1;
+      const buf = Buffer.concat(chunks);
+      maxObservedBytes = Math.max(maxObservedBytes, buf.byteLength);
+      const body = JSON.parse(buf.toString("utf8"));
+      const answers = {};
+      for (const qid of Object.keys(body.questions)) {
+        answers[qid] = { type: "noul", noul: qid.endsWith("0") ? 0.85 : 0.2 };
+      }
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ model: body.model, answers, usage: { input_tokens: 50, output_tokens: 0 } }));
+    });
+  });
+
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => server.close());
+  const { port } = server.address();
+
+  const client = createSystemOneClient({
+    endpoint: `http://127.0.0.1:${port}/v1/systemone`,
+    model: "d3-mini",
+    apiKey: "test-key",
+  });
+
+  const manyCandidates = Array.from({ length: 40 }, (_, i) => ({
+    id: `c${i}`,
+    title: `Candidate work #${i} on multi-agent verification`,
+    text: "x".repeat(420),
+  }));
+
+  const res = await routeCandidates({ query: "verification", candidates: manyCandidates, client });
+  assert.ok(requestCount >= 2, `expected multi-batch calls, got ${requestCount}`);
+  assert.ok(maxObservedBytes <= 16384, `batch exceeded 16KB cap: ${maxObservedBytes}`);
+  assert.equal(res.telemetry.screened, 40);
+  assert.equal(res.telemetry.batches, requestCount);
+  assert.equal(res.telemetry.input_tokens, requestCount * 50);
+  assert.equal(res.kept.length, 4);
+});
+
+test("CLI rejects invalid --limit, missing --task, and invalid --mode with non-zero exit", async () => {
+  const { spawnSync } = await import("node:child_process");
+  const cases = [
+    ["query", "--topic", "ai-coding-harness-selection", "--task", "test", "--limit", "abc"],
+    ["query", "--topic", "ai-coding-harness-selection", "--task", "test", "--limit", "-2"],
+    ["query", "--topic", "ai-coding-harness-selection", "--task", "test", "--limit"],
+    ["query", "--topic", "ai-coding-harness-selection", "--task", "--mode", "search"],
+    ["query", "--topic", "ai-coding-harness-selection", "--task", "test", "--mode", "bogus"],
+  ];
+  for (const argv of cases) {
+    const run = spawnSync(process.execPath, ["engine/cli.mjs", ...argv], {
+      cwd: path.resolve(import.meta.dirname, ".."),
+      encoding: "utf8",
+    });
+    assert.notEqual(run.status, 0, `expected non-zero exit for ${argv.join(" ")}`);
+  }
+});

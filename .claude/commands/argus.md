@@ -76,6 +76,8 @@ Generate (initial status `draft`, with `# UNCERTAIN: <reason>` comments next to 
     slug: <kebab-case-slug>
     name: <Human title>
     description: <one or two sentences>
+    archetype: <hunt|intel|decision|research>   # default: research
+    engine_mode: <llm|jev-hybrid>               # default: llm (set jev-hybrid for two-layer JEV routing)
     status: draft
     created_at: <today YYYY-MM-DD>
 

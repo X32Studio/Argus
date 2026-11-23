@@ -108,10 +108,16 @@ export async function queryTopic({
   if (!topicDir || !fs.existsSync(topicDir)) {
     throw new Error(`topic directory not found: ${topicDir}`);
   }
-  if (!task || !String(task).trim()) {
-    throw new Error("query task/question is required");
+  if (!task || typeof task !== "string" || !task.trim()) {
+    throw new Error("query task/question must be a non-empty string");
   }
-  const normalizedMode = mode === "search" ? "search" : "gather";
+  if (mode !== "gather" && mode !== "search") {
+    throw new Error(`invalid query mode "${String(mode)}" (expected "gather" or "search")`);
+  }
+  if (!Number.isInteger(limit) || limit < 1) {
+    throw new Error(`invalid limit "${String(limit)}" (expected positive integer >= 1)`);
+  }
+  const normalizedMode = mode;
   const allDocs = loadTopicDocuments(topicDir);
 
   const routed = await routeCandidates({
