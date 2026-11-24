@@ -37,13 +37,13 @@
 
 ## JEV 决策模型模式（`jev-hybrid` + 零依赖离线基线）
 
-借鉴 Outis 验证过的两层 System One（`d3-mini` / `/v1/systemone`）决策模型架构，Argus 2.0 把「**低成本疏导与裁决**」从「**重型 LLM 精读**」里彻底拆开：
+基于两层 **JEV（Judgment & Evidence Verification，判断与证据验证）** 协议（`/v1/jev`），Argus 2.0 把「**低成本疏导与裁决**」从「**重型 LLM 精读**」里彻底拆开：
 
 1. **Layer 1 · JEV 快速路由与粗筛（`type: "noul"`, `output_tokens == 0`）**：在重型 LLM 精读前先毫秒级打分。只剔除明确无关噪音（`< 0.35`），**所有模糊/边缘信号（`0.35–0.70`）全部保留**，绝不静默误杀稀缺线索或潜在反例。
 2. **Layer 2 · 概率聚合与冲突保留（`type: "choice"`, `PASS_FLOOR = 0.70`）**：在 `{support, refute, unknown}` 上输出归一化概率。只要权威信源存在直接矛盾，Argus **严禁伪造共识**——强制标记为 `contested`，并自动为下一轮探索生成高优先级消歧探针。
 3. **Layer 3 · `gather` / `search` 双入口上下文协议**：同一套持久 Topic 资产，对外提供 `search`（精准猎寻）与 `gather`（面向下游 Agent 任务的紧凑上下文组装，附带精确路径、SHA-256 与冲突告警）。
 
-> **开箱即用：** 默认自带确定性**离线基线（Offline Baseline）**，无需 GPU 或 API Key 即可 5 秒跑通 Demo 与全套测试；如本机部署了 JEV（如 Spark `:8001` 上的 `d3-mini`），只需配置 `ARGUS_JEV_ENDPOINT`、`ARGUS_JEV_MODEL_ID` 与 `ARGUS_JEV_KEY_FILE` 即可无缝切换真 JEV 推理。
+> **开箱即用：** 默认自带确定性**离线基线（Offline Baseline）**，无需 GPU 或 API Key 即可 5 秒跑通 Demo 与全套测试；如本机部署了兼容 `/v1/jev` 协议的推理服务，只需配置 `ARGUS_JEV_ENDPOINT`、`ARGUS_JEV_MODEL_ID` 与 `ARGUS_JEV_KEY_FILE` 即可无缝切换实时 JEV 推理。
 
 ---
 

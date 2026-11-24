@@ -46,10 +46,33 @@ cp -f "$TEMPLATES/claude/loop-summary.md"  "$TARGET/.claude/loop-summary.md"
 cp -f "$TEMPLATES/claude/commands/argus.md" "$TARGET/.claude/commands/argus.md"
 mkdir -p "$TARGET/.claude/workflows"
 cp -f "$TEMPLATES/claude/workflows/argus-cycle.js" "$TARGET/.claude/workflows/argus-cycle.js"
+mkdir -p "$TARGET/.claude/scripts"
+cp -f "$SCRIPT_DIR/validate-contract.sh" "$TARGET/.claude/scripts/validate-contract.sh"
+chmod +x "$TARGET/.claude/scripts/validate-contract.sh"
 echo "  + .claude/loop.md"
 echo "  + .claude/loop-summary.md"
 echo "  + .claude/commands/argus.md"
 echo "  + .claude/workflows/argus-cycle.js"
+echo "  + .claude/scripts/validate-contract.sh"
+
+# ── engine/ (Argus 2.0 + T3 runtime CLI, JEV client, gather/search) ──────
+ENGINE_SRC=""
+if [ -d "$TEMPLATES/engine" ]; then
+  ENGINE_SRC="$TEMPLATES/engine"
+elif [ -d "${SKILL_DIR%/.claude/skills/argus}/engine" ]; then
+  ENGINE_SRC="${SKILL_DIR%/.claude/skills/argus}/engine"
+fi
+if [ -n "$ENGINE_SRC" ]; then
+  mkdir -p "$TARGET/engine"
+  for f in "$ENGINE_SRC"/*.mjs; do
+    [ -f "$f" ] || continue
+    case "$(basename "$f")" in
+      *.test.mjs) continue ;;
+    esac
+    cp -f "$f" "$TARGET/engine/$(basename "$f")"
+  done
+  echo "  + engine/ (cli.mjs, t3.mjs, jev.mjs, query.mjs, archetypes.mjs)"
+fi
 
 # ── app/ source (preserve user's node_modules / dist / public/topics) ────
 mkdir -p "$TARGET/app"

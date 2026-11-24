@@ -7,7 +7,7 @@
  *
  * Pipeline:
  *   Stage 1: Deterministic coarse index scan over records/works_json/* & decisions/decision_board.json
- *   Stage 2: JEV Layer-1 routing (`routeCandidates`, live System One or offline baseline)
+ *   Stage 2: JEV Layer-1 routing (`routeCandidates`, live JEV endpoint or offline baseline)
  *   Stage 3: Provenance-stamped bundle (exact relative path + SHA-256 + conflict warnings)
  */
 

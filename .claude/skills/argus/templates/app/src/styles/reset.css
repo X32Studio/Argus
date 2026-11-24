@@ -13,8 +13,8 @@ body,
 }
 
 body {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-feature-settings: "ss01", "ss02", "zero";
+  font-family: var(--font-body);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -36,9 +36,13 @@ button {
   padding: 0;
 }
 
-input:focus,
-button:focus {
+:focus {
   outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 ::-webkit-scrollbar {
@@ -51,10 +55,10 @@ button:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(231, 225, 208, 0.12);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(231, 225, 208, 0.22);
+  background: rgba(255, 255, 255, 0.24);
 }

@@ -7,7 +7,7 @@ import test from "node:test";
 import { ARCHETYPE_IDS, getArchetype, listArchetypes } from "./archetypes.mjs";
 import {
   adjudicateClaim,
-  createSystemOneClient,
+  createJevClient,
   evaluateDecisionBoard,
   routeCandidates,
   validateLoopbackEndpoint,
@@ -40,7 +40,7 @@ test("JEV Layer-1 offline routing drops noise and preserves ambiguous rare signa
   assert.ok(result.telemetry.estimated_llm_tokens_saved > 0);
 });
 
-test("JEV Layer-2 enforces Outis conflict preservation (never fakes consensus)", async () => {
+test("JEV Layer-2 enforces strict conflict preservation (never fakes consensus)", async () => {
   const contested = await adjudicateClaim({
     claim: "Custom orchestrator scales cleanly",
     evidence: [
@@ -96,8 +96,8 @@ test("evaluateDecisionBoard aggregates option probabilities and emits probes for
   assert.equal(board.next_probes[0].priority, "high");
 });
 
-test("System One loopback client validates endpoint, usage contract, and two-layer live flow", async (t) => {
-  assert.throws(() => validateLoopbackEndpoint("https://evil.example/v1/systemone"));
+test("JEV loopback client validates endpoint, usage contract, and two-layer live flow", async (t) => {
+  assert.throws(() => validateLoopbackEndpoint("https://evil.example/v1/jev"));
   assert.throws(() => validateLoopbackEndpoint("http://127.0.0.1:8001/v1/chat/completions"));
 
   const server = http.createServer((req, res) => {
@@ -126,9 +126,9 @@ test("System One loopback client validates endpoint, usage contract, and two-lay
   t.after(() => server.close());
   const { port } = server.address();
 
-  const client = createSystemOneClient({
-    endpoint: `http://127.0.0.1:${port}/v1/systemone`,
-    model: "d3-mini",
+  const client = createJevClient({
+    endpoint: `http://127.0.0.1:${port}/v1/jev`,
+    model: "jev-router-v1",
     apiKey: "test-key",
   });
 
@@ -141,13 +141,13 @@ test("System One loopback client validates endpoint, usage contract, and two-lay
     ],
     client,
   });
-  assert.equal(routed.mode, "systemone");
+  assert.equal(routed.mode, "jev");
   assert.deepEqual(routed.kept.map((x) => x.id), ["hit", "edge"]);
   assert.equal(routed.telemetry.ambiguous_preserved, 1);
   assert.deepEqual(routed.dropped.map((x) => x.id), ["noise"]);
 
   const adj = await adjudicateClaim({
-    claim: "Live System One verifies claim",
+    claim: "Live JEV client verifies claim",
     evidence: [{ id: "e1", text: "Confirmed" }],
     client,
   });
@@ -196,7 +196,7 @@ test("dual-entry queryTopic supports gather & search with SHA-256 provenance and
   assert.match(md, /Cross-Vendor Judge Architecture/);
 });
 
-test("System One routeCandidates automatically batches large candidate lists within 16KB budget", async (t) => {
+test("JEV routeCandidates automatically batches large candidate lists within 16KB budget", async (t) => {
   let requestCount = 0;
   let maxObservedBytes = 0;
 
@@ -221,9 +221,9 @@ test("System One routeCandidates automatically batches large candidate lists wit
   t.after(() => server.close());
   const { port } = server.address();
 
-  const client = createSystemOneClient({
-    endpoint: `http://127.0.0.1:${port}/v1/systemone`,
-    model: "d3-mini",
+  const client = createJevClient({
+    endpoint: `http://127.0.0.1:${port}/v1/jev`,
+    model: "jev-router-v1",
     apiKey: "test-key",
   });
 

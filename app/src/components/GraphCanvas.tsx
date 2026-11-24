@@ -10,17 +10,17 @@ type GraphCanvasProps = {
 };
 
 export const KIND_COLORS: Record<string, string> = {
-  route: "#e5b04c",              // amber
-  work: "#79a5ac",               // mist
-  technique: "#c96a53",          // rust
-  transferable_idea: "#88a26f",  // sage
-  pitfall: "#c7707e",            // rose
-  model_family: "#a594c4",       // lavender
-  objective: "#79a5ac",          // mist
-  representation: "#c8c1af",     // cream-dim
-  asset: "#d9a441",              // amber-dim
-  frequency: "#9a927f",          // muted
-  benchmark: "#c7707e",          // rose
+  route: "#dafa9c",              // signature lime
+  work: "#7cc4fa",               // steel sky
+  technique: "#f4c163",          // warm gold
+  transferable_idea: "#7ce0a3",  // emerald mint
+  pitfall: "#f07c7c",            // coral red
+  model_family: "#9ad6c8",       // muted teal
+  objective: "#7cc4fa",          // steel sky
+  representation: "#b5bcc7",     // silver ink
+  asset: "#e5c07b",              // muted gold
+  frequency: "#8d96a5",          // slate
+  benchmark: "#f07c7c",          // coral red
 };
 
 export function GraphCanvas({ graph, selectedNodeId, onSelectNode }: GraphCanvasProps) {
@@ -138,9 +138,11 @@ export function GraphCanvas({ graph, selectedNodeId, onSelectNode }: GraphCanvas
       .join("text")
       .attr("class", "node-label")
       .attr("text-anchor", "middle")
-      .text((node) =>
-        node.kind === "route" || node.id === selectedNodeId ? node.label : "",
-      );
+      .text((node) => {
+        if (node.kind === "route" || node.id === selectedNodeId) return truncateLabel(node.label, 34);
+        if (node.kind === "work") return truncateLabel(node.label, 24);
+        return "";
+      });
 
     simulation.on("tick", () => {
       linkSelection
@@ -174,16 +176,21 @@ export function GraphCanvas({ graph, selectedNodeId, onSelectNode }: GraphCanvas
   );
 }
 
+function truncateLabel(text: string, max: number) {
+  if (!text) return "";
+  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+}
+
 function relationWeight(rel: string) {
   if (["belongs_to_route", "belongs_to_family", "uses_technique"].includes(rel)) return 1.4;
-  if (["supports", "transferable_to", "suggests_experiment"].includes(rel)) return 1.1;
-  return 0.8;
+  if (["supports", "transferable_to", "implements_idea", "informs"].includes(rel)) return 1.15;
+  return 0.9;
 }
 
 function relationColor(rel: string) {
-  if (rel.includes("pitfall") || rel.includes("risky")) return "rgba(201, 106, 83, 0.7)";
-  if (rel.includes("supports") || rel.includes("transfer")) return "rgba(136, 162, 111, 0.7)";
-  if (rel.includes("contradict")) return "rgba(199, 112, 126, 0.7)";
-  if (rel.includes("compare") || rel.includes("extend")) return "rgba(229, 176, 76, 0.55)";
-  return "rgba(236, 229, 209, 0.28)";
+  if (rel.includes("pitfall") || rel.includes("risky") || rel.includes("warns")) return "rgba(240, 124, 124, 0.55)";
+  if (rel.includes("supports") || rel.includes("transfer") || rel.includes("implements")) return "rgba(124, 224, 163, 0.52)";
+  if (rel.includes("contradict") || rel.includes("refute")) return "rgba(240, 124, 124, 0.72)";
+  if (rel.includes("compare") || rel.includes("extend") || rel.includes("depends")) return "rgba(244, 193, 99, 0.50)";
+  return "rgba(243, 244, 246, 0.22)";
 }

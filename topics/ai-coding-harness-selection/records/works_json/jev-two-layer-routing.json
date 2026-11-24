@@ -1,0 +1,13 @@
+{
+  "slug": "jev-two-layer-routing",
+  "title": "Two-Layer JEV Decision Routing",
+  "url": "https://x32studio.com",
+  "primary_route": "thin-protocol-gates",
+  "analysis_depth": "deep",
+  "one_liner": "Separates zero-output-token Layer-1 relevance screening (noul, drop < 0.35 preserving ambiguity) from Layer-2 calibrated choice aggregation (pass floor 0.70, conflicts -> unknown).",
+  "tags": ["jev", "routing", "conflict-preservation", "context-gather"],
+  "key_claims": [
+    { "id": "JR-1", "kind": "mechanism", "text": "Ambiguous items between 0.35 and 0.70 survive routing so conflicting evidence is never silently discarded." },
+    { "id": "JR-2", "kind": "evidence", "text": "Direct conflicts force unknown/contested verdicts rather than smoothing contradictions into false consensus." }
+  ]
+}

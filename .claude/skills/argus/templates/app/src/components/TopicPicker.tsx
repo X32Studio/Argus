@@ -50,13 +50,21 @@ export function TopicPicker() {
   const drafts = topics.filter((t) => t.status !== "accepted");
 
   return (
+    <div className="topic-picker-scroll">
     <div className="topic-picker">
       <header className="topic-picker-header">
+        <div className="topic-picker-brand">
+          <svg className="brand-ring" width="22" height="22" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.6" />
+            <circle cx="9" cy="9" r="2.6" fill="var(--accent)" />
+          </svg>
+          <span>Argus 2.0</span>
+        </div>
         <h1 className="topic-picker-title">
-          <em>Argus</em>
+          Research &amp; decision workspace
         </h1>
         <p className="topic-picker-sub">
-          Universal persistent deep-exploration &amp; decision-intelligence engine — needle hunts, competitive intelligence, JEV decision boards, and long-horizon research trees.
+          Persistent deep exploration, temporal knowledge graphs, and calibrated JEV decision boards.
         </p>
       </header>
 
@@ -127,6 +135,7 @@ export function TopicPicker() {
           </ul>
         </section>
       )}
+    </div>
     </div>
   );
 }

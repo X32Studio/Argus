@@ -8,7 +8,7 @@
   "overall_status": "exploration_needed",
   "pass_floor": 0.7,
   "jev_telemetry": {
-    "model": "d3-mini (System One / offline-compatible)",
+    "model": "jev-router-v1 (JEV / offline-compatible)",
     "route_drop_below": 0.35,
     "candidates_screened": 48,
     "candidates_kept": 14,
@@ -35,7 +35,7 @@
         "A single vendor natively ships verifiable cross-model adversarial judging with exact-tree CI locks",
         "Overhead of cross-vendor verification exceeds 30% of human review time on routine tickets"
       ],
-      "evidence_refs": ["work:self-loop-v0410", "work:outis-jev-routing"]
+      "evidence_refs": ["work:self-loop-v0410", "work:jev-two-layer-routing"]
     },
     {
       "id": "custom-state-machine",
@@ -82,7 +82,7 @@
       "verdict": "supported",
       "confidence": 0.89,
       "conflict": false,
-      "supporting_refs": ["work:self-loop-v0410", "work:outis-jev-routing"],
+      "supporting_refs": ["work:self-loop-v0410", "work:jev-two-layer-routing"],
       "refuting_refs": [],
       "reason": "Verified across production loops and independent cross-vendor audits."
     },
@@ -93,7 +93,7 @@
       "verdict": "supported",
       "confidence": 0.84,
       "conflict": false,
-      "supporting_refs": ["work:outis-jev-routing"],
+      "supporting_refs": ["work:jev-two-layer-routing"],
       "refuting_refs": [],
       "reason": "Layer-1 noul screening with ROUTE_DROP_BELOW=0.35 preserves ambiguous conflicts while dropping clear noise."
     },

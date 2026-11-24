@@ -1,4 +1,4 @@
-# Outis Two-Layer JEV Decision Routing
+# Two-Layer JEV Decision Routing
 
 - **Route:** `thin-protocol-gates`
 - **Depth:** `deep`

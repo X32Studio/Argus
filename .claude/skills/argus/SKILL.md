@@ -5,7 +5,52 @@ description: Universal persistent deep-exploration & decision-intelligence engin
 
 # Argus 2.0 — Universal Deep Exploration & JEV Decision Engine
 
-This skill is the **front door** to the Argus 2.0 intelligence engine (compatible with Claude Code, Codex, and T3/Antigravity harnesses). It supports **four native exploration archetypes** (`hunt` · `intel` · `decision` · `research`), **two engine modes** (`llm` and `jev-hybrid` using Outis-style two-layer System One routing + conflict preservation), and a **dual-entry `gather` / `search` CLI** (`node engine/cli.mjs query`) so downstream agents like `self-loop` can pull provenance-stamped context directly from any topic folder.
+This skill is the **front door** to the Argus 2.0 intelligence engine (compatible with **T3 Code**, Claude Code, Codex, and Antigravity harnesses). It supports **four native exploration archetypes** (`hunt` · `intel` · `decision` · `research`), **two engine modes** (`llm` and `jev-hybrid` using two-layer JEV routing + conflict preservation, auto-detecting a local loopback JEV endpoint at `http://127.0.0.1:8001/v1/jev`), and a **dual-entry `gather` / `search` CLI** (`node engine/cli.mjs query`) plus a **crash-resilient T3 native runtime** (`status` / `queue` / `collate` / `decide`).
+
+## T3 Code Native Runtime (MANDATORY when running inside T3 Code)
+
+When running inside **T3 Code** (Antigravity, Codex, or multi-provider T3 threads), **do NOT** use Claude Code's JS `Workflow` tool (`.claude/workflows/argus-cycle.js`), Claude's `/loop` cron skill, or giant all-or-nothing `run_workflow parallel()` fan-outs (where 1 failed agent or an ACP restart cancels the whole batch and loses all collation).
+
+Instead, use Argus's **crash-resilient T3 Native Runtime**:
+
+1. **Bootstrap includes `engine/`**: `bootstrap.sh` copies `.claude/`, `engine/` (`cli.mjs`, `t3.mjs`, `jev.mjs`, `query.mjs`, `archetypes.mjs`), `.claude/scripts/validate-contract.sh`, and `app/`.
+2. **Check live state in 1 call**:
+   ```bash
+   node engine/cli.mjs status --topic <slug>
+   ```
+   This reports current cycle, collated vs uncollated works, pending queue, dashboard `:5173` status, and local loopback `:8001/v1/jev` readiness.
+3. **Start dashboard as a persistent `systemd --user` service** (survives T3 turns, cancellations, and ACP restarts; do NOT rely on an ephemeral shell background process):
+   ```bash
+   systemctl --user enable --now argus-dashboard.service
+   ```
+   Verify with `curl -sf http://127.0.0.1:5173/topics/_index.json`.
+4. **Durable work queue (`logs/t3_queue.json`)**:
+   Seed candidate works once with:
+   ```bash
+   node engine/cli.mjs queue --topic <slug> --action add --file <candidates.json>
+   node engine/cli.mjs queue --topic <slug> --action next --batch 3
+   ```
+5. **Micro-batch execution + immediate deterministic collation** (NEVER lose progress):
+   - Process **2–3 works per batch** (either directly with parallel `read_file` + `write_file`, or independent `invoke_subagent` / `delegate_task` calls — never an 8-way all-or-nothing `parallel()`).
+   - Each work writes `topics/<slug>/records/works_json/<work-slug>.json` (including optional `proposed_nodes` and `proposed_edges` arrays) and `topics/<slug>/records/works_md/<work-slug>.md`.
+   - Immediately after **every batch**, run deterministic collation + contract validation:
+     ```bash
+     node engine/cli.mjs collate --topic <slug> --advance-cycle
+     bash .claude/scripts/validate-contract.sh --fix <slug>
+     ```
+   - Because `collate` reads directly from `records/works_json/*.json` on disk, every finished work immediately appears on the dashboard (`knowledge_graph.json`, `master_index.jsonl`, `route_index.json`, `research_state.md`, `notices.jsonl`).
+6. **Live Local JEV Decision Board & Context Query**:
+   - Write/update `topics/<slug>/decisions/decision_input.json` (options, claims, evidenceByClaim) and run:
+     ```bash
+     node engine/cli.mjs decide --topic <slug> --jev auto
+     ```
+     This auto-connects to a local loopback JEV endpoint (`ARGUS_JEV_ENDPOINT`, default `http://127.0.0.1:8001/v1/jev` + `~/.config/argus/jev-api-key`), runs Layer-1 screening + Layer-2 calibrated `choice` adjudication with conflict preservation, and writes `decisions/decision_board.json`.
+   - Downstream agents query provenance-stamped context with:
+     ```bash
+     node engine/cli.mjs query --topic <slug> --task "<question>" --mode gather --jev auto --format md
+     ```
+7. **Continuous unattended looping in T3 (replaces Claude `/loop`)**:
+   Use T3 Code's native `schedule_task` tool (`schedule: { type: "interval", everyMs: 600000 }`, `freshSession: true`, `bindToCurrentThread: true`) with a self-contained prompt that runs `status` -> `queue next --batch 2` -> deep-read 2 works -> `collate --advance-cycle` -> `validate-contract.sh --fix` -> synthesize on every `synthesis_every_n_cycles` -> `decide --jev auto`. Because each tick runs in a fresh session and checkpoints to disk, Argus survives restarts and never exhausts context!
 
 Argus is **not just for academic research.** It works equally well for market / competitive intelligence, regulatory tracking, ecosystem watching, OSINT, journalist-beat work, and any deep personal-interest topic that benefits from a memory that gets sharper over weeks. The word "research" in this skill is shorthand for "structured, continuous information gathering and synthesis."
 

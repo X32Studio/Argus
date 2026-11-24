@@ -39,32 +39,47 @@ export default function App() {
 
 function TopicNav({ slug, current }: { slug: string; current: "dashboard" | "decisions" | "report" }) {
   return (
-    <nav className="topic-nav">
-      <Link to="/" className="topic-nav-back">
-        ← Topics
-      </Link>
-      <span className="topic-nav-slug">
-        <code>{slug}</code>
-      </span>
-      <span className="topic-nav-sep">·</span>
-      <Link
-        to={`/t/${slug}`}
-        className={`topic-nav-link ${current === "dashboard" ? "is-active" : ""}`}
-      >
-        Graph
-      </Link>
-      <Link
-        to={`/t/${slug}/decisions`}
-        className={`topic-nav-link ${current === "decisions" ? "is-active" : ""}`}
-      >
-        Decision Board
-      </Link>
-      <Link
-        to={`/t/${slug}/report`}
-        className={`topic-nav-link ${current === "report" ? "is-active" : ""}`}
-      >
-        Report
-      </Link>
+    <nav className="topic-nav" aria-label="Topic views">
+      <div className="topic-nav-left">
+        <Link to="/" className="topic-nav-brand" title="All topics">
+          <svg className="brand-ring" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.6" />
+            <circle cx="9" cy="9" r="2.6" fill="var(--accent)" />
+          </svg>
+          <span>Argus</span>
+        </Link>
+        <span className="topic-nav-sep" aria-hidden="true">/</span>
+        <span className="topic-nav-slug">
+          <code>{slug}</code>
+        </span>
+      </div>
+
+      <div className="topic-nav-tabs" role="tablist">
+        <Link
+          to={`/t/${slug}`}
+          className={`topic-nav-link ${current === "dashboard" ? "is-active" : ""}`}
+        >
+          Graph
+        </Link>
+        <Link
+          to={`/t/${slug}/decisions`}
+          className={`topic-nav-link ${current === "decisions" ? "is-active" : ""}`}
+        >
+          Decision Board
+        </Link>
+        <Link
+          to={`/t/${slug}/report`}
+          className={`topic-nav-link ${current === "report" ? "is-active" : ""}`}
+        >
+          Report
+        </Link>
+      </div>
+
+      <div className="topic-nav-right">
+        <Link to="/" className="topic-nav-back">
+          All topics
+        </Link>
+      </div>
     </nav>
   );
 }
@@ -74,8 +89,10 @@ function TopicDashboard() {
   if (!slug) return <TopicPicker />;
   return (
     <TopicProvider slug={slug}>
-      <TopicNav slug={slug} current="dashboard" />
-      <DashboardApp />
+      <div className="route-shell">
+        <TopicNav slug={slug} current="dashboard" />
+        <DashboardApp />
+      </div>
     </TopicProvider>
   );
 }
@@ -85,8 +102,12 @@ function TopicDecisions() {
   if (!slug) return <TopicPicker />;
   return (
     <TopicProvider slug={slug}>
-      <TopicNav slug={slug} current="decisions" />
-      <DecisionBoard />
+      <div className="route-shell">
+        <TopicNav slug={slug} current="decisions" />
+        <div className="page-scroll">
+          <DecisionBoard />
+        </div>
+      </div>
     </TopicProvider>
   );
 }
@@ -96,8 +117,10 @@ function TopicReport() {
   if (!slug) return <TopicPicker />;
   return (
     <TopicProvider slug={slug}>
-      <TopicNav slug={slug} current="report" />
-      <ReportView />
+      <div className="route-shell">
+        <TopicNav slug={slug} current="report" />
+        <ReportView />
+      </div>
     </TopicProvider>
   );
 }

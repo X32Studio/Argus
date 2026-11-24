@@ -37,13 +37,13 @@ One-shot deep-research tools print a 30-page essay and smooth over contradiction
 
 ## JEV Decision-Model Mode (`jev-hybrid` + Offline Baseline)
 
-Inspired by Outis's two-layer System One design (`d3-mini` / `/v1/systemone`), Argus 2.0 separates **fast zero-output-token routing** from **expensive heavy-LLM deep reads**:
+Built around a two-layer **JEV (Judgment & Evidence Verification)** protocol (`/v1/jev`), Argus 2.0 separates **fast zero-output-token routing** from **expensive heavy-LLM deep reads**:
 
 1. **Layer 1 — Fast Relevance Routing (`type: "noul"`, `output_tokens == 0`)**: Screens every search candidate before heavy LLM reading. Drops only clear noise (`< 0.35`); **preserves ambiguous signals (`0.35–0.70`)** so rare needles and weak-signal contradictions are never silently discarded.
 2. **Layer 2 — Calibrated Adjudication & Conflict Preservation (`type: "choice"`, `PASS_FLOOR = 0.70`)**: Aggregates controlling evidence across `{support, refute, unknown}`. Whenever authoritative sources directly conflict, Argus **refuses to fake consensus** — locking the claim as `contested` and auto-spawning a high-priority disambiguation probe for the next cycle.
 3. **Layer 3 — Dual-Entry Agent Context (`gather` + `search`)**: One persistent topic store with two CLI entry points — `search` for precision needle lookup and `gather` for task-scoped, SHA-256 provenance-stamped context assembly fed directly into `self-loop` or any coding/strategy agent.
 
-> **Zero-GPU Ready:** Ships with a deterministic **offline baseline** so anyone can run tests and the 5-second demo immediately. To enable live local JEV inference (e.g., `d3-mini` on loopback `:8001`), set `ARGUS_JEV_ENDPOINT`, `ARGUS_JEV_MODEL_ID`, and `ARGUS_JEV_KEY_FILE`.
+> **Zero-GPU Ready:** Ships with a deterministic **offline baseline** so anyone can run tests and the 5-second demo immediately. To enable live local JEV inference (e.g., loopback `:8001/v1/jev`), set `ARGUS_JEV_ENDPOINT`, `ARGUS_JEV_MODEL_ID`, and `ARGUS_JEV_KEY_FILE`.
 
 ---
 

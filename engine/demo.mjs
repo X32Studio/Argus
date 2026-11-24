@@ -5,7 +5,7 @@
  * Demonstrates:
  *   1. Universal 4-Archetype exploration model (hunt / intel / decision / research)
  *   2. JEV Layer-1 fast candidate screening (noise dropped, ambiguous rare signal preserved)
- *   3. JEV Layer-2 calibrated claim adjudication & Outis conflict preservation (contested != fake pass)
+ *   3. JEV Layer-2 calibrated claim adjudication & conflict preservation (contested != fake pass)
  *   4. Dual-entry `gather` + `search` agent context assembly over a live topic
  */
 
@@ -46,7 +46,7 @@ async function main() {
     console.log(`   [DROP ${d.jev_score}] ${d.id}: ${d.title}`);
   }
 
-  console.log("\n3. JEV Layer-2 Decision & Conflict Preservation (Outis discipline):");
+  console.log("\n3. JEV Layer-2 Decision & Conflict Preservation:");
   const board = await evaluateDecisionBoard({
     question: "Which multi-agent coding architecture should X32 standardize on?",
     options: [
